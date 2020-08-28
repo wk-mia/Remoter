@@ -20,7 +20,7 @@
     <description>Some descriptions</description>
 
     <modules>
-        <module>web</module>
+        <module>server</module>
         <module>commons</module>
     </modules>
 
