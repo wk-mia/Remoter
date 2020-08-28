@@ -21,6 +21,7 @@
 
     <modules>
         <module>web</module>
+        <module>commons</module>
     </modules>
 
 

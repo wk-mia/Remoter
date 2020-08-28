@@ -1,4 +1,4 @@
-package com.com.aoligei.remoter;
+package com.aoligei.remoter;
 
 
 import org.springframework.boot.SpringApplication;
