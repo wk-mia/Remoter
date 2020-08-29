@@ -1,5 +1,8 @@
 package com.aoligei.remoter.bu.service;
 
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author wk-mia
  * 2020-8-28
@@ -12,5 +15,5 @@ public interface ClientService {
      * @return 返回字符序列
      * @throws RuntimeException
      */
-    String getId()throws RuntimeException;
+    String getClientId(HttpServletRequest httpServletRequest)throws Exception;
 }

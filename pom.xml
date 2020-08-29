@@ -24,6 +24,38 @@
         <module>commons</module>
     </modules>
 
+    <!--统一管理jar包版本-->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <junit.version>4.12</junit.version>
+        <slf4j-api.version>1.7.21</slf4j-api.version>
+    </properties>
 
-
+    <!--声明依赖-->
+    <dependencyManagement>
+        <dependencies>
+            <!--spring boot 2.2.2-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.2.2.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--junit-->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <!--slf4j-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
