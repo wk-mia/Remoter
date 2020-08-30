@@ -1,5 +1,6 @@
 package com.aoligei.remoter.util;
 
+import com.aoligei.remoter.constant.ExceptionMessageConstants;
 import com.aoligei.remoter.exception.RemoterException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +54,7 @@ public class IpUtil {
                 }
             }
         } catch (Exception e) {
-            throw new RemoterException("无法获取Ip地址",e);
+            throw new RemoterException(ExceptionMessageConstants.UNABLE_GET_IP,e);
         }
         return ipAddress;
     }
