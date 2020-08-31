@@ -57,11 +57,10 @@ public class MainConnectPanel extends JPanel {
                  * 检查身份识别码是否合法
                  */
                 HashMap hashMap = new HashMap(){{
-                    put("name","zhangyang");
-                    put("code","900");
+                    put("clientId","14eed539-2876-4a55-b4db-7ff9b5278e16");
                 }};
                 Result<String> result =
-                HttpRequestFactory.get("localhost","60000", RequestUrlConstants.GET_CLIENT_ID,hashMap);
+                HttpRequestFactory.post("localhost","60000", RequestUrlConstants.IS_CLIENT_ID_LEGAL,hashMap);
                 if(result != null){
 
                 }

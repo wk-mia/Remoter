@@ -41,7 +41,7 @@ public class HttpRequestFactory {
          * 请求地址后拼接参数
          */
         if(parameter != null || parameter.size() > 0){
-            //urlBuilder.append("?");
+            urlBuilder.append("?");
             Iterator<Map.Entry<String, Object>> iterator = parameter.entrySet().iterator();
             while (iterator.hasNext()){
                 Map.Entry<String, Object> entry = iterator.next();

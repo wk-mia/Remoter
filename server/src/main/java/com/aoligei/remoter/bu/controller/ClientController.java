@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.aoligei.remoter.util.Result;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author wk-mia
@@ -28,6 +29,22 @@ public class ClientController {
     public Result getClientId(HttpServletRequest httpServletRequest){
         try{
             return new Result(Result.Status.OK,clientService.getClientId(httpServletRequest),"生成编码成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(Result.Status.FAIL,null,e.getMessage());
+        }
+    }
+
+
+    /**
+     * 身份标识码是否合法
+     * @param map Key->clientId Value->身份标识码
+     * @return data->Boolean
+     */
+    @RequestMapping(value = "/isClientIdLegal", method = RequestMethod.POST)
+    public Result isClientIdLegal(Map map){
+        try{
+            return new Result(Result.Status.OK,clientService.isClientIdLegal(map),"验证成功");
         }catch (Exception e){
             e.printStackTrace();
             return new Result(Result.Status.FAIL,null,e.getMessage());
