@@ -1,11 +1,15 @@
 package com.aoligei.remoter.ui.panel;
 
+import com.aoligei.remoter.constant.RequestUrlConstants;
+import com.aoligei.remoter.net.http.HttpRequestFactory;
 import com.aoligei.remoter.ui.form.RemoteForm;
+import com.aoligei.remoter.util.Result;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 /**
  * @author wk-mia
@@ -52,7 +56,15 @@ public class MainConnectPanel extends JPanel {
                 /**
                  * 检查身份识别码是否合法
                  */
-                new RemoteForm(textField.getText());
+                HashMap hashMap = new HashMap(){{
+                    put("name","zhangyang");
+                    put("code","900");
+                }};
+                Result<String> result =
+                HttpRequestFactory.get("localhost","60000", RequestUrlConstants.GET_CLIENT_ID,hashMap);
+                if(result != null){
+
+                }
             }
         });
         this.add(button);
