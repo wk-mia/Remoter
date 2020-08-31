@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 2020-8-28
  * 统一返回格式
  */
-public class Result implements Serializable {
+public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = 5905715228490291386L;
 
@@ -18,7 +18,7 @@ public class Result implements Serializable {
     /**
      * 服务器返回的业务数据
      */
-    private Object data;
+    private T data;
     /**
      * 服务器给出的消息
      */
@@ -27,12 +27,12 @@ public class Result implements Serializable {
     public Result() {
     }
 
-    public Result(Result.Status status, Object data) {
+    public Result(Result.Status status, T data) {
         this.status = status;
         this.data = data;
     }
 
-    public Result(Result.Status status, Object data, String message) {
+    public Result(Result.Status status, T data, String message) {
         this.status = status;
         this.data = data;
         this.message = message;
@@ -59,7 +59,7 @@ public class Result implements Serializable {
         return this.data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 
