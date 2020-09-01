@@ -2,6 +2,7 @@ package com.aoligei.remoter.bu.controller;
 
 import com.aoligei.remoter.bu.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,7 @@ public class ClientController {
      * @return data->Boolean
      */
     @RequestMapping(value = "/isClientIdLegal", method = RequestMethod.POST)
-    public Result isClientIdLegal(Map map){
+    public Result isClientIdLegal(@RequestBody Map map){
         try{
             return new Result(Result.Status.OK,clientService.isClientIdLegal(map),"验证成功");
         }catch (Exception e){

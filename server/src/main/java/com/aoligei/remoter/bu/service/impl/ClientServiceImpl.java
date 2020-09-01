@@ -70,8 +70,10 @@ public class ClientServiceImpl implements ClientService {
          * 得到所有的身份信息，检查身份识别码是否在列表中
          */
         if(ClientInfoCheckUtil.isClientIdExist(clientAccountBooks.allClientInformation(),map.get("clientId").toString())){
+            log.info("*****的身份标识码为：" + map.get("clientId").toString() + "的客户端存在");
             return true;
         }else {
+            log.info("*****的身份标识码为：" + map.get("clientId").toString() + "的客户端并不存在");
             return false;
         }
     }
