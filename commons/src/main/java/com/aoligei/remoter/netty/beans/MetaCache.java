@@ -30,10 +30,27 @@ public class MetaCache {
      */
     private String clientId;
 
-    public MetaCache(Channel channel, ScheduledFuture scheduledFuture, String clientId) {
+    /**
+     * 终端类型
+     */
+    private ClientType clientType;
+
+    /**
+     * 终端类型
+     * M：主控端
+     * S：被控端
+     */
+    public static enum ClientType{
+        MASTER,
+        SLAVE;
+        private ClientType(){};
+    }
+
+    public MetaCache(Channel channel, ScheduledFuture scheduledFuture, String clientId, ClientType clientType) {
         this.channel = channel;
         this.scheduledFuture = scheduledFuture;
         this.clientId = clientId;
+        this.clientType = clientType;
     }
 
     public Channel getChannel() {
@@ -58,5 +75,13 @@ public class MetaCache {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    public ClientType getClientType() {
+        return clientType;
+    }
+
+    public void setClientType(ClientType clientType) {
+        this.clientType = clientType;
     }
 }

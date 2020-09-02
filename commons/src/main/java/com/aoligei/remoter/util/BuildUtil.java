@@ -63,7 +63,7 @@ public class BuildUtil {
      * @param scheduledFuture 监听任务
      * @return MetaCache对象
      */
-    public static MetaCache buildMetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture){
-        return new MetaCache(channel,scheduledFuture,clientId);
+    public static MetaCache buildMetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture, MetaCache.ClientType clientType){
+        return new MetaCache(channel,scheduledFuture,clientId,clientType);
     }
 }

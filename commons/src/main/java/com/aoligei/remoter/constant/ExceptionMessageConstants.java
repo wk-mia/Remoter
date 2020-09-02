@@ -35,5 +35,9 @@ public class ExceptionMessageConstants {
     /**
      * 客户端当前正处于被远程控制中
      */
-    public static final String CLIENT_BEING_CONTROLLED = "The client being controlled current";
+    public static final String CLIENT_BEING_CONTROLLED = "the client being controlled current";
+    /**
+     * 客户端工作异常
+     */
+    public static final String CLIENT_WORK_ERROR = "the client worked error";
 }

@@ -29,27 +29,45 @@ public class GroupCacheManage implements ICacheManage {
     @Override
     public void registerSlave(String slaveClientId, Channel channel, ScheduledFuture scheduledFuture) throws NettyServerException {
         /**
-         * 如果客户端在缓存中能找到，表示客户端当前正
-         * 在远程工作中；如果没有，则将该通道加入管理组中。
+         * 如果客户端身份识别码在缓存连接组的Key中能找到，表示客户端当前正
+         * 在远程工作中，抛出异常消息；如果找到了缓存，但是没有受控端通道，
+         * 抛出异常信息；当且仅当查找不到缓存时，才将该通道加入管理组中。
          */
-        if(cache.get(slaveClientId) == null && cache.get(slaveClientId).getSlaveChannel() == null){
-            MetaCache metaCache = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture);
+        if(cache.get(slaveClientId) == null){
+            MetaCache metaCache = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, MetaCache.ClientType.SLAVE);
             cache.put(slaveClientId,new ChannelCache(metaCache,null));
         }else {
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_BEING_CONTROLLED);
+            if(cache.get(slaveClientId).getSlaveChannel() == null){
+                /**
+                 * 工作异常，缓存存在但没有通道
+                 */
+                throw new NettyServerException(ExceptionMessageConstants.CLIENT_WORK_ERROR);
+            }else {
+                /**
+                 * 正常工作中，此时不允许被控制
+                 */
+                throw new NettyServerException(ExceptionMessageConstants.CLIENT_BEING_CONTROLLED);
+            }
         }
     }
 
     @Override
     public void registerMasters(String slaveClientId, String masterClientId, Channel channel, ScheduledFuture scheduledFuture) throws NettyServerException {
         /**
-         * 如果客户端在缓存中能找到，表示客户端当前正
-         * 处于远程工作中；如果没有，则将该通道加入管理组中。
+         * 如果受控客户端在缓存中能找到，表示受控客户端当前正处于远程工作中；
+         * 如果受控客户端能找到，主控客户端找不到，表示主控客户端还未加入到
+         * 通道组中；如果受控客户端和主控客户端都能找到，表示当前请求已有通道。
+         * 如果受控客户端没有找到缓存，则表示受控客户端还没有加入到通道组中，
+         * 抛出异常。
          */
-        if(cache.get(slaveClientId) == null && cache.get(slaveClientId).getMasterChannels() == null){
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_BEING_CONTROLLED);
+        if(cache.get(slaveClientId) == null){
+            throw new NettyServerException(ExceptionMessageConstants.CLIENT_NOT_FIND);
         }else {
-            MetaCache metaCache = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture);
+            if(cache.get(slaveClientId).getMasterChannels() != null
+                    && cache.get(slaveClientId).getMasterChannels().stream().filter(item -> masterClientId.equals(item.getClientId())).findAny().isPresent()){
+                throw new NettyServerException(ExceptionMessageConstants.CLIENT_BEING_CONTROLLED);
+            }
+            MetaCache metaCache = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture,MetaCache.ClientType.MASTER);
             cache.put(slaveClientId,new ChannelCache(metaCache,null));
         }
     }
