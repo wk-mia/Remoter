@@ -27,7 +27,9 @@ public class ServerChannelHandler extends SimpleChannelInboundHandler<BaseReques
     private static Map<Integer, ChannelCache> channelCacheMap = new ConcurrentHashMap<>();
 
     /**
-     * 每个信息入站时都会被调用
+     * 每个信息入站时都会被调用。
+     * 服务器的处理主要包括有：维护当前在线的所有连接、转发命令。
+     * 事实上，还应有拦截非法/敏感信息、安全检查、持久化等工作，可在该方法中进行扩展。
      * @param channelHandlerContext ChannelHandler和ChannelPipeline之间的上下文联系
      * @param baseRequest 请求体
      * @throws Exception 异常信息
