@@ -13,10 +13,10 @@ public interface ICommandHandler<T> {
     /**
      * 处理当前命令
      * @param channelHandlerContext 当前连接的处理器上下文
-     * @param baseBound Channel输入对象
+     * @param base Channel输入对象
      * @throws NettyServerException NettyServer异常信息
      */
-    void handle(ChannelHandlerContext channelHandlerContext,T baseBound)throws NettyServerException;
+    void handle(ChannelHandlerContext channelHandlerContext,T base)throws NettyServerException;
 
     /**
      * 丢弃当前命令

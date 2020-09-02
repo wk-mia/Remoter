@@ -14,12 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author wk-mia
  * 2020-9-1
- * 服务端-转发数据处理器
+ * 点对点模式服务端-转发数据处理器
+ * 适用于远程控制的业务场景，一个终端控制另一个终端，在这个过程中，不允许第三方终端的加入
  */
 @ChannelHandler.Sharable
-public class ServerChannelHandler extends SimpleChannelInboundHandler<BaseRequest> {
+public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseRequest> {
 
-    private static Logger log = LoggerFactory.getLogger(ServerChannelHandler.class);
+    private static Logger log = LoggerFactory.getLogger(ServerChannelC2CHandler.class);
 
     /**
      * 当前的所有连接

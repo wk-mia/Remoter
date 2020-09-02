@@ -6,6 +6,7 @@ import com.aoligei.remoter.exception.NettyServerException;
  * @author wk-mia
  * 2020-9-1
  * 用于Netty的自定义请求响应体
+ * 服务端接受的都是BaseRequest，通过服务器的处理后封装成BaseResponse并返回
  */
 public class BaseResponse extends BaseDataBody {
 
@@ -23,7 +24,6 @@ public class BaseResponse extends BaseDataBody {
     public String toString() {
         return "BaseResponse{" +
                 "clientId='" + getClientId() + '\'' +
-                ", clientName='" + getClientName() + '\'' +
                 ", commandEnum=" + getCommandEnum() +
                 ", data=" + getData() +
                 ", exception=" + this.nettyServerException +

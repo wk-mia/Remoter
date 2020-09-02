@@ -32,4 +32,8 @@ public class ExceptionMessageConstants {
      * 为找到此身份识别码
      */
     public static final String CLIENT_ID_NOT_FIND = "not find the clientId";
+    /**
+     * 客户端当前正处于被远程控制中
+     */
+    public static final String CLIENT_BEING_CONTROLLED = "The client being controlled current";
 }

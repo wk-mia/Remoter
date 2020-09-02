@@ -50,6 +50,13 @@ public class ClientInfoCheckUtil {
     }
 
     /**
+     * 客户端身份识别码是否为空
+     * @param clientId 客户端身份识别码
+     * @return true/false
+     */
+    public static boolean isClientIdNull(String clientId){return (clientId == null || clientId.isEmpty()) ? true : false;}
+
+    /**
      * 客户端信息是否完备
      * @param clientInformation 客户端信息
      * @return true/false

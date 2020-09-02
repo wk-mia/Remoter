@@ -4,6 +4,7 @@ package com.aoligei.remoter.netty.beans;
  * @author wk-mia
  * 2020-9-1
  * 用于Netty的自定义请求体
+ * 客户端发起的都是BaseRequest，接受的都是BaseResponse
  */
 public class BaseRequest extends BaseDataBody {
 
@@ -16,7 +17,6 @@ public class BaseRequest extends BaseDataBody {
     public String toString() {
         return "BaseRequest{" +
                 "clientId='" + getClientId() + '\'' +
-                ", clientName='" + getClientName() + '\'' +
                 ", commandEnum=" + getCommandEnum() +
                 ", data=" + getData() +
                 '}';

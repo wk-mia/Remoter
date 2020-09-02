@@ -1,15 +1,12 @@
 package com.aoligei.remoter.netty.master;
 
 import com.aoligei.remoter.netty.beans.BaseResponse;
-import com.aoligei.remoter.netty.beans.ChannelCache;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author wk-mia
@@ -27,7 +24,8 @@ public class MasterChannelHandler extends SimpleChannelInboundHandler<BaseRespon
     private String preMessage;
 
     /**
-     * 每个信息入站时都会被调用
+     * 每个信息入站时都会被调用。
+     * 客户端的处理主要包括有：发起命令/接受命令、发起连接请求/终止连接请求。
      * @param channelHandlerContext ChannelHandler和ChannelPipeline之间的上下文联系
      * @param baseResponse 请求响应体
      * @throws Exception 异常信息

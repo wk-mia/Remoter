@@ -1,10 +1,11 @@
 package com.aoligei.remoter.net.http;
 
 import com.aoligei.remoter.ui.form.DialogForm;
-import com.aoligei.remoter.ui.form.MainForm;
 import com.aoligei.remoter.util.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import java.util.Iterator;
@@ -15,11 +16,17 @@ import java.util.Map;
  * 2020-8-31
  * 向服务器发起HTTP请求的构造工厂，用于访问服务器的HTTP接口
  */
+@Component
 public class HttpRequestFactory {
 
     private static Logger log = LoggerFactory.getLogger(HttpRequestFactory.class);
 
     private static RestTemplate restTemplate;
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate){
+        HttpRequestFactory.restTemplate = restTemplate;
+    }
 
     /**
      * 向服务器发起GET请求
@@ -58,7 +65,6 @@ public class HttpRequestFactory {
         /**
          * 发起请求,如发生异常通过弹框通知用户
          */
-        restTemplate = new RestTemplate();
         try{
             Result<T> result = restTemplate.getForObject(url,Result.class,parameter);
             return result;
@@ -89,7 +95,6 @@ public class HttpRequestFactory {
         /**
          * 发起请求,如发生异常通过弹框通知用户
          */
-        restTemplate = new RestTemplate();
         try{
             Result<T> result = restTemplate.postForObject(url,parameter,Result.class);
             return result;

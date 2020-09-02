@@ -21,11 +21,6 @@ public class BaseDataBody<T> implements Serializable {
     private String clientId;
 
     /**
-     * 客户端名称
-     */
-    private String clientName;
-
-    /**
      * 命令类型
      */
     private Enum<CommandEnum> commandEnum;
@@ -41,14 +36,6 @@ public class BaseDataBody<T> implements Serializable {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
-    }
-
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
     }
 
     public Enum<CommandEnum> getCommandEnum() {
@@ -71,7 +58,6 @@ public class BaseDataBody<T> implements Serializable {
     public String toString() {
         return "DataBody{" +
                 "clientId='" + clientId + '\'' +
-                ", clientName='" + clientName + '\'' +
                 ", commandEnum=" + commandEnum +
                 ", data=" + data +
                 '}';

@@ -1,27 +1,34 @@
 package com.aoligei.remoter.netty.beans;
 
 import com.aoligei.remoter.exception.NettyServerException;
+import io.netty.channel.Channel;
+import io.netty.util.concurrent.ScheduledFuture;
 
 /**
  * @author wk-mia
  * 2020-9-2
  * 在线通道管理接口
  */
-public interface IChannelManage {
+public interface ICacheManage {
 
     /**
      * 向在线通道分组管理器注册受控端的实例
-     * @param slaveClientChannelCache 受控端实例
+     * @param slaveClientId 受控端的身份识别码
+     * @param channel 通道
+     * @param scheduledFuture 监听任务
      * @throws NettyServerException 异常信息
      */
-    void registerSlave(ClientChannelCache slaveClientChannelCache)throws NettyServerException;
+    void registerSlave(String slaveClientId, Channel channel, ScheduledFuture scheduledFuture)throws NettyServerException;
 
     /**
      * 向在线通道分组管理器注册主控端的实例
-     * @param masterClientChannelCache 主控端实例
+     * @param slaveClientId 受控端的身份识别码
+     * @param masterClientId 主控端的身份识别码
+     * @param channel 通道
+     * @param scheduledFuture 监听任务
      * @throws NettyServerException 异常信息
      */
-    void registerMasters(ClientChannelCache masterClientChannelCache)throws NettyServerException;
+    void registerMasters(String slaveClientId, String masterClientId, Channel channel,ScheduledFuture scheduledFuture)throws NettyServerException;
 
     /**
      * 从在线通道分组管理器中注销受控端的实例
@@ -32,10 +39,11 @@ public interface IChannelManage {
 
     /**
      * 从在线通道分组管理器中注销主控端的实例
+     * @param slaveClientId 受控端的身份识别码
      * @param masterClientId 主控端的身份识别码
      * @throws NettyServerException 异常信息
      */
-    void unRegisterMaster(String masterClientId)throws NettyServerException;
+    void unRegisterMaster(String slaveClientId,String masterClientId)throws NettyServerException;
 
     /**
      * 通知消息给所有主控端
