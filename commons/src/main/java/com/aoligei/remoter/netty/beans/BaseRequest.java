@@ -17,6 +17,7 @@ public class BaseRequest extends BaseDataBody {
     public String toString() {
         return "BaseRequest{" +
                 "clientId='" + getClientId() + '\'' +
+                ", targetClientIds=" + getTargetClientIds() +
                 ", commandEnum=" + getCommandEnum() +
                 ", data=" + getData() +
                 '}';

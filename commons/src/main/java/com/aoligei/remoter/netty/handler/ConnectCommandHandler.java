@@ -1,10 +1,13 @@
 package com.aoligei.remoter.netty.handler;
 
+import com.aoligei.remoter.constant.ExceptionMessageConstants;
+import com.aoligei.remoter.constant.ResponseConstants;
 import com.aoligei.remoter.exception.NettyServerException;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
 import com.aoligei.remoter.netty.beans.GroupCacheManage;
 import com.aoligei.remoter.util.BuildUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,17 +35,51 @@ public class ConnectCommandHandler extends AbstractServerCensorC2CHandler {
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
         /**
-         * 如果当前请求为Master(主控端)的连接请求，则把这个连接加入到连接组并向Slave(受控端)发送连接请求；
-         * 如果当前连接对象为Slave(受控端)，则检查当前连接组中是否已有受控对象，如果有，拒绝加入连接组并返回异常信息，如果没有，则加入连接组；
-         * 如果无法判定当前连接请求是主控端或者受控端，拒绝加入连接组并返回异常信息
+         * 如果TargetClientIds为空，代表受控端，尝试将该连接加入到通道组中；
+         * 如果TargetClientIds不为空，代表主控端，尝试将该连接加入到通道组中；
+         * 目前暂不支持一个受控端被多个主控端控制的模式以及一个主控端同时远程
+         * 多个受控终端。
          */
-        if(true){
+        if(baseRequest.getTargetClientIds() == null){
+            /**
+             * 注册受控端，返回信息，输出日志
+             */
+            Channel channel = channelHandlerContext.channel();
+            groupChannelManage.registerSlave(baseRequest.getClientId(),channel,
+                    groupChannelManage.getScheduled(channelHandlerContext,channel,3));
 
-        }else if(true){
-            BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(), baseRequest.getCommandEnum(), "", null);
+            BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),
+                    baseRequest.getTargetClientIds(),baseRequest.getCommandEnum(), ResponseConstants.SLAVE_CONNECT_SUCCEEDED, null);
             channelHandlerContext.writeAndFlush(baseResponse);
-        }else {
 
+            logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]连接服务器成功");
+        }else{
+            if(baseRequest.getTargetClientIds().size() > 1){
+                /**
+                 * 不支持主控端同时连接多个受控端
+                 */
+                throw new NettyServerException(ExceptionMessageConstants.NOT_SUPPORT_MASTER_CONTROL_MULTIPLE_SLAVE);
+            }else {
+                /**
+                 * 注册主控端，返回信息，输出日志
+                 */
+                if(groupChannelManage.currentMastersCount((String)baseRequest.getTargetClientIds().get(0)) == 0){
+                    Channel channel = channelHandlerContext.channel();
+                    groupChannelManage.registerMasters((String) baseRequest.getTargetClientIds().get(0),baseRequest.getClientId()
+                            ,channel, groupChannelManage.getScheduled(channelHandlerContext,channel,3));
+
+                    BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),
+                            baseRequest.getTargetClientIds(),baseRequest.getCommandEnum(), ResponseConstants.MASTER_CONNECT_SUCCEEDED, null);
+                    channelHandlerContext.writeAndFlush(baseResponse);
+
+                    logInfo(baseRequest,"Master[" + baseRequest.getClientId() + "]连接服务器成功");
+                }else {
+                    /**
+                     * 不支持受控端同时被多个主控端控制
+                     */
+                    throw new NettyServerException(ExceptionMessageConstants.NOT_SUPPORT_SLAVE_CONTROL_BY_MULTIPLE_MASTER);
+                }
+            }
         }
     }
 }

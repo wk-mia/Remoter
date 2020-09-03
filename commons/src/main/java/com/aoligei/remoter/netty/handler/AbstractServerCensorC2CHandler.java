@@ -84,7 +84,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
      * @param baseRequest 请求体
      * @param info 输出信息
      */
-    private void logInfo(BaseRequest baseRequest,String info){
+    protected void logInfo(BaseRequest baseRequest,String info){
         log.info(MessageFormat.format("{0};message:{1}",baseRequest,info));
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
      * @param baseRequest 请求体
      * @param error 异常信息
      */
-    private void logError(BaseRequest baseRequest,String error){
+    protected void logError(BaseRequest baseRequest,String error){
         log.error(MessageFormat.format("{0};message:{1}",baseRequest,error));
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
         /**
          * 构建返回消息体并写回客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),baseRequest.getCommandEnum(),baseRequest.getData(),new NettyServerException(exceptionMessage));
+        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),baseRequest.getTargetClientIds(),baseRequest.getCommandEnum(),baseRequest.getData(),new NettyServerException(exceptionMessage));
         channelHandlerContext.writeAndFlush(baseResponse);
     }
 

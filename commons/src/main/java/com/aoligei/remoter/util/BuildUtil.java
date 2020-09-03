@@ -5,6 +5,8 @@ import com.aoligei.remoter.netty.beans.*;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 
+import java.util.List;
+
 /**
  * @author wk-mia
  * 2020-9-2
@@ -15,13 +17,14 @@ public class BuildUtil {
     /**
      * 构建并返回一个Response
      * @param clientId 身份识别码
+     * @param targetClientIds 消息接收者身份识别码列表
      * @param commandEnum 命令类型
      * @param data 数据
      * @param <T> Object对象
      * @return BaseResponse对象
      */
-    public static <T> BaseResponse buildResponse(String clientId, Enum<CommandEnum> commandEnum, T data){
-        BaseResponse baseResponse = BuildUtil.buildResponse(clientId,commandEnum,data,null);
+    public static <T> BaseResponse buildResponse(String clientId,List<String> targetClientIds, Enum<CommandEnum> commandEnum, T data){
+        BaseResponse baseResponse = BuildUtil.buildResponse(clientId,targetClientIds,commandEnum,data,null);
         return baseResponse;
     }
 
@@ -33,22 +36,24 @@ public class BuildUtil {
      * @return BaseResponse对象
      */
     public static <T> BaseResponse buildResponse(BaseRequest baseRequest, String exceptionMessage){
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),baseRequest.getCommandEnum(),baseRequest.getData(),new NettyServerException(exceptionMessage));
+        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),baseRequest.getTargetClientIds(),baseRequest.getCommandEnum(),baseRequest.getData(),new NettyServerException(exceptionMessage));
         return baseResponse;
     }
 
     /**
      * 构建并返回一个Response
      * @param clientId 身份识别码
+     * @param targetClientIds 消息接收者身份识别码列表
      * @param commandEnum 命令类型
      * @param data 数据
      * @param nettyServerException 异常
      * @param <T> Object对象
      * @return BaseResponse对象
      */
-    public static <T> BaseResponse buildResponse(String clientId, Enum<CommandEnum> commandEnum, T data, NettyServerException nettyServerException){
+    public static <T> BaseResponse buildResponse(String clientId, List<String> targetClientIds, Enum<CommandEnum> commandEnum, T data, NettyServerException nettyServerException){
         BaseResponse baseResponse = new BaseResponse(){{
             setClientId(clientId);
+            setTargetClientIds(targetClientIds);
             setCommandEnum(commandEnum);
             setData(data);
             setNettyServerException(nettyServerException);

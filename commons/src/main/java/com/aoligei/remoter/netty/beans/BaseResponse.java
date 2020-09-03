@@ -24,6 +24,7 @@ public class BaseResponse extends BaseDataBody {
     public String toString() {
         return "BaseResponse{" +
                 "clientId='" + getClientId() + '\'' +
+                ", targetClientIds=" + getTargetClientIds() +
                 ", commandEnum=" + getCommandEnum() +
                 ", data=" + getData() +
                 ", exception=" + this.nettyServerException +

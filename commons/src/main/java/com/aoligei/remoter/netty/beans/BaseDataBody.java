@@ -1,6 +1,7 @@
 package com.aoligei.remoter.netty.beans;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author wk-mia
@@ -19,6 +20,11 @@ public class BaseDataBody<T> implements Serializable {
      * 客户端身份识别码
      */
     private String clientId;
+
+    /**
+     * 消息接收者身份识别码列表
+     */
+    private List<String> targetClientIds;
 
     /**
      * 命令类型
@@ -54,10 +60,19 @@ public class BaseDataBody<T> implements Serializable {
         this.data = data;
     }
 
+    public List<String> getTargetClientIds() {
+        return targetClientIds;
+    }
+
+    public void setTargetClientIds(List<String> targetClientIds) {
+        this.targetClientIds = targetClientIds;
+    }
+
     @Override
     public String toString() {
-        return "DataBody{" +
+        return "BaseDataBody{" +
                 "clientId='" + clientId + '\'' +
+                ", targetClientIds=" + targetClientIds +
                 ", commandEnum=" + commandEnum +
                 ", data=" + data +
                 '}';

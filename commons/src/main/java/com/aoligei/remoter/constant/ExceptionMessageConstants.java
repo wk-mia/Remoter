@@ -40,4 +40,16 @@ public class ExceptionMessageConstants {
      * 客户端工作异常
      */
     public static final String CLIENT_WORK_ERROR = "the client worked error";
+    /**
+     * 客户端未工作
+     */
+    public static final String CLIENT_NOT_WORK = "the client not working";
+    /**
+     * 暂不支持主控端同时远程多个受控终端
+     */
+    public static final String NOT_SUPPORT_MASTER_CONTROL_MULTIPLE_SLAVE = "not support master control multiple slave at the same time";
+    /**
+     * 暂不支持多个主控端同时远程一个受控端
+     */
+    public static final String NOT_SUPPORT_SLAVE_CONTROL_BY_MULTIPLE_MASTER = "not support the slave controlled by multiple master at the same time";
 }
