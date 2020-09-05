@@ -8,6 +8,10 @@ package com.aoligei.remoter.constant;
 public class ExceptionMessageConstants {
 
     /**
+     * 程序内部错误
+     */
+    public static final String INTERNAL_ERROR = "an internal error occurred";
+    /**
      * 无法获取请求的Ip地址
      */
     public static final String UNABLE_GET_IP = "unable to get IP address";
@@ -35,11 +39,19 @@ public class ExceptionMessageConstants {
     /**
      * 客户端当前正处于被远程控制中
      */
-    public static final String CLIENT_BEING_CONTROLLED = "the client being controlled current";
+    public static final String SLAVE_BEING_CONTROLLED = "the client being controlled current";
     /**
      * 客户端工作异常
      */
     public static final String CLIENT_WORK_ERROR = "the client worked error";
+    /**
+     * 未在缓存中找到相应的受控端
+     */
+    public static final String SLAVE_NOT_FIND = "not find the slaver";
+    /**
+     * 主控端当前已经连接到服务器
+     */
+    public static final String MASTER_ALREADY_CONNECTED = "the master has already connected slave";
     /**
      * 客户端未工作
      */
@@ -52,4 +64,16 @@ public class ExceptionMessageConstants {
      * 暂不支持多个主控端同时远程一个受控端
      */
     public static final String NOT_SUPPORT_SLAVE_CONTROL_BY_MULTIPLE_MASTER = "not support the slave controlled by multiple master at the same time";
+    /**
+     * 主控端列表不能为空
+     */
+    public static final String TARGET_CLIENTS_EMPTY = "target Clients not allowed to be empty";
+    /**
+     * 主控端不在受控端的通道组内，需要先连接受控端
+     */
+    public static final String MASTER_NOT_IN_SLAVE_GROUP = "the master not in slave's group, need to connect with slave first";
+    /**
+     * 未知命令
+     */
+    public static final String UNKNOWN_COMMAND = "unknown command";
 }

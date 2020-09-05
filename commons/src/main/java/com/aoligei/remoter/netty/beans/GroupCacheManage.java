@@ -9,6 +9,7 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.springframework.stereotype.Component;
 
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +27,7 @@ public class GroupCacheManage implements ICacheManage {
      * Key：受控端的clientId
      * Value：主控端的通道组
      */
-    private Map<String,ChannelCache> cache = new ConcurrentHashMap<>();
+    public Map<String,ChannelCache> cache = new ConcurrentHashMap<>();
 
     @Override
     public void registerSlave(String slaveClientId, Channel channel, ScheduledFuture scheduledFuture) throws NettyServerException {
@@ -35,7 +36,7 @@ public class GroupCacheManage implements ICacheManage {
          * 在被控制中，抛出异常消息；当且仅当查找不到缓存时，才将该通道加入管理组中。
          */
         if(this.isSlaveExistInCache(slaveClientId)){
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_BEING_CONTROLLED);
+            throw new NettyServerException(ExceptionMessageConstants.SLAVE_BEING_CONTROLLED);
         }else {
             MetaCache metaCache = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, MetaCache.ClientType.SLAVE);
             cache.put(slaveClientId,new ChannelCache(metaCache,null));
@@ -52,7 +53,7 @@ public class GroupCacheManage implements ICacheManage {
          * 如果受控客户端和主控客户端都能找到，表示发生了重复的连接请求。
          */
         if(this.isMasterExistInCurrentMasterChannels(slaveClientId,masterClientId)){
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_BEING_CONTROLLED);
+            throw new NettyServerException(ExceptionMessageConstants.MASTER_ALREADY_CONNECTED);
         }else {
             MetaCache metaCache = BuildUtil.buildMetaCache(masterClientId, channel, scheduledFuture,MetaCache.ClientType.MASTER);
             cache.get(slaveClientId).getMasterChannels().add(metaCache);
@@ -82,8 +83,32 @@ public class GroupCacheManage implements ICacheManage {
     }
 
     @Override
-    public void notifyAllMaster(BaseResponse baseResponse) throws NettyServerException {
+    public void notifyAllMaster(String slaveClientId,BaseResponse baseResponse) throws NettyServerException {
+        /**
+         * 找到所有的主控端，将消息转送出去
+         */
+        if(currentMastersCount(slaveClientId) >= 1){
+            cache.get(slaveClientId).getMasterChannels().forEach(item ->
+                    item.getChannel().writeAndFlush(baseResponse));
+        }
+    }
 
+    @Override
+    public void notifySlave(List<String> targetClientIds,BaseResponse baseResponse)throws NettyServerException{
+        /**
+         * 找到所有受控端，将消息转送出去
+         */
+        if(targetClientIds == null || targetClientIds.size() == 0){
+            throw new NettyServerException(ExceptionMessageConstants.TARGET_CLIENTS_EMPTY);
+        }else if(targetClientIds.size() > 1){
+            throw new NettyServerException(ExceptionMessageConstants.NOT_SUPPORT_MASTER_CONTROL_MULTIPLE_SLAVE);
+        }else {
+            targetClientIds.forEach(item -> {
+                if(isSlaveExistInCache(item)){
+                    cache.get(item).getSlaveChannel().getChannel().writeAndFlush(baseResponse);
+                }
+            });
+        }
     }
 
     /**
@@ -127,7 +152,7 @@ public class GroupCacheManage implements ICacheManage {
      */
     public int currentMastersCount(String slaveClientId)throws NettyServerException{
         if(cache.get(slaveClientId) == null){
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_NOT_FIND);
+            throw new NettyServerException(ExceptionMessageConstants.SLAVE_NOT_FIND);
         }else {
             if(cache.get(slaveClientId).getMasterChannels() == null){
                 return 0;
@@ -137,9 +162,15 @@ public class GroupCacheManage implements ICacheManage {
         }
     }
 
-    public ScheduledFuture getScheduled(ChannelHandlerContext channelHandlerContext,Channel channel,int timeout){
+    /**
+     * 定义一个处理器的监听任务
+     * @param channelHandlerContext 通道上下文
+     * @param timeout 超时时间
+     * @return
+     */
+    public ScheduledFuture getScheduled(ChannelHandlerContext channelHandlerContext,int timeout){
         return channelHandlerContext.executor().schedule(
-                () -> channel.close(),timeout, TimeUnit.SECONDS
+                () -> channelHandlerContext.channel().close(),timeout, TimeUnit.SECONDS
         );
     }
 }

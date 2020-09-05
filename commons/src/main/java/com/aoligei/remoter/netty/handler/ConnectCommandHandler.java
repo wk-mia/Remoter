@@ -46,7 +46,7 @@ public class ConnectCommandHandler extends AbstractServerCensorC2CHandler {
              */
             Channel channel = channelHandlerContext.channel();
             groupChannelManage.registerSlave(baseRequest.getClientId(),channel,
-                    groupChannelManage.getScheduled(channelHandlerContext,channel,3));
+                    groupChannelManage.getScheduled(channelHandlerContext,3));
 
             BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),
                     baseRequest.getTargetClientIds(),baseRequest.getCommandEnum(), ResponseConstants.SLAVE_CONNECT_SUCCEEDED, null);
@@ -66,7 +66,7 @@ public class ConnectCommandHandler extends AbstractServerCensorC2CHandler {
                 if(groupChannelManage.currentMastersCount((String)baseRequest.getTargetClientIds().get(0)) == 0){
                     Channel channel = channelHandlerContext.channel();
                     groupChannelManage.registerMasters((String) baseRequest.getTargetClientIds().get(0),baseRequest.getClientId()
-                            ,channel, groupChannelManage.getScheduled(channelHandlerContext,channel,3));
+                            ,channel, groupChannelManage.getScheduled(channelHandlerContext,3));
 
                     BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),
                             baseRequest.getTargetClientIds(),baseRequest.getCommandEnum(), ResponseConstants.MASTER_CONNECT_SUCCEEDED, null);

@@ -1,6 +1,8 @@
 package com.aoligei.remoter.netty.handler;
 
 import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.netty.aop.InspectEnum;
+import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -19,6 +21,7 @@ public class HeartbeatCommandHandler extends AbstractServerCensorC2CHandler {
      * @throws NettyServerException
      */
     @Override
+    @RequestInspect(inspectItem = {InspectEnum.NO_CLEAR_CLIENT_ID})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
         String clientId = baseRequest.getClientId();
         StringBuilder info = new StringBuilder().append("receive a heartbeat from:").append(clientId);

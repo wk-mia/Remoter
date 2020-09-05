@@ -4,6 +4,8 @@ import com.aoligei.remoter.exception.NettyServerException;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 
+import java.util.List;
+
 /**
  * @author wk-mia
  * 2020-9-2
@@ -47,8 +49,17 @@ public interface ICacheManage {
 
     /**
      * 通知消息给所有主控端
+     * @param slaveClientId 受控端身份识别码，可作为通道组标识
      * @param baseResponse 消息主体
      * @throws NettyServerException 异常信息
      */
-    void notifyAllMaster(BaseResponse baseResponse)throws NettyServerException;
+    void notifyAllMaster(String slaveClientId,BaseResponse baseResponse)throws NettyServerException;
+
+    /**
+     * 通知消息给受控端
+     * @param targetClientIds 受控端列表
+     * @param baseResponse 消息主体
+     * @throws NettyServerException 异常信息
+     */
+    void notifySlave(List<String> targetClientIds, BaseResponse baseResponse)throws NettyServerException;
 }

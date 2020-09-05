@@ -47,5 +47,6 @@ public enum CommandEnum {
     /**
      * 声音输出命令
      */
-    VOICE_OUTPUT
+    VOICE_OUTPUT;
+
 }

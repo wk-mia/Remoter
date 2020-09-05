@@ -2,6 +2,8 @@ package com.aoligei.remoter.netty.server;
 
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.ChannelCache;
+import com.aoligei.remoter.netty.command.CommandFactory;
+import com.aoligei.remoter.netty.command.ICommandHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -41,7 +43,8 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
         /**
          * 分发命令并进行处理
          */
-
+        ICommandHandler commandHandler = CommandFactory.getCommandHandler(baseRequest.getCommandEnum());
+        commandHandler.handle(channelHandlerContext,baseRequest);
     }
 
     /**
