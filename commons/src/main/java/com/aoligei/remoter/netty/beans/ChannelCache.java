@@ -1,6 +1,5 @@
 package com.aoligei.remoter.netty.beans;
 
-import java.util.List;
 
 /**
  * @author wk-mia
@@ -13,33 +12,46 @@ import java.util.List;
 public class ChannelCache {
 
     /**
+     * 连接的唯一编码，用于标识一个Master和Slave的连接
+     */
+    private String connectionId;
+    /**
      * 受控端元数据
      */
-    private MetaCache slaveChannel;
-
+    private MetaCache slaveMeta;
     /**
      * 主控端元数据
      */
-    private List<MetaCache> masterChannels;
+    private MetaCache masterMeta;
 
-    public ChannelCache(MetaCache slaveChannel, List<MetaCache> masterChannels) {
-        this.slaveChannel = slaveChannel;
-        this.masterChannels = masterChannels;
+
+    public ChannelCache(String connectionId, MetaCache slaveMeta, MetaCache masterMeta) {
+        this.connectionId = connectionId;
+        this.slaveMeta = slaveMeta;
+        this.masterMeta = masterMeta;
     }
 
-    public MetaCache getSlaveChannel() {
-        return slaveChannel;
+    public String getConnectionId() {
+        return connectionId;
     }
 
-    public void setSlaveChannel(MetaCache slaveChannel) {
-        this.slaveChannel = slaveChannel;
+    public void setConnectionId(String connectionId) {
+        this.connectionId = connectionId;
     }
 
-    public List<MetaCache> getMasterChannels() {
-        return masterChannels;
+    public MetaCache getSlaveMeta() {
+        return slaveMeta;
     }
 
-    public void setMasterChannels(List<MetaCache> masterChannels) {
-        this.masterChannels = masterChannels;
+    public void setSlaveMeta(MetaCache slaveMeta) {
+        this.slaveMeta = slaveMeta;
+    }
+
+    public MetaCache getMasterMeta() {
+        return masterMeta;
+    }
+
+    public void setMasterMeta(MetaCache masterMeta) {
+        this.masterMeta = masterMeta;
     }
 }

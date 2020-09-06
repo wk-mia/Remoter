@@ -1,4 +1,4 @@
-package com.aoligei.remoter.netty.aop;
+package com.aoligei.remoter.enums;
 
 /**
  * @author wk-mia
@@ -7,17 +7,25 @@ package com.aoligei.remoter.netty.aop;
  */
 public enum InspectEnum {
     /**
-     * 请求中没用明确身份识别码
+     *
      */
-    NO_CLEAR_CLIENT_ID,
+    PARAMS_IS_COMPLETE,
     /**
-     * 在线缓存中没有找到指定的受控端
+     * 请求不合法
      */
-    SLAVE_NOT_WORK,
+    REQUEST_IS_ILLEGAL,
+    /**
+     * 在线缓存中没有找到指定的连接
+     */
+    CONNECTION_NOT_FIND,
     /**
      * 一个主控端同时控制多个受控端的情况
      */
     MASTER_TO_SLAVES,
+    /**
+     * 一个受控端同时被多个主控端控制
+     */
+    SLAVE_TO_MASTERS,
     /**
      * 主控端没有在受控端的通道组中
      */

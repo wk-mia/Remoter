@@ -2,7 +2,7 @@ package com.aoligei.remoter.netty.command;
 
 import com.aoligei.remoter.constant.ExceptionMessageConstants;
 import com.aoligei.remoter.exception.NettyServerException;
-import com.aoligei.remoter.netty.beans.CommandEnum;
+import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.netty.handler.*;
 
 import java.util.Map;

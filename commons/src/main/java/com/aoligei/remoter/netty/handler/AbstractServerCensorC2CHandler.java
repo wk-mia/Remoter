@@ -2,6 +2,7 @@ package com.aoligei.remoter.netty.handler;
 
 import com.aoligei.remoter.account.ClientAccountBooks;
 import com.aoligei.remoter.constant.ExceptionMessageConstants;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.NettyServerException;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
@@ -107,7 +108,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
         /**
          * 构建返回消息体并写回客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),baseRequest.getTargetClientIds(),baseRequest.getCommandEnum(),baseRequest.getData(),new NettyServerException(exceptionMessage));
+        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(), TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),baseRequest.getData(),new NettyServerException(exceptionMessage));
         channelHandlerContext.writeAndFlush(baseResponse);
     }
 

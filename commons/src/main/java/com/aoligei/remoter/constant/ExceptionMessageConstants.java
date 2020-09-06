@@ -53,10 +53,6 @@ public class ExceptionMessageConstants {
      */
     public static final String MASTER_ALREADY_CONNECTED = "the master has already connected slave";
     /**
-     * 客户端未工作
-     */
-    public static final String CLIENT_NOT_WORK = "the client not working";
-    /**
      * 暂不支持主控端同时远程多个受控终端
      */
     public static final String NOT_SUPPORT_MASTER_CONTROL_MULTIPLE_SLAVE = "not support master control multiple slave at the same time";
@@ -76,4 +72,24 @@ public class ExceptionMessageConstants {
      * 未知命令
      */
     public static final String UNKNOWN_COMMAND = "unknown command";
+    /**
+     * 连接编码为空
+     */
+    public static final String CONNECTION_ID_EMPTY = "the connection id not allow be empty";
+    /**
+     * 连接未找到
+     */
+    public static final String CONNECTION_NOT_FIND = "the specified connection was not found";
+    /**
+     * 终端类型为空
+     */
+    public static final String TERMINAL_TYPE_EMPTY = "the terminal type cannot be empty";
+    /**
+     * 命令类型为空
+     */
+    public static final String COMMAND_EMPTY = "the command cannot be empty";
+    /**
+     * 主控端请求连接时未指定受控端
+     */
+    public static final String NO_SLAVER_SPECIFIED = "no slaver's client id specified in the request";
 }

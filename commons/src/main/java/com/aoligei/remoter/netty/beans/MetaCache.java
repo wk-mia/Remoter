@@ -1,5 +1,6 @@
 package com.aoligei.remoter.netty.beans;
 
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 
@@ -7,6 +8,7 @@ import io.netty.util.concurrent.ScheduledFuture;
  * @author wk-mia
  * 2020-9-1
  * 连接元数据，用于表示单个连接。
+ *
  * 里面包含了Channel和ScheduledFuture两个对象，Channel的作用为标识一个连接，
  * 可以理解为一个Channel对象就代表了一个连接；ScheduledFuture是Netty提供的Futrue
  * ，它主要用于监听当前Channel，当客户端超时未发送心跳包时，可自动关闭这个连接。
@@ -16,41 +18,37 @@ import io.netty.util.concurrent.ScheduledFuture;
 public class MetaCache {
 
     /**
+     * 客户端身份识别码
+     */
+    private String clientId;
+    /**
      * 连接通道
      */
     private Channel channel;
-
     /**
      * 监听任务
      */
     private ScheduledFuture scheduledFuture;
-
-    /**
-     * 客户端身份识别码
-     */
-    private String clientId;
-
     /**
      * 终端类型
      */
-    private ClientType clientType;
+    private TerminalTypeEnum terminalTypeEnum;
 
-    /**
-     * 终端类型
-     * M：主控端
-     * S：被控端
-     */
-    public static enum ClientType{
-        MASTER,
-        SLAVE;
-        private ClientType(){};
-    }
 
-    public MetaCache(Channel channel, ScheduledFuture scheduledFuture, String clientId, ClientType clientType) {
+
+    public MetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum) {
+        this.clientId = clientId;
         this.channel = channel;
         this.scheduledFuture = scheduledFuture;
+        this.terminalTypeEnum = terminalTypeEnum;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
         this.clientId = clientId;
-        this.clientType = clientType;
     }
 
     public Channel getChannel() {
@@ -69,19 +67,11 @@ public class MetaCache {
         this.scheduledFuture = scheduledFuture;
     }
 
-    public String getClientId() {
-        return clientId;
+    public TerminalTypeEnum getTerminalTypeEnum() {
+        return terminalTypeEnum;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public ClientType getClientType() {
-        return clientType;
-    }
-
-    public void setClientType(ClientType clientType) {
-        this.clientType = clientType;
+    public void setTerminalTypeEnum(TerminalTypeEnum terminalTypeEnum) {
+        this.terminalTypeEnum = terminalTypeEnum;
     }
 }

@@ -5,7 +5,7 @@ package com.aoligei.remoter.enums;
  * 2020-9-5
  * 终端类型
  */
-public enum TerminalType {
+public enum TerminalTypeEnum {
     /**
      * 主控端
      */
@@ -18,5 +18,5 @@ public enum TerminalType {
      * 服务器
      */
     SERVER;
-    private TerminalType(){};
+    private TerminalTypeEnum(){};
 }

@@ -1,5 +1,7 @@
 package com.aoligei.remoter.netty.aop;
 
+import com.aoligei.remoter.enums.InspectEnum;
+
 import java.lang.annotation.*;
 
 /**
@@ -15,6 +17,6 @@ public @interface RequestInspect {
     /**
      * 默认只检查客户端身份识别码为空的情况
      */
-    InspectEnum[] inspectItem() default {InspectEnum.NO_CLEAR_CLIENT_ID};
+    InspectEnum[] inspectItem() default {InspectEnum.REQUEST_IS_ILLEGAL};
 
 }

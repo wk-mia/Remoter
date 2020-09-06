@@ -1,4 +1,4 @@
-package com.aoligei.remoter.netty.beans;
+package com.aoligei.remoter.enums;
 
 /**
  * @author wk-mia

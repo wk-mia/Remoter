@@ -1,8 +1,12 @@
 package com.aoligei.remoter.netty.aop;
 
 import com.aoligei.remoter.constant.ExceptionMessageConstants;
+import com.aoligei.remoter.enums.InspectEnum;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.NettyServerException;
 import com.aoligei.remoter.netty.beans.BaseRequest;
+import com.aoligei.remoter.netty.beans.BaseResponse;
+import com.aoligei.remoter.netty.beans.ChannelCache;
 import com.aoligei.remoter.netty.beans.GroupCacheManage;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,6 +16,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * @author wk-mia
@@ -83,14 +88,20 @@ public class RequestInspectAspect {
     private void inspect(InspectEnum[] inspectEnums, BaseRequest baseRequest)throws NettyServerException{
         for (int i = 0; i < inspectEnums.length; i++) {
             switch (inspectEnums[i]){
-                case NO_CLEAR_CLIENT_ID:
-                    noClearClientId(baseRequest);
+                case PARAMS_IS_COMPLETE:
+                    paramsIsComplete(baseRequest);
                     break;
-                case SLAVE_NOT_WORK:
-                    slaveNotWork(baseRequest);
+                case REQUEST_IS_ILLEGAL:
+                    requestIsIllegal(baseRequest);
+                    break;
+                case CONNECTION_NOT_FIND:
+                    connectionNotFind(baseRequest);
                     break;
                 case MASTER_TO_SLAVES:
                     masterToSlaves(baseRequest);
+                    break;
+                case SLAVE_TO_MASTERS:
+                    slaveToMasters(baseRequest);
                     break;
                 case MASTER_NOT_IN_GROUP:
                     masterNotInGroup(baseRequest);
@@ -102,38 +113,65 @@ public class RequestInspectAspect {
     }
 
     /**
-     * 请求实体中clientId字段非空检查
+     * 检查连接时请求参数是否齐全
+     * 当请求为主控端发来时，在Data中带受控端的身份识别码
      * @param baseRequest 原始请求
      * @throws NettyServerException 异常信息
      */
-    private void noClearClientId(BaseRequest baseRequest)throws NettyServerException{
+    private void paramsIsComplete(BaseRequest baseRequest)throws NettyServerException{
         if(baseRequest.getClientId() == null || "".equals(baseRequest.getClientId())){
             throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
+        }
+        if(baseRequest.getTerminalTypeEnum() == null){
+            throw new NettyServerException(ExceptionMessageConstants.TERMINAL_TYPE_EMPTY);
+        }
+        if(baseRequest.getCommandEnum() == null){
+            throw new NettyServerException(ExceptionMessageConstants.COMMAND_EMPTY);
+        }
+        /**
+         * 检查Data中是否包含数据，并不负责对数据进行校验，检查数据合法在连接处理器中
+         */
+        if(baseRequest.getTerminalTypeEnum() == TerminalTypeEnum.MASTER){
+            String slaveClientId = (String) baseRequest.getData();
+            if(slaveClientId == null || "".equals(slaveClientId)){
+                throw new NettyServerException(ExceptionMessageConstants.NO_SLAVER_SPECIFIED);
+            }
         }
     }
 
     /**
-     * 受控端没有在缓存中找到
+     * 请求实体中合法性检查:包括身份识别码、连接编码、终端类型、命令类型
      * @param baseRequest 原始请求
      * @throws NettyServerException 异常信息
      */
-    private void slaveNotWork(BaseRequest baseRequest)throws NettyServerException{
-        /**
-         * 当目标客户端为空时，表示该请求是受控端发出来的，此时clientId就是受控端的身份识别码；
-         * 否则，该请求是主控方发出来的，此时targetClientIds就是受控端的身份识别码。
-         */
-        String slaveClientId;
-        if(baseRequest.getTargetClientIds() == null || baseRequest.getTargetClientIds().size() == 0){
-            slaveClientId = baseRequest.getClientId();
-        }else {
-            slaveClientId = (String) baseRequest.getTargetClientIds().get(0);
-        }
-
-        if(slaveClientId == null || "".equals(slaveClientId)){
+    private void requestIsIllegal(BaseRequest baseRequest)throws NettyServerException{
+        if(baseRequest.getClientId() == null || "".equals(baseRequest.getClientId())){
             throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
+        }
+        if(baseRequest.getConnectionId() == null || "".equals(baseRequest.getConnectionId())){
+            throw new NettyServerException(ExceptionMessageConstants.CONNECTION_ID_EMPTY);
+        }
+        if(baseRequest.getTerminalTypeEnum() == null){
+            throw new NettyServerException(ExceptionMessageConstants.TERMINAL_TYPE_EMPTY);
+        }
+        if(baseRequest.getCommandEnum() == null){
+            throw new NettyServerException(ExceptionMessageConstants.COMMAND_EMPTY);
+        }
+    }
+
+    /**
+     * 没有在缓存中找到连接
+     * @param baseRequest 原始请求
+     * @throws NettyServerException 异常信息
+     */
+    private void connectionNotFind(BaseRequest baseRequest)throws NettyServerException{
+        String connectionId = baseRequest.getConnectionId();
+        if(connectionId == null || "".equals(connectionId)){
+            throw new NettyServerException(ExceptionMessageConstants.CONNECTION_ID_EMPTY);
         }else {
-            if(!groupChannelManage.cache.containsKey(slaveClientId)){
-                throw new NettyServerException(ExceptionMessageConstants.CLIENT_NOT_WORK);
+            ChannelCache channelCache = groupChannelManage.getChannelCacheByConnectionId(connectionId);
+            if(channelCache == null){
+                throw new NettyServerException(ExceptionMessageConstants.CONNECTION_NOT_FIND);
             }
         }
     }
@@ -144,11 +182,36 @@ public class RequestInspectAspect {
      * @throws NettyServerException 异常信息
      */
     private void masterToSlaves(BaseRequest baseRequest)throws NettyServerException{
-        if(baseRequest.getTargetClientIds() == null || baseRequest.getTargetClientIds().size() == 0){
-            throw new NettyServerException(ExceptionMessageConstants.TARGET_CLIENTS_EMPTY);
+
+        String masterClientId = baseRequest.getClientId();
+        if(masterClientId == null || "".equals(masterClientId)){
+            throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
         }else {
-            if(baseRequest.getTargetClientIds().size() > 1){
-                throw new NettyServerException(ExceptionMessageConstants.NOT_SUPPORT_MASTER_CONTROL_MULTIPLE_SLAVE);
+            List<ChannelCache> channelCaches = groupChannelManage.getChannelCachesByMasterClientId(masterClientId);
+            if(channelCaches != null) {
+                if (channelCaches.size() > 1) {
+                    throw new NettyServerException(ExceptionMessageConstants.NOT_SUPPORT_MASTER_CONTROL_MULTIPLE_SLAVE);
+                }
+            }
+        }
+    }
+
+    /**
+     * 受控端同时被多个主控端控制
+     * @param baseRequest 原始请求
+     * @throws NettyServerException 异常信息
+     */
+    private void slaveToMasters(BaseRequest baseRequest)throws NettyServerException{
+
+        String slaveClientId = baseRequest.getClientId();
+        if(slaveClientId == null || "".equals(slaveClientId)){
+            throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
+        }else {
+            List<ChannelCache> channelCaches = groupChannelManage.getChannelCachesBySlaveClientId(slaveClientId);
+            if(channelCaches != null) {
+                if (channelCaches.size() > 1) {
+                    throw new NettyServerException(ExceptionMessageConstants.NOT_SUPPORT_SLAVE_CONTROL_BY_MULTIPLE_MASTER);
+                }
             }
         }
     }
@@ -160,16 +223,10 @@ public class RequestInspectAspect {
      */
     private void masterNotInGroup(BaseRequest baseRequest)throws NettyServerException{
         masterToSlaves(baseRequest);
-        String slaveClientId = (String) baseRequest.getTargetClientIds().get(0);
-        if(slaveClientId == null || "".equals(slaveClientId) || !groupChannelManage.cache.containsKey(slaveClientId)){
-            throw new NettyServerException(ExceptionMessageConstants.SLAVE_NOT_FIND);
-        }else {
-            boolean exist = groupChannelManage.cache.get(slaveClientId).getMasterChannels().stream()
-                    .filter(item -> slaveClientId.equals(item.getClientId()))
-                    .findAny().isPresent();
-            if(!exist){
-                throw new NettyServerException(ExceptionMessageConstants.MASTER_NOT_IN_SLAVE_GROUP);
-            }
+        String masterClientId = baseRequest.getClientId();
+        List<ChannelCache> channelCaches = groupChannelManage.getChannelCachesByMasterClientId(masterClientId);
+        if(channelCaches == null || channelCaches.size() == 0){
+            throw new NettyServerException(ExceptionMessageConstants.MASTER_NOT_IN_SLAVE_GROUP);
         }
     }
 

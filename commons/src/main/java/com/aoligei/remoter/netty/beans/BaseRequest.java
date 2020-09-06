@@ -1,5 +1,7 @@
 package com.aoligei.remoter.netty.beans;
 
+import com.aoligei.remoter.enums.TerminalTypeEnum;
+
 /**
  * @author wk-mia
  * 2020-9-1
@@ -9,6 +11,17 @@ package com.aoligei.remoter.netty.beans;
 public class BaseRequest extends BaseDataBody {
 
     /**
+     * 客户端编码
+     */
+    private String clientId;
+
+    /**
+     * 终端类型
+     */
+    private Enum<TerminalTypeEnum> terminalTypeEnum;
+
+
+    /**
      * 重写BaseDataBody的toString()方法,将
      * 该方法的返回内容包装为请求体
      * @return BaseRequest对象的字符串输出
@@ -16,10 +29,27 @@ public class BaseRequest extends BaseDataBody {
     @Override
     public String toString() {
         return "BaseRequest{" +
-                "clientId='" + getClientId() + '\'' +
-                ", targetClientIds=" + getTargetClientIds() +
+                "connectionId='" + getConnectionId() + '\'' +
+                ", clientId='" + clientId + '\'' +
+                ", terminalTypeEnum=" + terminalTypeEnum +
                 ", commandEnum=" + getCommandEnum() +
                 ", data=" + getData() +
                 '}';
+    }
+
+    public Enum<TerminalTypeEnum> getTerminalTypeEnum() {
+        return terminalTypeEnum;
+    }
+
+    public void setTerminalTypeEnum(Enum<TerminalTypeEnum> terminalTypeEnum) {
+        this.terminalTypeEnum = terminalTypeEnum;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

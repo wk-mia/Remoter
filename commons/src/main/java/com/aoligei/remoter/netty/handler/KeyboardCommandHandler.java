@@ -1,11 +1,11 @@
 package com.aoligei.remoter.netty.handler;
 
 import com.aoligei.remoter.exception.NettyServerException;
-import com.aoligei.remoter.netty.aop.InspectEnum;
+import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
-import com.aoligei.remoter.netty.beans.CommandEnum;
+import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.netty.beans.GroupCacheManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,18 +27,18 @@ public class KeyboardCommandHandler extends AbstractServerCensorC2CHandler {
 
     /**
      * 特定的处理器：键盘输入处理器
-     * 检查项 = {NO_CLEAR_CLIENT_ID,MASTER_TO_SLAVES,MASTER_NOT_IN_GROUP}
+     * 检查项 = {REQUEST_IS_ILLEGAL,MASTER_TO_SLAVES,MASTER_NOT_IN_GROUP}
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
      * @throws NettyServerException
      */
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.NO_CLEAR_CLIENT_ID,InspectEnum.MASTER_TO_SLAVES,InspectEnum.MASTER_NOT_IN_GROUP})
+    @RequestInspect(inspectItem = {InspectEnum.REQUEST_IS_ILLEGAL,InspectEnum.MASTER_TO_SLAVES,InspectEnum.MASTER_NOT_IN_GROUP})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
         /**
          * 转发消息给受控客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),baseRequest.getTargetClientIds(), CommandEnum.KEYBOARD_INPUT,baseRequest.getData(),null);
-        groupCacheManage.notifySlave(baseRequest.getTargetClientIds(),baseResponse);
+        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.KEYBOARD_INPUT,baseRequest.getData(),null);
+        groupCacheManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }
 }

@@ -1,5 +1,7 @@
 package com.aoligei.remoter.netty.beans;
 
+import com.aoligei.remoter.enums.CommandEnum;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,16 +17,10 @@ public class BaseDataBody<T> implements Serializable {
      */
     private static final long serialVersionUID = -3911255650485738676L;
 
-
     /**
-     * 客户端身份识别码
+     * 连接的唯一编码，用于标识一个Master和Slave的连接
      */
-    private String clientId;
-
-    /**
-     * 消息接收者身份识别码列表
-     */
-    private List<String> targetClientIds;
+    private String connectionId;
 
     /**
      * 命令类型
@@ -36,12 +32,12 @@ public class BaseDataBody<T> implements Serializable {
      */
     private T data;
 
-    public String getClientId() {
-        return clientId;
+    public String getConnectionId() {
+        return connectionId;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setConnectionId(String connectionId) {
+        this.connectionId = connectionId;
     }
 
     public Enum<CommandEnum> getCommandEnum() {
@@ -60,19 +56,10 @@ public class BaseDataBody<T> implements Serializable {
         this.data = data;
     }
 
-    public List<String> getTargetClientIds() {
-        return targetClientIds;
-    }
-
-    public void setTargetClientIds(List<String> targetClientIds) {
-        this.targetClientIds = targetClientIds;
-    }
-
     @Override
     public String toString() {
         return "BaseDataBody{" +
-                "clientId='" + clientId + '\'' +
-                ", targetClientIds=" + targetClientIds +
+                "connectionId='" + connectionId + '\'' +
                 ", commandEnum=" + commandEnum +
                 ", data=" + data +
                 '}';
