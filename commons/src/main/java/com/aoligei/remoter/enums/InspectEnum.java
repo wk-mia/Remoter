@@ -7,9 +7,13 @@ package com.aoligei.remoter.enums;
  */
 public enum InspectEnum {
     /**
-     *
+     * 连接时参数是否合法
      */
-    PARAMS_IS_COMPLETE,
+    CONNECT_PARAMS_IS_COMPLETE,
+    /**
+     * 控制时参数是否合法
+     */
+    CONTROL_PARAMS_IS_COMPLETE,
     /**
      * 请求不合法
      */

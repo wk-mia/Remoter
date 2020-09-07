@@ -7,7 +7,7 @@ import com.aoligei.remoter.exception.NettyServerException;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
-import com.aoligei.remoter.netty.beans.GroupCacheManage;
+import com.aoligei.remoter.netty.manage.GroupCacheManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

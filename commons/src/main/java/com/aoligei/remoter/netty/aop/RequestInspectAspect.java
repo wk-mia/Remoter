@@ -5,9 +5,8 @@ import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.NettyServerException;
 import com.aoligei.remoter.netty.beans.BaseRequest;
-import com.aoligei.remoter.netty.beans.BaseResponse;
 import com.aoligei.remoter.netty.beans.ChannelCache;
-import com.aoligei.remoter.netty.beans.GroupCacheManage;
+import com.aoligei.remoter.netty.manage.GroupCacheManage;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -88,8 +87,11 @@ public class RequestInspectAspect {
     private void inspect(InspectEnum[] inspectEnums, BaseRequest baseRequest)throws NettyServerException{
         for (int i = 0; i < inspectEnums.length; i++) {
             switch (inspectEnums[i]){
-                case PARAMS_IS_COMPLETE:
-                    paramsIsComplete(baseRequest);
+                case CONNECT_PARAMS_IS_COMPLETE:
+                    connectParamsIsComplete(baseRequest);
+                    break;
+                case CONTROL_PARAMS_IS_COMPLETE:
+                    controlParamsIsComplete(baseRequest);
                     break;
                 case REQUEST_IS_ILLEGAL:
                     requestIsIllegal(baseRequest);
@@ -118,12 +120,27 @@ public class RequestInspectAspect {
      * @param baseRequest 原始请求
      * @throws NettyServerException 异常信息
      */
-    private void paramsIsComplete(BaseRequest baseRequest)throws NettyServerException{
+    private void connectParamsIsComplete(BaseRequest baseRequest)throws NettyServerException{
         if(baseRequest.getClientId() == null || "".equals(baseRequest.getClientId())){
             throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
         }
+        if(baseRequest.getCommandEnum() == null){
+            throw new NettyServerException(ExceptionMessageConstants.COMMAND_EMPTY);
+        }
+    }
+
+    /**
+     * 检查控制时请求参数是否齐全
+     * 当请求为主控端发来时，在Data中带受控端的身份识别码
+     * @param baseRequest 原始请求
+     * @throws NettyServerException 异常信息
+     */
+    private void controlParamsIsComplete(BaseRequest baseRequest)throws NettyServerException{
         if(baseRequest.getTerminalTypeEnum() == null){
             throw new NettyServerException(ExceptionMessageConstants.TERMINAL_TYPE_EMPTY);
+        }
+        if(baseRequest.getClientId() == null || "".equals(baseRequest.getClientId())){
+            throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
         }
         if(baseRequest.getCommandEnum() == null){
             throw new NettyServerException(ExceptionMessageConstants.COMMAND_EMPTY);

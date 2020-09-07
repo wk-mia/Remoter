@@ -8,6 +8,10 @@ package com.aoligei.remoter.constant;
 public class ResponseConstants {
 
     /**
+     * 客户端端连接服务器成功
+     */
+    public static final String CLIENT_CONNECT_SUCCEEDED = "the client connect succeeded";
+    /**
      * 主控端连接服务器成功
      */
     public static final String MASTER_CONNECT_SUCCEEDED = "the master connect succeeded";

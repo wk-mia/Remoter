@@ -1,10 +1,10 @@
-package com.aoligei.remoter.netty.beans;
+package com.aoligei.remoter.netty.manage;
 
 import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.netty.beans.BaseResponse;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 
-import java.util.List;
 
 /**
  * @author wk-mia
@@ -54,7 +54,7 @@ public interface ICacheManage {
      * @param baseResponse 消息主体
      * @throws NettyServerException 异常信息
      */
-    void notifyAllMaster(String slaveClientId,BaseResponse baseResponse)throws NettyServerException;
+    void notifyAllMaster(String slaveClientId, BaseResponse baseResponse)throws NettyServerException;
 
     /**
      * 通知消息给受控端

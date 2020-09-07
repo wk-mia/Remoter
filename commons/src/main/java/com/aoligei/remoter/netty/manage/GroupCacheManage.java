@@ -1,8 +1,11 @@
-package com.aoligei.remoter.netty.beans;
+package com.aoligei.remoter.netty.manage;
 
 import com.aoligei.remoter.constant.ExceptionMessageConstants;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.netty.beans.BaseResponse;
+import com.aoligei.remoter.netty.beans.ChannelCache;
+import com.aoligei.remoter.netty.beans.MetaCache;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -11,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -98,7 +100,7 @@ public class GroupCacheManage implements ICacheManage {
     }
 
     @Override
-    public void notifyAllMaster(String slaveClientId,BaseResponse baseResponse) throws NettyServerException {
+    public void notifyAllMaster(String slaveClientId, BaseResponse baseResponse) throws NettyServerException {
         /**
          * 找到所有的主控端，将消息转送出去
          */

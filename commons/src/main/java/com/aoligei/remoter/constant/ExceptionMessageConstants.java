@@ -92,4 +92,8 @@ public class ExceptionMessageConstants {
      * 主控端请求连接时未指定受控端
      */
     public static final String NO_SLAVER_SPECIFIED = "no slaver's client id specified in the request";
+    /**
+     * 终端类型为空
+     */
+    public static final String TERMINAL_TYPE_IS_EMPTY = "terminal type not allow empty";
 }
