@@ -1,19 +1,20 @@
 package com.aoligei.remoter.netty.handler;
 
-import com.aoligei.remoter.account.ClientAccountBooks;
 import com.aoligei.remoter.constant.ExceptionMessageConstants;
+import com.aoligei.remoter.constant.ResponseConstants;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.generate.impl.UUIDIdentifier;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
+import com.aoligei.remoter.netty.beans.ChannelCache;
 import com.aoligei.remoter.netty.beans.MetaCache;
 import com.aoligei.remoter.netty.manage.GroupCacheManage;
 import com.aoligei.remoter.netty.manage.OnlineConnectionManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -56,26 +57,58 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                     throw new NettyServerException(ExceptionMessageConstants.SLAVE_BEING_CONTROLLED);
                 }else {
                     /**
-                     * 生成连接编码并通知双方
-                     * 如何通知slaver???此时并不知道slaver的通道...
+                     * 生成连接编码并通知Slave建立与Master的通信。并缓存该通道组，通道组中并没有Slaver。
                      */
-                    // TODO: 2020/9/5 成连接编码并通知双方
-                    String connectionId = null;
-                    MetaCache slaveCache = onlineConnectionManage.getOnlineConn().stream().filter(item -> slaveClientId.equals(item.getClientId())).findAny().get();
-
-
+                    String connectionId = new UUIDIdentifier().provide();
+                    MetaCache slaveCache = onlineConnectionManage.getSlaveMetaBySlaveClientId(slaveClientId);
                     BaseResponse baseResponse = BuildUtil.buildResponse(connectionId,TerminalTypeEnum.SERVER,
                             baseRequest.getCommandEnum(),null);
-
+                    groupCacheManage.registerMaster(baseRequest.getConnectionId(),baseRequest.getClientId(),
+                            channelHandlerContext.channel(),groupCacheManage.getScheduled(channelHandlerContext,3));
+                    slaveCache.getChannel().writeAndFlush(baseResponse);
                 }
             }else {
                 throw new NettyServerException(ExceptionMessageConstants.SLAVE_NOT_FIND);
             }
+
+
         }else if(baseRequest.getTerminalTypeEnum() == TerminalTypeEnum.SLAVE){
             /**
-             * 记录日志
+             * Slave同意远程请求并返回信息给服务器，在返回信息中带上连接编码。服务器缓存该连接组
+             * 并通知Master远程控制达成的消息。
              */
-            logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已接受控制");
+            Boolean canConnect = (Boolean) baseRequest.getData();
+            if(baseRequest.getConnectionId() == null || "".equals(baseRequest.getConnectionId())){
+                throw new NettyServerException(ExceptionMessageConstants.CONNECTION_ID_EMPTY);
+            }
+            /**
+             * 获取到Master
+             */
+            ChannelCache channelCache = groupCacheManage.getChannelCacheByConnectionId(baseRequest.getConnectionId());
+            if(channelCache == null){
+                throw new NettyServerException(ExceptionMessageConstants.CONNECTION_NOT_FIND);
+            }
+            if(canConnect == null || !canConnect){
+                /**
+                 * Slave拒绝Master发起的连接，将该连接组缓存移除，并通知Master该连接已被Slave拒绝。
+                 */
+                BaseResponse baseResponse = BuildUtil.buildResponse(null,TerminalTypeEnum.SERVER,
+                        baseRequest.getCommandEnum(), ResponseConstants.SLAVE_REFUSED_CONNECTION);
+                channelCache.getMasterMeta().getChannel().writeAndFlush(baseResponse);
+                groupCacheManage.caches.remove(channelCache);
+                logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已拒绝控制");
+            }else {
+                /**
+                 * Slave同意Master发起的连接，将Slave的连接注册到连接组中，返回同意连接的消息给Master
+                 * 返回消息中带connectionId，用于标识这个连接组。
+                 */
+                BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER,
+                        baseRequest.getCommandEnum(),ResponseConstants.SLAVE_AGREE_CONNECTION);
+                channelCache.getMasterMeta().getChannel().writeAndFlush(baseResponse);
+                groupCacheManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),
+                        channelHandlerContext.channel(),groupCacheManage.getScheduled(channelHandlerContext,3));
+                logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已接受控制");
+            }
         }else {
             throw new NettyServerException(ExceptionMessageConstants.TERMINAL_TYPE_ERROR);
         }

@@ -96,4 +96,12 @@ public class ExceptionMessageConstants {
      * 终端类型为空
      */
     public static final String TERMINAL_TYPE_IS_EMPTY = "terminal type not allow empty";
+    /**
+     * 数据区域为空
+     */
+    public static final String DATA_IS_NULL = "data not allowed to be empty";
+    /**
+     * 终端类型错误
+     */
+    public static final String TERMINAL_TYPE_ERROR = "the terminal type can't be an unexpected value";
 }

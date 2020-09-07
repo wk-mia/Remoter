@@ -116,7 +116,6 @@ public class RequestInspectAspect {
 
     /**
      * 检查连接时请求参数是否齐全
-     * 当请求为主控端发来时，在Data中带受控端的身份识别码
      * @param baseRequest 原始请求
      * @throws NettyServerException 异常信息
      */
@@ -132,6 +131,7 @@ public class RequestInspectAspect {
     /**
      * 检查控制时请求参数是否齐全
      * 当请求为主控端发来时，在Data中带受控端的身份识别码
+     * 当请求为受控端发来时，在Data中带连接编码
      * @param baseRequest 原始请求
      * @throws NettyServerException 异常信息
      */

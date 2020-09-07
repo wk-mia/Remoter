@@ -84,6 +84,24 @@ public class OnlineConnectionManage {
     }
 
     /**
+     * 通过主控端身份识别码获取在线连接
+     * @param slaveClientId 主控端身份识别码
+     * @return 主控端连接
+     * @throws NettyServerException 异常信息
+     */
+    public MetaCache getSlaveMetaBySlaveClientId(String slaveClientId)throws NettyServerException{
+        if(slaveClientId == null || "".equals(slaveClientId)){
+            throw new NettyServerException(ExceptionMessageConstants.NO_SLAVER_SPECIFIED);
+        }
+        MetaCache slaveMeta = onlineConn.stream().filter(item -> slaveClientId.equals(item.getClientId())).findAny().get();
+        if(slaveMeta == null){
+            throw new NettyServerException(ExceptionMessageConstants.SLAVE_NOT_FIND);
+        }
+        return slaveMeta;
+    }
+
+
+    /**
      * 定义一个处理器的监听任务
      * @param channelHandlerContext 通道上下文
      * @param timeout 超时时间

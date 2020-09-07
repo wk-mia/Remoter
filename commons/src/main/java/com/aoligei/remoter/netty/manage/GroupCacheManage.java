@@ -61,7 +61,7 @@ public class GroupCacheManage implements ICacheManage {
     }
 
     @Override
-    public void registerMasters(String connectionId, String masterClientId, Channel channel, ScheduledFuture scheduledFuture) throws NettyServerException {
+    public void registerMaster(String connectionId, String masterClientId, Channel channel, ScheduledFuture scheduledFuture) throws NettyServerException {
         /**
          * 如果连接编码在缓存中找到，则根据主控端元数据是否为空决定是否需要更新缓存；
          * 如果连接编码在缓存中未找到，新增缓存；如果客户端身份识别码为空，抛出提示。

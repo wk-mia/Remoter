@@ -31,7 +31,7 @@ public interface ICacheManage {
      * @param scheduledFuture 监听任务
      * @throws NettyServerException 异常信息
      */
-    void registerMasters(String connectionId,String masterClientId, Channel channel,ScheduledFuture scheduledFuture)throws NettyServerException;
+    void registerMaster(String connectionId,String masterClientId, Channel channel,ScheduledFuture scheduledFuture)throws NettyServerException;
 
     /**
      * 从在线通道分组管理器中注销受控端的实例

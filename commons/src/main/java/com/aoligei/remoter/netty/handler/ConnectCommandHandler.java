@@ -7,67 +7,47 @@ import com.aoligei.remoter.exception.NettyServerException;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
-import com.aoligei.remoter.netty.manage.GroupCacheManage;
+import com.aoligei.remoter.netty.manage.OnlineConnectionManage;
 import com.aoligei.remoter.util.BuildUtil;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author wk-mia
- * 2020-9-2
+ * 2020-9-7
  * 点对点模式服务端-连接处理器
- * 负责初始话连接信息并维护所有连接信息。
+ * 负责初始话连接信息并维护所有客户端与服务器连接信息。这里的连接信息并不代表主控端
+ * 与受控端的连接，而是客户端与服务器的连接；从逻辑上来看，主控端和受控端的连接包含
+ * 了：主控端和服务器的连接、受控端和服务器的连接。具体参见GroupCacheManage和
+ * OnlineConnectionManage的定义。
  */
-public class ConnectCommandHandler extends AbstractServerCensorC2CHandler {
+public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
 
-    /**
-     * 当前的所有连接
-     */
     @Autowired
-    private GroupCacheManage groupChannelManage;
+    private OnlineConnectionManage onlineConnectionManage;
 
     /**
      * 特定的处理器：连接处理器
      * 初始化连接并维护这个连接信息
-     * 检查项 = {REQUEST_IS_ILLEGAL,MASTER_TO_SLAVES,SLAVE_TO_MASTERS}
+     * 检查项 = {PARAMS_IS_COMPLETE}
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
      * @throws NettyServerException 异常信息
      */
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.REQUEST_IS_ILLEGAL,InspectEnum.MASTER_TO_SLAVES,InspectEnum.SLAVE_TO_MASTERS})
+    @RequestInspect(inspectItem = {InspectEnum.CONNECT_PARAMS_IS_COMPLETE})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
         /**
-         * 目前暂不支持一个受控端被多个主控端控制的模式以及一个主控端同时远程
-         * 多个受控终端。
+         * 连接时不需要设备类型，设备类型在Control处理器中指定
          */
-        if(baseRequest.getTerminalTypeEnum() == TerminalTypeEnum.SLAVE){
-            /**
-             * 注册受控端，返回信息，输出日志
-             */
-            Channel channel = channelHandlerContext.channel();
-            groupChannelManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),channel,
-                    groupChannelManage.getScheduled(channelHandlerContext,3));
+        TerminalTypeEnum terminalTypeEnumT = null;
+        onlineConnectionManage.register(baseRequest.getClientId(),channelHandlerContext.channel(),
+                onlineConnectionManage.getScheduled(channelHandlerContext,3),terminalTypeEnumT);
 
-            BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(),
-                    TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(), ResponseConstants.SLAVE_CONNECT_SUCCEEDED, null);
-            channelHandlerContext.writeAndFlush(baseResponse);
+        BaseResponse baseResponse = BuildUtil.buildResponse(null,
+                TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(), ResponseConstants.CLIENT_CONNECT_SUCCEEDED,null);
+        channelHandlerContext.writeAndFlush(baseResponse);
 
-            logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]连接服务器成功");
-        }else if(baseRequest.getTerminalTypeEnum() == TerminalTypeEnum.MASTER){
-            /**
-             * 注册主控端，返回信息，输出日志
-             */
-            Channel channel = channelHandlerContext.channel();
-            groupChannelManage.registerMasters(baseRequest.getConnectionId(),baseRequest.getClientId()
-                    ,channel, groupChannelManage.getScheduled(channelHandlerContext,3));
-
-            BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(),
-                    TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(), ResponseConstants.MASTER_CONNECT_SUCCEEDED, null);
-            channelHandlerContext.writeAndFlush(baseResponse);
-
-            logInfo(baseRequest,"Master[" + baseRequest.getClientId() + "]连接服务器成功");
-        }
+        logInfo(baseRequest,"客户端[" + baseRequest.getClientId() + "]连接服务器成功");
     }
 }

@@ -12,13 +12,12 @@ public class ResponseConstants {
      */
     public static final String CLIENT_CONNECT_SUCCEEDED = "the client connect succeeded";
     /**
-     * 主控端连接服务器成功
+     * 受控端拒绝了这次连接请求
      */
-    public static final String MASTER_CONNECT_SUCCEEDED = "the master connect succeeded";
+    public static final String SLAVE_REFUSED_CONNECTION = "the slave refused this connection";
     /**
-     * 受控端连接服务器成功
+     * 受控端接受了这次连接请求
      */
-    public static final String SLAVE_CONNECT_SUCCEEDED = "the slave connect succeeded";
-
+    public static final String SLAVE_AGREE_CONNECTION = "the slave agree this connection";
 
 }
