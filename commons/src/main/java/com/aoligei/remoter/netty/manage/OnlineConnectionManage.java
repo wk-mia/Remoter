@@ -1,9 +1,11 @@
 package com.aoligei.remoter.netty.manage;
 
-import com.aoligei.remoter.constant.ExceptionMessageConstants;
+import com.aoligei.remoter.constant.IncompleteParamConstants;
+import com.aoligei.remoter.constant.ServerExceptionConstants;
+import com.aoligei.remoter.dto.ClientInformation;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.NettyServerException;
-import com.aoligei.remoter.netty.beans.MetaCache;
+import com.aoligei.remoter.exception.IncompleteParamException;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,50 +29,50 @@ public class OnlineConnectionManage {
     /**
      * 所有的在线连接
      */
-    private CopyOnWriteArrayList<MetaCache> onlineConn = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<ClientInformation> onlineConn = new CopyOnWriteArrayList<>();
 
     /**
      * 注册客户端的连接元数据
      * @param clientId 客户端身份识别码
      * @param channel 通道
      * @param terminalTypeEnum 终端类型
-     * @throws NettyServerException
+     * @throws ServerException
      */
-    public void register(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum)throws NettyServerException{
+    public void register(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum)throws ServerException {
         if(clientId == null || "".equals(clientId)){
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
+            throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
         }
         if(channel == null || !channel.isOpen()){
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_WORK_ERROR);
+            throw new ServerException(ServerExceptionConstants.CLIENT_WORK_ERROR);
         }
         /**
          * 当客户端身份识别码能在账册中找到，添加进在线连接集合中
          */
-        MetaCache metaCache = BuildUtil.buildMetaCache(clientId, channel, scheduledFuture, terminalTypeEnum);
-        onlineConn.add(metaCache);
+        ClientInformation clientInformation = BuildUtil.buildClientInfo();
+        onlineConn.add(clientInformation);
     }
 
     /**
      * 从在线列表中销毁连接
      * @param clientId 客户端身份识别码
-     * @throws NettyServerException
+     * @throws ServerException
      */
-    public void destory(String clientId)throws NettyServerException{
+    public void destory(String clientId)throws ServerException {
         if(clientId == null || "".equals(clientId)){
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_ID_EMPTY);
+            throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
         }
         if (onlineConn.stream().filter(item -> clientId.equals(item.getClientId())).findAny().isPresent()) {
             /**
              * 从onlineConn中移除所有clientId的元数据，尽管理论上一个客户端只有会存在一个连接的元数据
              */
-            Iterator<MetaCache> iterator = onlineConn.iterator();
+            Iterator<ClientInformation> iterator = onlineConn.iterator();
             while (iterator.hasNext()){
                 if(clientId.equals(iterator.next().getClientId())){
                     iterator.remove();
                 }
             }
         }else {
-            throw new NettyServerException(ExceptionMessageConstants.CLIENT_NOT_FIND);
+            throw new ServerException(ServerExceptionConstants.CLIENT_NOT_FIND);
         }
 
     }
@@ -79,7 +81,7 @@ public class OnlineConnectionManage {
      * 获取所有与服务器保持通信的在线连接
      * @return onlineConn
      */
-    public CopyOnWriteArrayList<MetaCache> getOnlineConn(){
+    public CopyOnWriteArrayList<ClientInformation> getOnlineConn(){
         return this.onlineConn;
     }
 
@@ -87,17 +89,17 @@ public class OnlineConnectionManage {
      * 通过主控端身份识别码获取在线连接
      * @param slaveClientId 主控端身份识别码
      * @return 主控端连接
-     * @throws NettyServerException 异常信息
+     * @throws ServerException 异常信息
      */
-    public MetaCache getSlaveMetaBySlaveClientId(String slaveClientId)throws NettyServerException{
+    public ClientInformation getSlaveInfoBySlaveClientId(String slaveClientId)throws ServerException {
         if(slaveClientId == null || "".equals(slaveClientId)){
-            throw new NettyServerException(ExceptionMessageConstants.NO_SLAVER_SPECIFIED);
+            throw new IncompleteParamException(IncompleteParamConstants.NO_SLAVER_SPECIFIED);
         }
-        MetaCache slaveMeta = onlineConn.stream().filter(item -> slaveClientId.equals(item.getClientId())).findAny().get();
-        if(slaveMeta == null){
-            throw new NettyServerException(ExceptionMessageConstants.SLAVE_NOT_FIND);
+        ClientInformation slaveInfo = onlineConn.stream().filter(item -> slaveClientId.equals(item.getClientId())).findAny().get();
+        if(slaveInfo == null){
+            throw new ServerException(ServerExceptionConstants.SLAVE_NOT_FIND);
         }
-        return slaveMeta;
+        return slaveInfo;
     }
 
 

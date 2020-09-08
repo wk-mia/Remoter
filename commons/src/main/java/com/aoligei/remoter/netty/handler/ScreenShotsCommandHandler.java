@@ -1,6 +1,6 @@
 package com.aoligei.remoter.netty.handler;
 
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
@@ -27,14 +27,14 @@ public class ScreenShotsCommandHandler extends AbstractServerCensorC2CHandler {
 
     /**
      * 特定的处理器：屏幕截图处理器
-     * 检查项 = {REQUEST_IS_ILLEGAL,SLAVE_NOT_WORK}
+     * 检查项 = {ORDINARY_PARAMS,SLAVE_NOT_WORK}
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
-     * @throws NettyServerException
+     * @throws ServerException
      */
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.REQUEST_IS_ILLEGAL,InspectEnum.CONNECTION_NOT_FIND})
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
+    @RequestInspect(inspectItem = {InspectEnum.ORDINARY_PARAMS,InspectEnum.CONNECTION_NOT_FIND})
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
         /**
          * 转发消息给主控客户端
          */

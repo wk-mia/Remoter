@@ -3,7 +3,7 @@ package com.aoligei.remoter.netty.handler;
 import com.aoligei.remoter.account.ClientAccountBooks;
 import com.aoligei.remoter.constant.ExceptionMessageConstants;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
 import com.aoligei.remoter.netty.command.ICommandHandler;
@@ -44,30 +44,11 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
      * 审查处理
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest Channel输入对象
-     * @throws NettyServerException
+     * @throws ServerException
      */
     @Override
-    public void handle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
-        /**
-         * 客户端身份识别码非空检查
-         */
-        if(ClientInfoCheckUtil.isClientIdNull(baseRequest.getClientId())){
-            this.logError(baseRequest, ExceptionMessageConstants.CLIENT_ID_EMPTY);
-            this.back(baseRequest, channelHandlerContext, ExceptionMessageConstants.CLIENT_ID_EMPTY);
-        }else {
-            /**
-             * 检查当前身份识别码是否已经注册过
-             * 若已注册，处理命令
-             * 若未注册过，封装错误信息并返回给客户端
-             */
-            if (ClientInfoCheckUtil.isClientIdExist(clientAccountBooks.allClientInformation(), baseRequest.getClientId())) {
-
-                particularHandle(channelHandlerContext,baseRequest);
-            } else {
-                this.logError(baseRequest, ExceptionMessageConstants.CLIENT_NOT_FIND);
-                this.back(baseRequest, channelHandlerContext, ExceptionMessageConstants.CLIENT_NOT_FIND);
-            }
-        }
+    public void handle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
+        particularHandle(channelHandlerContext,baseRequest);
     }
 
     /**
@@ -108,7 +89,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
         /**
          * 构建返回消息体并写回客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(), TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),baseRequest.getData(),new NettyServerException(exceptionMessage));
+        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(), TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),baseRequest.getData(),new ServerException(exceptionMessage));
         channelHandlerContext.writeAndFlush(baseResponse);
     }
 
@@ -116,7 +97,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
      * 审查完后具体的处理器
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
-     * @throws NettyServerException 异常信息
+     * @throws ServerException 异常信息
      */
-    protected abstract void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException;
+    protected abstract void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException;
 }

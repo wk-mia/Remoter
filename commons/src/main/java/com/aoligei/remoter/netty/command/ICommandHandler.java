@@ -1,6 +1,6 @@
 package com.aoligei.remoter.netty.command;
 
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.ServerException;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -14,9 +14,9 @@ public interface ICommandHandler<T> {
      * 处理当前命令
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param base Channel输入对象
-     * @throws NettyServerException NettyServer异常信息
+     * @throws ServerException NettyServer异常信息
      */
-    void handle(ChannelHandlerContext channelHandlerContext,T base)throws NettyServerException;
+    void handle(ChannelHandlerContext channelHandlerContext,T base)throws ServerException;
 
     /**
      * 丢弃当前命令

@@ -1,7 +1,7 @@
 package com.aoligei.remoter.netty.command;
 
 import com.aoligei.remoter.constant.ExceptionMessageConstants;
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.netty.handler.*;
 
@@ -25,9 +25,9 @@ public class CommandFactory {
      * 获取相应命令的处理器
      * @param command 命令
      * @return 处理器
-     * @throws NettyServerException 异常信息
+     * @throws ServerException 异常信息
      */
-    public static ICommandHandler getCommandHandler(Enum<CommandEnum> command) throws NettyServerException{
+    public static ICommandHandler getCommandHandler(Enum<CommandEnum> command) throws ServerException {
         if(command == null){
             return null;
         }else {
@@ -49,9 +49,9 @@ public class CommandFactory {
      * 加载并返回一个命令处理器
      * @param command 命令
      * @return 处理器
-     * @throws NettyServerException 异常信息
+     * @throws ServerException 异常信息
      */
-    private static ICommandHandler loadCommandHandler(Enum<CommandEnum> command)throws NettyServerException{
+    private static ICommandHandler loadCommandHandler(Enum<CommandEnum> command)throws ServerException {
         ICommandHandler commandHandler = null;
         switch(CommandEnum.valueOf(command.name())){
             case CONNECT:
@@ -79,7 +79,7 @@ public class CommandFactory {
                 commandHandler = new DisConnectCommandHandler();
                 break;
             default:
-                throw new NettyServerException(ExceptionMessageConstants.UNKNOWN_COMMAND);
+                throw new ServerException(ExceptionMessageConstants.UNKNOWN_COMMAND);
         }
         if(commandHandler != null){
             handlerCache.put(command,commandHandler);

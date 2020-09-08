@@ -9,15 +9,20 @@ public enum InspectEnum {
     /**
      * 连接时参数是否合法
      */
-    CONNECT_PARAMS_IS_COMPLETE,
+    CONNECT_PARAMS,
     /**
      * 控制时参数是否合法
      */
-    CONTROL_PARAMS_IS_COMPLETE,
+    CONTROL_PARAMS,
     /**
-     * 请求不合法
+     * 常规的参数校验
+     * 包括键盘、鼠标、屏幕截图、声音、心跳包等命令
      */
-    REQUEST_IS_ILLEGAL,
+    ORDINARY_PARAMS,
+    /**
+     * 断开连接的请求校验
+     */
+    DISCONNECT_PARAMS,
     /**
      * 在线缓存中没有找到指定的连接
      */

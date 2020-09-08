@@ -15,8 +15,8 @@ import java.lang.annotation.*;
 public @interface RequestInspect {
 
     /**
-     * 默认只检查客户端身份识别码为空的情况
+     * 默认不检查任何项
      */
-    InspectEnum[] inspectItem() default {InspectEnum.REQUEST_IS_ILLEGAL};
+    InspectEnum[] inspectItem() default {};
 
 }

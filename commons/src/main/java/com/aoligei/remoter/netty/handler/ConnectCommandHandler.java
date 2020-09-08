@@ -3,7 +3,7 @@ package com.aoligei.remoter.netty.handler;
 import com.aoligei.remoter.constant.ResponseConstants;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
 import com.aoligei.remoter.netty.beans.BaseResponse;
@@ -29,14 +29,14 @@ public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
     /**
      * 特定的处理器：连接处理器
      * 初始化连接并维护这个连接信息
-     * 检查项 = {PARAMS_IS_COMPLETE}
+     * 检查项 = {CONNECT_PARAMS}
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
-     * @throws NettyServerException 异常信息
+     * @throws ServerException 异常信息
      */
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.CONNECT_PARAMS_IS_COMPLETE})
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
+    @RequestInspect(inspectItem = {InspectEnum.CONNECT_PARAMS})
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
         /**
          * 连接时不需要设备类型，设备类型在Control处理器中指定
          */

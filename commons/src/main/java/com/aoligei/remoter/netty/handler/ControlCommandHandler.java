@@ -1,10 +1,13 @@
 package com.aoligei.remoter.netty.handler;
 
-import com.aoligei.remoter.constant.ExceptionMessageConstants;
+import com.aoligei.remoter.constant.IncompleteParamConstants;
 import com.aoligei.remoter.constant.ResponseConstants;
+import com.aoligei.remoter.constant.ServerExceptionConstants;
+import com.aoligei.remoter.dto.ClientInformation;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.IncompleteParamException;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.generate.impl.UUIDIdentifier;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
@@ -41,8 +44,8 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
     private GroupCacheManage groupCacheManage;
 
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.CONTROL_PARAMS_IS_COMPLETE})
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
+    @RequestInspect(inspectItem = {InspectEnum.CONTROL_PARAMS})
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
         if(baseRequest.getTerminalTypeEnum() == TerminalTypeEnum.MASTER){
             /**
              * 检查所要控制的受控端是否能在当前连接到服务器的元数据列表中找到，
@@ -54,21 +57,21 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
 
                 if(groupCacheManage.caches.stream().filter(item ->
                         slaveClientId.equals(item.getSlaveMeta().getClientId())).findAny().isPresent()){
-                    throw new NettyServerException(ExceptionMessageConstants.SLAVE_BEING_CONTROLLED);
+                    throw new ServerException(ServerExceptionConstants.SLAVE_BEING_CONTROLLED);
                 }else {
                     /**
                      * 生成连接编码并通知Slave建立与Master的通信。并缓存该通道组，通道组中并没有Slaver。
                      */
                     String connectionId = new UUIDIdentifier().provide();
-                    MetaCache slaveCache = onlineConnectionManage.getSlaveMetaBySlaveClientId(slaveClientId);
+                    ClientInformation slaveInfo = onlineConnectionManage.getSlaveInfoBySlaveClientId(slaveClientId);
                     BaseResponse baseResponse = BuildUtil.buildResponse(connectionId,TerminalTypeEnum.SERVER,
                             baseRequest.getCommandEnum(),null);
                     groupCacheManage.registerMaster(baseRequest.getConnectionId(),baseRequest.getClientId(),
                             channelHandlerContext.channel(),groupCacheManage.getScheduled(channelHandlerContext,3));
-                    slaveCache.getChannel().writeAndFlush(baseResponse);
+                    slaveInfo.getChannel().writeAndFlush(baseResponse);
                 }
             }else {
-                throw new NettyServerException(ExceptionMessageConstants.SLAVE_NOT_FIND);
+                throw new ServerException(ServerExceptionConstants.SLAVE_NOT_FIND);
             }
 
 
@@ -79,14 +82,14 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
              */
             Boolean canConnect = (Boolean) baseRequest.getData();
             if(baseRequest.getConnectionId() == null || "".equals(baseRequest.getConnectionId())){
-                throw new NettyServerException(ExceptionMessageConstants.CONNECTION_ID_EMPTY);
+                throw new IncompleteParamException(IncompleteParamConstants.CONNECTION_ID_NULL);
             }
             /**
              * 获取到Master
              */
             ChannelCache channelCache = groupCacheManage.getChannelCacheByConnectionId(baseRequest.getConnectionId());
             if(channelCache == null){
-                throw new NettyServerException(ExceptionMessageConstants.CONNECTION_NOT_FIND);
+                throw new ServerException(ServerExceptionConstants.CONNECTION_NOT_FIND);
             }
             if(canConnect == null || !canConnect){
                 /**
@@ -110,7 +113,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                 logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已接受控制");
             }
         }else {
-            throw new NettyServerException(ExceptionMessageConstants.TERMINAL_TYPE_ERROR);
+            throw new IncompleteParamException(IncompleteParamConstants.TERMINAL_TYPE_ERROR);
         }
     }
 }

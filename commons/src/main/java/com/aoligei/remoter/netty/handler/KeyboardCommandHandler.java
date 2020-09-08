@@ -1,6 +1,6 @@
 package com.aoligei.remoter.netty.handler;
 
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.netty.aop.RequestInspect;
 import com.aoligei.remoter.netty.beans.BaseRequest;
@@ -30,11 +30,11 @@ public class KeyboardCommandHandler extends AbstractServerCensorC2CHandler {
      * 检查项 = {REQUEST_IS_ILLEGAL,MASTER_TO_SLAVES,MASTER_NOT_IN_GROUP}
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
-     * @throws NettyServerException
+     * @throws ServerException
      */
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.REQUEST_IS_ILLEGAL,InspectEnum.MASTER_TO_SLAVES,InspectEnum.MASTER_NOT_IN_GROUP})
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws NettyServerException {
+    @RequestInspect(inspectItem = {InspectEnum.ORDINARY_PARAMS,InspectEnum.MASTER_TO_SLAVES,InspectEnum.MASTER_NOT_IN_GROUP})
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
         /**
          * 转发消息给受控客户端
          */

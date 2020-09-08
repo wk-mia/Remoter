@@ -1,8 +1,7 @@
 package com.aoligei.remoter.netty.beans;
 
-import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.NettyServerException;
+import com.aoligei.remoter.exception.ServerException;
 
 /**
  * @author wk-mia
@@ -20,7 +19,7 @@ public class BaseResponse extends BaseDataBody {
     /**
      * 服务器处理时发生的异常
      */
-    private NettyServerException nettyServerException;
+    private ServerException serverException;
 
     /**
      * 重写BaseDataBody的toString()方法,将
@@ -32,18 +31,18 @@ public class BaseResponse extends BaseDataBody {
         return "BaseResponse{" +
                 "connectionId='" + getConnectionId() + '\'' +
                 "terminalTypeEnum=" + terminalTypeEnum +
-                ", nettyServerException=" + nettyServerException +
+                ", serverException=" + serverException +
                 ", commandEnum=" + getCommandEnum() +
                 ", data=" + getData() +
                 '}';
     }
 
-    public NettyServerException getNettyServerException() {
-        return nettyServerException;
+    public ServerException getServerException() {
+        return serverException;
     }
 
-    public void setNettyServerException(NettyServerException nettyServerException) {
-        this.nettyServerException = nettyServerException;
+    public void setServerException(ServerException serverException) {
+        this.serverException = serverException;
     }
 
     public Enum<TerminalTypeEnum> getTerminalTypeEnum() {
