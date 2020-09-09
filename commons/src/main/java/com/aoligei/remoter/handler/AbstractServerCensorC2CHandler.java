@@ -32,7 +32,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
     }
 
     /**
-     * 审查处理
+     * 分发至相应的处理器进行处理
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest Channel输入对象
      * @throws ServerException

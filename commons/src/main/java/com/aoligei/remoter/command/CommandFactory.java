@@ -78,6 +78,9 @@ public class CommandFactory {
             case DISCONNECT:
                 commandHandler = new DisConnectCommandHandler();
                 break;
+            case REGISTER:
+                commandHandler = new RegisterCommandHandler();
+                break;
             default:
                 throw new ServerException(ExceptionMessageConstants.UNKNOWN_COMMAND);
         }

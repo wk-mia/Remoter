@@ -10,6 +10,10 @@ package com.aoligei.remoter.enums;
  */
 public enum CommandEnum {
     /**
+     * 注册到服务器命令
+     */
+    REGISTER,
+    /**
      * 连接服务器命令
      */
     CONNECT,

@@ -1,5 +1,6 @@
 package com.aoligei.remoter.aop;
 
+import com.aoligei.remoter.beans.ClientMeta;
 import com.aoligei.remoter.constant.IncompleteParamConstants;
 import com.aoligei.remoter.constant.ServerExceptionConstants;
 import com.aoligei.remoter.enums.InspectEnum;
@@ -89,6 +90,9 @@ public class RequestInspectAspect {
     private void inspect(InspectEnum[] inspectEnums, BaseRequest baseRequest)throws ServerException {
         for (int i = 0; i < inspectEnums.length; i++) {
             switch (inspectEnums[i]){
+                case REGISTER_PARAM:
+                    registerParamsIsComplete(baseRequest);
+                    break;
                 case CONNECT_PARAMS:
                     connectParamsIsComplete(baseRequest);
                     break;
@@ -115,6 +119,35 @@ public class RequestInspectAspect {
                 default:
                     break;
             }
+        }
+    }
+
+    /**
+     * 检查注册时请求参数是否齐全
+     * @param baseRequest 原始请求
+     * @throws IncompleteParamException 异常信息
+     */
+    private void registerParamsIsComplete(BaseRequest baseRequest)throws IncompleteParamException{
+        try{
+            /**
+             * 获取Data中的客户端信息
+             */
+            ClientMeta clientMeta = (ClientMeta) baseRequest.getData();
+            if(clientMeta == null){
+                throw new IncompleteParamException(IncompleteParamConstants.DATA_NULL);
+            }else {
+                if(clientMeta.getClientName() == null || "".equals(clientMeta.getClientName())){
+                    throw new IncompleteParamException(IncompleteParamConstants.CLIENT_NAME_NOT_IN_DATA);
+                }
+                if(clientMeta.getClientIp() == null || "".equals(clientMeta.getClientIp())){
+                    throw new IncompleteParamException(IncompleteParamConstants.CLIENT_IP_NOT_IN_DATA);
+                }
+                if(clientMeta.getRejectConnection() == null){
+                    throw new IncompleteParamException(IncompleteParamConstants.REJECT_CONNECTION_NOT_IN_DATA);
+                }
+            }
+        }catch (Exception e){
+            throw new IncompleteParamException(e.getMessage());
         }
     }
 

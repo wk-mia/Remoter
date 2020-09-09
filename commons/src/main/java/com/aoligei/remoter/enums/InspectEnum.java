@@ -7,6 +7,10 @@ package com.aoligei.remoter.enums;
  */
 public enum InspectEnum {
     /**
+     * 注册时参数是否合法
+     */
+    REGISTER_PARAM,
+    /**
      * 连接时参数是否合法
      */
     CONNECT_PARAMS,
