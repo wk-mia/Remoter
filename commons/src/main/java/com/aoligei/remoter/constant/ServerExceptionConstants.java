@@ -8,6 +8,14 @@ package com.aoligei.remoter.constant;
  */
 public class ServerExceptionConstants {
     /**
+     * 客户端已经注册过
+     */
+    public static final String CLIENT_ALREADY_REGISTER = "the client has already registered";
+    /**
+     * 客户端未注册
+     */
+    public static final String CLIENT_NOT_REGISTER = "the client has not registered";
+    /**
      * 连接未找到
      */
     public static final String CONNECTION_NOT_FIND = "the specified connection was not found";

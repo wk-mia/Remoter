@@ -8,6 +8,18 @@ package com.aoligei.remoter.constant;
  */
 public class IncompleteParamConstants {
     /**
+     * 数据区中没有指定客户端名称
+     */
+    public static final String CLIENT_NAME_NOT_IN_DATA = "the client name is not included in the data area";
+    /**
+     * 数据区中没有指定客户端IP地址
+     */
+    public static final String CLIENT_IP_NOT_IN_DATA = "the client ip address is not included in the data area";
+    /**
+     * 数据区中没有指定客户端是否已拒绝控制请求
+     */
+    public static final String REJECT_CONNECTION_NOT_IN_DATA = "the reject connection status is not included in the data area";
+    /**
      * 客户端发出的请求体为空
      */
     public static final String REQUEST_NULL = "the request cannot be empty";

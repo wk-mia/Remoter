@@ -1,6 +1,6 @@
 package com.aoligei.remoter.netty.master;
 
-import com.aoligei.remoter.netty.beans.BaseResponse;
+import com.aoligei.remoter.beans.BaseResponse;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

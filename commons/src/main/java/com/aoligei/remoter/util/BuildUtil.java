@@ -1,10 +1,9 @@
 package com.aoligei.remoter.util;
 
-import com.aoligei.remoter.dto.ClientInformation;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ServerException;
-import com.aoligei.remoter.netty.beans.*;
+import com.aoligei.remoter.beans.*;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 
@@ -71,22 +70,5 @@ public class BuildUtil {
      */
     public static MetaCache buildMetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum){
         return new MetaCache(clientId,channel,scheduledFuture,terminalTypeEnum);
-    }
-
-    /**
-     * 构建并返回一个ClientInformation
-     * @param clientSystemType 客户端类型
-     * @param clientName 客户端名称
-     * @param clientId 客户端身份识别码
-     * @param clientIp 客户端IP
-     * @param clientPort 客户端远程端口
-     * @param isRejectAllConnections 此客户端是否已拒绝所有连接请求
-     * @param channel 连接通道
-     * @param scheduledFuture 监听任务
-     * @param terminalTypeEnum 终端类型
-     * @return
-     */
-    public static ClientInformation buildClientInfo(int clientSystemType, String clientName, String clientId, String clientIp, Integer clientPort, Boolean isRejectAllConnections, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum){
-        return new ClientInformation(clientSystemType,clientName,clientId,clientIp,clientPort,isRejectAllConnections,channel,scheduledFuture,terminalTypeEnum);
     }
 }

@@ -1,9 +1,9 @@
 package com.aoligei.remoter.netty.server;
 
-import com.aoligei.remoter.netty.beans.BaseRequest;
-import com.aoligei.remoter.netty.beans.ChannelCache;
-import com.aoligei.remoter.netty.command.CommandFactory;
-import com.aoligei.remoter.netty.command.ICommandHandler;
+import com.aoligei.remoter.beans.BaseRequest;
+import com.aoligei.remoter.beans.ChannelCache;
+import com.aoligei.remoter.command.CommandFactory;
+import com.aoligei.remoter.command.ICommandHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
