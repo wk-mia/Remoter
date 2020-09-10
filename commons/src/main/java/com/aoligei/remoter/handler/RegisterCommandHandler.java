@@ -41,8 +41,8 @@ public class RegisterCommandHandler extends AbstractServerCensorC2CHandler {
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
         ClientMeta clientMeta = (ClientMeta) baseRequest.getData();
         clientMetaManage.register(clientMeta);
-        BaseResponse baseResponse = BuildUtil.buildResponse(null, TerminalTypeEnum.SERVER,
-                CommandEnum.REGISTER,clientMeta.getClientId());
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(null, TerminalTypeEnum.SERVER,
+                CommandEnum.REGISTER,clientMeta.getClientId(),"the server accepted the registration request");
         channelHandlerContext.writeAndFlush(baseResponse);
     }
 }

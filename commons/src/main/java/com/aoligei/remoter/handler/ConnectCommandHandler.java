@@ -44,8 +44,8 @@ public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
         onlineConnectionManage.add(baseRequest.getClientId(),channelHandlerContext.channel(),
                 onlineConnectionManage.getScheduled(channelHandlerContext,3),terminalTypeEnum);
 
-        BaseResponse baseResponse = BuildUtil.buildResponse(null,
-                TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(), ResponseConstants.CLIENT_CONNECT_SUCCEEDED,null);
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(null, TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),
+                null,ResponseConstants.CLIENT_CONNECT_SUCCEEDED);
         channelHandlerContext.writeAndFlush(baseResponse);
 
         logInfo(baseRequest,"客户端[" + baseRequest.getClientId() + "]连接服务器成功");

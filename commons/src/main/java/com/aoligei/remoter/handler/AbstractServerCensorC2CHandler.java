@@ -9,7 +9,6 @@ import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.MessageFormat;
 
@@ -80,7 +79,8 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
         /**
          * 构建返回消息体并写回客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(), TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),baseRequest.getData(),new ServerException(exceptionMessage));
+        BaseResponse baseResponse = BuildUtil.buildResponseFAIL(baseRequest.getConnectionId(), TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),
+                baseRequest.getData(),exceptionMessage);
         channelHandlerContext.writeAndFlush(baseResponse);
     }
 

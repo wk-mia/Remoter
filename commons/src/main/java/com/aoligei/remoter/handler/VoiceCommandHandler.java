@@ -38,7 +38,7 @@ public class VoiceCommandHandler extends AbstractServerCensorC2CHandler {
         /**
          * 转发消息给主控客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),null, CommandEnum.VOICE_OUTPUT,baseRequest.getData(),null);
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getClientId(),null, CommandEnum.VOICE_OUTPUT,baseRequest.getData(),null);
         groupCacheManage.notifyAllMaster(baseRequest.getClientId(),baseResponse);
     }
 }

@@ -38,7 +38,7 @@ public class ScreenShotsCommandHandler extends AbstractServerCensorC2CHandler {
         /**
          * 转发消息给主控客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getClientId(),null, CommandEnum.SCREEN_SHOTS,baseRequest.getData(),null);
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getClientId(),null, CommandEnum.SCREEN_SHOTS,baseRequest.getData(),null);
         groupCacheManage.notifyAllMaster(baseRequest.getClientId(),baseResponse);
     }
 }

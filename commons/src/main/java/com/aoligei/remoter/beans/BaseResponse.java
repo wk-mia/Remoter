@@ -1,5 +1,6 @@
 package com.aoligei.remoter.beans;
 
+import com.aoligei.remoter.enums.StatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ServerException;
 
@@ -15,11 +16,14 @@ public class BaseResponse extends BaseDataBody {
      * 终端类型，固定值为SERVER
      */
     private Enum<TerminalTypeEnum> terminalTypeEnum = TerminalTypeEnum.valueOf("SERVER");
-
     /**
-     * 服务器处理时发生的异常
+     * 服务器响应的状态
      */
-    private ServerException serverException;
+    private StatusEnum status;
+    /**
+     * 服务器给出的消息
+     */
+    private String message;
 
     /**
      * 重写BaseDataBody的toString()方法,将
@@ -31,18 +35,27 @@ public class BaseResponse extends BaseDataBody {
         return "BaseResponse{" +
                 "connectionId='" + getConnectionId() + '\'' +
                 "terminalTypeEnum=" + terminalTypeEnum +
-                ", serverException=" + serverException +
+                ", status=" + status +
+                ", message=" + message +
                 ", commandEnum=" + getCommandEnum() +
                 ", data=" + getData() +
                 '}';
     }
 
-    public ServerException getServerException() {
-        return serverException;
+    public StatusEnum getStatus() {
+        return status;
     }
 
-    public void setServerException(ServerException serverException) {
-        this.serverException = serverException;
+    public void setStatus(StatusEnum status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Enum<TerminalTypeEnum> getTerminalTypeEnum() {

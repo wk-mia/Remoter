@@ -38,7 +38,7 @@ public class KeyboardCommandHandler extends AbstractServerCensorC2CHandler {
         /**
          * 转发消息给受控客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponse(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.KEYBOARD_INPUT,baseRequest.getData(),null);
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.KEYBOARD_INPUT,baseRequest.getData(),null);
         groupCacheManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }
 }
