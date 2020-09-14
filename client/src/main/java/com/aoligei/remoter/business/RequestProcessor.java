@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
  * 负责组装向服务器发起请求的参数
  */
 @Component
-public class ConnectProcessor {
+public class RequestProcessor {
 
     @Autowired
     private ClientManage clientManage;
 
     /**
-     * 组装向服务器发起连接请求的参数
+     * 连接请求
      * @return 请求主体
      * @throws ClientException
      */
@@ -44,7 +44,7 @@ public class ConnectProcessor {
     }
 
     /**
-     * 组装向服务器发起注册请求的参数
+     * 注册请求
      * @return 请求主体
      * @throws ClientException
      */
@@ -67,7 +67,7 @@ public class ConnectProcessor {
     }
 
     /**
-     * 组装向服务器发起控制请求的参数，该请求为MASTER发起。
+     * 控制请求，该请求为MASTER发起。
      * @param slaveClientId 受控端身份识别码
      * @return 请求主体
      * @throws ClientException
@@ -86,4 +86,5 @@ public class ConnectProcessor {
         }};
         return baseRequest;
     }
+
 }
