@@ -16,7 +16,7 @@ public interface ICommandHandler<T> {
      * @param base Channel输入对象
      * @throws ServerException NettyServer异常信息
      */
-    void handle(ChannelHandlerContext channelHandlerContext,T base)throws ServerException;
+    void handle(ChannelHandlerContext channelHandlerContext,T base)throws Exception;
 
     /**
      * 丢弃当前命令

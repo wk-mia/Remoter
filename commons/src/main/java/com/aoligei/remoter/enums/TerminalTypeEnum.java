@@ -7,16 +7,24 @@ package com.aoligei.remoter.enums;
  */
 public enum TerminalTypeEnum {
     /**
-     * 主控端
+     * 主控端-服务器
      */
     MASTER,
     /**
-     * 受控端
+     * 受控端-服务器
      */
     SLAVE,
     /**
-     * 服务器
+     * 服务器-受控端/主控端
      */
-    SERVER;
+    SERVER,
+    /**
+     * 服务器-主控端
+     */
+    SERVER_2_MASTER,
+    /**
+     * 服务器-受控端
+     */
+    SERVER_2_SLAVE;
     private TerminalTypeEnum(){};
 }

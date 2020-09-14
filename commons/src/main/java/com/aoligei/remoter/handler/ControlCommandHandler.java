@@ -64,7 +64,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                      */
                     String connectionId = IdentifyFactory.createConnectionId();
                     MetaCache slaveMeta = onlineConnectionManage.getSlaveInfoBySlaveClientId(slaveClientId);
-                    BaseResponse baseResponse = BuildUtil.buildResponseOK(connectionId,TerminalTypeEnum.SERVER,
+                    BaseResponse baseResponse = BuildUtil.buildResponseOK(connectionId,TerminalTypeEnum.SERVER_2_SLAVE,
                             baseRequest.getCommandEnum(),null,null);
                     groupCacheManage.registerMaster(baseRequest.getConnectionId(),baseRequest.getClientId(),
                             channelHandlerContext.channel(),groupCacheManage.getScheduled(channelHandlerContext,3));
@@ -95,7 +95,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                 /**
                  * Slave拒绝Master发起的连接，将该连接组缓存移除，并通知Master该连接已被Slave拒绝。
                  */
-                BaseResponse baseResponse = BuildUtil.buildResponse(null,TerminalTypeEnum.SERVER,
+                BaseResponse baseResponse = BuildUtil.buildResponse(null,TerminalTypeEnum.SERVER_2_MASTER,
                         baseRequest.getCommandEnum(), null, StatusEnum.ERROR,ResponseConstants.SLAVE_REFUSED_CONNECTION);
                 channelCache.getMasterMeta().getChannel().writeAndFlush(baseResponse);
                 groupCacheManage.caches.remove(channelCache);
@@ -105,7 +105,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                  * Slave同意Master发起的连接，将Slave的连接注册到连接组中，返回同意连接的消息给Master
                  * 返回消息中带connectionId，用于标识这个连接组。
                  */
-                BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER,
+                BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER_2_MASTER,
                         baseRequest.getCommandEnum(),null,ResponseConstants.SLAVE_AGREE_CONNECTION);
                 channelCache.getMasterMeta().getChannel().writeAndFlush(baseResponse);
                 groupCacheManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),

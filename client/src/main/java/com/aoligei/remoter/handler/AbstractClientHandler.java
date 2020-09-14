@@ -2,6 +2,7 @@ package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.ICommandHandler;
+import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.exception.ServerException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -30,10 +31,10 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
      * 分发至相应的处理器进行处理
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse Channel输入对象
-     * @throws ServerException
+     * @throws ClientException
      */
     @Override
-    public void handle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ServerException {
+    public void handle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
         particularHandle(channelHandlerContext,baseResponse);
     }
 
@@ -69,7 +70,7 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
      * 审查完后具体的处理器
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse 原始消息
-     * @throws ServerException 异常信息
+     * @throws ClientException 异常信息
      */
-    protected abstract void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ServerException;
+    protected abstract void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException;
 }

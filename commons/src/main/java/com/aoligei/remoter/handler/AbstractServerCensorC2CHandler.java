@@ -69,20 +69,6 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
         log.error(MessageFormat.format("{0};message:{1}",baseRequest,error));
     }
 
-    /**
-     * 封装原始消息和异常信息并写回给客户端通道
-     * @param baseRequest 原始消息
-     * @param channelHandlerContext 通道上下文
-     * @param exceptionMessage 异常信息
-     */
-    protected void back(BaseRequest baseRequest,ChannelHandlerContext channelHandlerContext,String exceptionMessage){
-        /**
-         * 构建返回消息体并写回客户端
-         */
-        BaseResponse baseResponse = BuildUtil.buildResponseFAIL(baseRequest.getConnectionId(), TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),
-                baseRequest.getData(),exceptionMessage);
-        channelHandlerContext.writeAndFlush(baseResponse);
-    }
 
     /**
      * 审查完后具体的处理器
