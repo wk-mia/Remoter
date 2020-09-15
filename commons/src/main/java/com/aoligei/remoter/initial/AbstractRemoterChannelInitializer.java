@@ -1,5 +1,6 @@
 package com.aoligei.remoter.initial;
 
+import com.aoligei.remoter.convert.RemoterDecoder;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -14,22 +15,12 @@ import java.lang.reflect.Type;
  * 通道初始化器
  */
 @Component
-public class RemoterChannelInitializer<T> extends ChannelInitializer<SocketChannel> {
+public abstract class AbstractRemoterChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     /**
      * 处理器
      */
     private ChannelHandler channelHandler;
-
-    /**
-     * 初始化
-     */
-    {
-        /**
-         * 跟据对应的类型初始化
-         */
-    }
-
 
     /**
      * 通道初始化
@@ -38,8 +29,14 @@ public class RemoterChannelInitializer<T> extends ChannelInitializer<SocketChann
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         socketChannel.pipeline()
-                .addLast(null)//编码器
-                .addLast(null)//解码器
-                .addLast(channelHandler);
+                .addLast(setDecoder())//编码器
+                .addLast(setEncoder())//解码器
+                .addLast(setHandler());
     }
+
+    protected abstract ChannelHandler setHandler();
+
+    protected abstract RemoterDecoder setDecoder();
+
+    protected abstract ChannelHandler setEncoder();
 }

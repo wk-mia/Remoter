@@ -1,10 +1,8 @@
 package com.aoligei.remoter.netty;
 
 import com.aoligei.remoter.business.RequestProcessor;
-import com.aoligei.remoter.initial.RemoterChannelInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -30,7 +28,7 @@ public class NettyClient {
      * 处理器初始化器
      */
     @Autowired
-    private RemoterChannelInitializer<NettyClientHandler> channelInitializer;
+    private ClientChannelInitializer channelInitializer;
     /**
      * IO线程池
      */

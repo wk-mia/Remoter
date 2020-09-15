@@ -7,7 +7,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import org.springframework.stereotype.Component;
 
+@Component
 @ChannelHandler.Sharable
 public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse> {
 
