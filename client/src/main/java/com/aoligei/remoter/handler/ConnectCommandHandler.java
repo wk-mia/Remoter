@@ -22,6 +22,9 @@ public class ConnectCommandHandler extends AbstractClientHandler {
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
         if(baseResponse.getStatus() == StatusEnum.OK){
+            /**
+             *
+             */
             logInfo(baseResponse,baseResponse.getMessage());
         }else {
             logError(baseResponse,baseResponse.getMessage());

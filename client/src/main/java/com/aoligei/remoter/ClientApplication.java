@@ -1,5 +1,6 @@
 package com.aoligei.remoter;
 
+import com.aoligei.remoter.ui.IHomePage;
 import com.aoligei.remoter.ui.form.MainForm;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +13,8 @@ public class ClientApplication {
         /**
          * 启动一个客户端的实例
          */
-        new MainForm("客户端");
+        IHomePage homePage = new MainForm("主控端");
+        homePage.start();
     }
 
 }

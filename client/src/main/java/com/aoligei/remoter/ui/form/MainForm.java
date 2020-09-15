@@ -1,18 +1,20 @@
 package com.aoligei.remoter.ui.form;
 
+import com.aoligei.remoter.ui.IHomePage;
 import com.aoligei.remoter.ui.panel.MainConnectPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author wk-mia
  * 2020-8-28
  * 主窗体的定义
  */
-public class MainForm extends JFrame implements WindowListener {
+public class MainForm extends JFrame implements IHomePage,WindowListener {
 
     private static Logger log = LoggerFactory.getLogger(MainForm.class);
 
@@ -22,9 +24,16 @@ public class MainForm extends JFrame implements WindowListener {
      */
     public MainForm(String title){
         this.setTitle(title);
-        this.setSize(300,200);
+        initStyle();
+    }
+
+    /**
+     * 初始化窗体样式
+     */
+    public void initStyle(){
+        this.setSize(600,400);
         this.setLocationRelativeTo(getOwner());
-        this.setVisible(true);
+        this.setResizable(false);
         this.addWindowListener(this);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.getContentPane().add(new MainConnectPanel());
@@ -105,6 +114,37 @@ public class MainForm extends JFrame implements WindowListener {
      */
     @Override
     public void windowDeactivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void start() {
+        try {
+            /**
+             * 展示窗体
+             */
+            SwingUtilities.invokeAndWait(() -> {
+                setVisible(true);
+            });
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void register() {
+
+    }
+
+    @Override
+    public void connect() {
+
+    }
+
+    @Override
+    public void control() {
 
     }
 }

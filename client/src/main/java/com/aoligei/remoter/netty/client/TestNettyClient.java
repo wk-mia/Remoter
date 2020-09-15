@@ -7,19 +7,18 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
 
 import java.net.InetSocketAddress;
 
-public class NettyClient {
+public class TestNettyClient {
 
     private final String host;
 
     private final int port;
 
-    public NettyClient(String host, int port) {
+    public TestNettyClient(String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -52,6 +51,6 @@ public class NettyClient {
     }
 
     public static void main(String[] args)throws Exception{
-        new NettyClient("127.0.0.1",60001).run();
+        new TestNettyClient("127.0.0.1",60001).run();
     }
 }
