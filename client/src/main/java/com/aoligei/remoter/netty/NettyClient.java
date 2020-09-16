@@ -1,5 +1,6 @@
 package com.aoligei.remoter.netty;
 
+import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.business.RequestProcessor;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -75,5 +76,12 @@ public class NettyClient {
         }
     }
 
+    /**
+     * 向服务器发送请求
+     * @param baseRequest 请求体
+     */
+    public void sendCommand(BaseRequest baseRequest){
+        //channelInitializer.getChannelHandler().
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.aoligei.remoter.initial;
 
 import com.aoligei.remoter.convert.RemoterDecoder;
+import com.aoligei.remoter.convert.RemoterEncoder;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -29,8 +30,8 @@ public abstract class AbstractRemoterChannelInitializer extends ChannelInitializ
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         socketChannel.pipeline()
-                .addLast(setDecoder())//编码器
-                .addLast(setEncoder())//解码器
+                .addLast(setDecoder())
+                .addLast(setEncoder())
                 .addLast(setHandler());
     }
 
@@ -38,5 +39,5 @@ public abstract class AbstractRemoterChannelInitializer extends ChannelInitializ
 
     protected abstract RemoterDecoder setDecoder();
 
-    protected abstract ChannelHandler setEncoder();
+    protected abstract RemoterEncoder setEncoder();
 }

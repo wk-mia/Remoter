@@ -27,7 +27,7 @@ public class RemoterDecoder extends ByteToMessageDecoder {
      */
     private static final int MAX_FRAME_SIZE = 1024*1024;
     /**
-     * 限定处理的对象类型只能为BaseDataBody及其子类
+     * 解码器输入的对象类型
      */
     private Class definedClass;
     /**

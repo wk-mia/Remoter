@@ -1,7 +1,9 @@
 package com.aoligei.remoter.netty;
 
+import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.convert.RemoterDecoder;
+import com.aoligei.remoter.convert.RemoterEncoder;
 import com.aoligei.remoter.initial.AbstractRemoterChannelInitializer;
 import io.netty.channel.ChannelHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,11 @@ public class ClientChannelInitializer extends AbstractRemoterChannelInitializer 
     }
 
     @Override
-    protected ChannelHandler setEncoder() {
-        return null;
+    protected RemoterEncoder setEncoder() {
+        return new RemoterEncoder(BaseRequest.class);
+    }
+
+    public NettyClientHandler getChannelHandler(){
+        return channelHandler;
     }
 }
