@@ -1,9 +1,13 @@
 package com.aoligei.remoter.ui.form;
 
+import com.aoligei.remoter.netty.NettyClient;
 import com.aoligei.remoter.ui.IHomePage;
 import com.aoligei.remoter.ui.panel.MainConnectPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -14,16 +18,18 @@ import java.lang.reflect.InvocationTargetException;
  * 2020-8-28
  * 主窗体的定义
  */
+@Component
 public class MainForm extends JFrame implements IHomePage,WindowListener {
 
     private static Logger log = LoggerFactory.getLogger(MainForm.class);
 
+    @Autowired
+    private NettyClient nettyClient;
+
     /**
      * 窗体定义
-     * @param title 窗体名称
      */
-    public MainForm(String title){
-        this.setTitle(title);
+    public MainForm(){
         initStyle();
     }
 
@@ -31,6 +37,7 @@ public class MainForm extends JFrame implements IHomePage,WindowListener {
      * 初始化窗体样式
      */
     public void initStyle(){
+        this.setTitle("Remoter");
         this.setSize(600,400);
         this.setLocationRelativeTo(getOwner());
         this.setResizable(false);
@@ -117,6 +124,9 @@ public class MainForm extends JFrame implements IHomePage,WindowListener {
 
     }
 
+    /**
+     * 启动窗体
+     */
     @Override
     public void start() {
         try {
@@ -133,16 +143,29 @@ public class MainForm extends JFrame implements IHomePage,WindowListener {
         }
     }
 
+    /**
+     * 向服务器注册
+     */
     @Override
     public void register() {
 
     }
 
+    /**
+     * 连接服务器
+     */
     @Override
     public void connect() {
-
+        try{
+            nettyClient.connect();
+        }catch (Exception e){
+            DialogForm.errorDialog("连接服务器失败",e.getMessage());
+        }
     }
 
+    /**
+     * 向服务器发起控制请求
+     */
     @Override
     public void control() {
 

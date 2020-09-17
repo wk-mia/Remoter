@@ -3,7 +3,6 @@ package com.aoligei.remoter.netty;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.exception.SponsorException;
-import com.aoligei.remoter.handler.SponsorCommandHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -50,7 +49,7 @@ public class NettyClient {
      */
     {
         group = new NioEventLoopGroup();
-        host = "";
+        host = "127.0.0.1";
         port = 60001;
     }
 

@@ -9,6 +9,7 @@ import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.manage.ClientManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * @author wk-mia
@@ -27,7 +28,7 @@ public class RequestProcessor {
      * @throws ClientException
      */
     public BaseRequest buildConnectRequest() throws ClientException {
-        if(clientManage.getClientInfo().getClientId() == null || "".equals(clientManage.getClientInfo().getClientId())){
+        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientId())){
             throw new ClientException(ClientConstants.NEED_REGISTER);
         }
         /**

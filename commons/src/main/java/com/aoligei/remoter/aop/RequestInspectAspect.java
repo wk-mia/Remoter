@@ -38,7 +38,7 @@ public class RequestInspectAspect {
     /**
      * 指定切入点
      */
-    @Pointcut("@annotation(RequestInspect)")
+    @Pointcut("@annotation(com.aoligei.remoter.aop.RequestInspect)")
     public void pointcut(){
     }
 
