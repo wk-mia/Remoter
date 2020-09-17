@@ -74,37 +74,12 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
         log.error(MessageFormat.format("{0};error:{1}",baseResponse,error));
     }
 
-    /**
-     * Info级别日志，发起任务处理器使用
-     * @param object 对象
-     * @param info 输出信息
-     */
-    protected void logInfo(Object object, String info){
-        log.info(MessageFormat.format("{0};message:{1}",object.getClass().getCanonicalName(),info));
-    }
-
-    /**
-     * Error级别日志，发起任务处理器使用
-     * @param object 对象
-     * @param error 异常信息
-     */
-    protected void logError(Object object,String error){
-        log.error(MessageFormat.format("{0};error:{1}",object.getClass().getCanonicalName(),error));
-    }
 
     protected void setChannelHandlerContext(ChannelHandlerContext chc){
         this.chc = chc;
     }
 
-    protected void sendRequest(BaseRequest request) throws SponsorException {
-        if (chc != null && chc.channel() != null && chc.channel().isOpen()){
-            logInfo(request, SponsorConstants.PREPARE_SEND);
-            chc.writeAndFlush(request);
-        }else{
-            logError(request, SponsorConstants.LOST_CONNECTION);
-            throw new SponsorException(SponsorConstants.LOST_CONNECTION);
-        }
-    }
+    protected ChannelHandlerContext getChannelHandlerContext(){return chc;}
 
     /**
      * 审查完后具体的处理器

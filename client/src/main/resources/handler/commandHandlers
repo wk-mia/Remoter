@@ -1,0 +1,4 @@
+REGISTER::handler::com.aoligei.remoter.handler.RegisterCommandHandler
+CONNECT::handler::com.aoligei.remoter.handler.ConnectCommandHandler
+REGISTER::sponsor::com.aoligei.remoter.handler.SponsorCommandHandler
+CONNECT::sponsor::com.aoligei.remoter.handler.SponsorCommandHandler

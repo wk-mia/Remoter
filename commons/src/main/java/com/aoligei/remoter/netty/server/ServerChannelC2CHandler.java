@@ -43,7 +43,7 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
         /**
          * 分发命令并进行处理
          */
-        ICommandHandler commandHandler = CommandFactory.getCommandHandler(baseRequest.getCommandEnum());
+        ICommandHandler commandHandler = CommandFactory.getCommandHandler(baseRequest.getCommandEnum(),"handler");
         commandHandler.handle(channelHandlerContext,baseRequest);
     }
 

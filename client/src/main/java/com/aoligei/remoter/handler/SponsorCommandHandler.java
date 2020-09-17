@@ -1,7 +1,6 @@
 package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseRequest;
-import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.TaskManage;
 import org.springframework.stereotype.Component;
@@ -63,7 +62,7 @@ public class SponsorCommandHandler extends AbstractSponsorCommandHandler {
      * @throws SponsorException 发起命令异常
      */
     @Override
-    protected void sponsor(BaseRequest baseRequest) throws SponsorException {
+    public void sponsor(BaseRequest baseRequest) throws SponsorException {
         queue.offer(baseRequest);
     }
 }

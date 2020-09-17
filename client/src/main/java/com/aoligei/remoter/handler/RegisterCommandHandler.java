@@ -3,7 +3,6 @@ package com.aoligei.remoter.handler;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.enums.StatusEnum;
 import com.aoligei.remoter.exception.ClientException;
-import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.manage.ClientManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
