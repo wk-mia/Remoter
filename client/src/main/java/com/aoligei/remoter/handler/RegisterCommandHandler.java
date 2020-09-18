@@ -1,7 +1,7 @@
 package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.enums.StatusEnum;
+import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.manage.ClientManage;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,7 +26,7 @@ public class RegisterCommandHandler extends AbstractClientHandler {
      */
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
-        if(baseResponse.getStatus() == StatusEnum.OK){
+        if(baseResponse.getStatus() == ResponseStatusEnum.OK){
             /**
              * 注册成功，服务器会将客户端身份识别码放入Data域中。
              */

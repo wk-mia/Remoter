@@ -1,12 +1,8 @@
 package com.aoligei.remoter.handler;
 
-import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.ICommandHandler;
-import com.aoligei.remoter.constant.SponsorConstants;
 import com.aoligei.remoter.exception.ClientException;
-import com.aoligei.remoter.exception.ServerException;
-import com.aoligei.remoter.exception.SponsorException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

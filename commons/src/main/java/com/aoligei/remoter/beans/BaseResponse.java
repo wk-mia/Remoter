@@ -1,8 +1,7 @@
 package com.aoligei.remoter.beans;
 
-import com.aoligei.remoter.enums.StatusEnum;
+import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.ServerException;
 
 /**
  * @author wk-mia
@@ -19,7 +18,7 @@ public class BaseResponse extends BaseDataBody {
     /**
      * 服务器响应的状态
      */
-    private StatusEnum status;
+    private ResponseStatusEnum status;
     /**
      * 服务器给出的消息
      */
@@ -42,11 +41,11 @@ public class BaseResponse extends BaseDataBody {
                 '}';
     }
 
-    public StatusEnum getStatus() {
+    public ResponseStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(StatusEnum status) {
+    public void setStatus(ResponseStatusEnum status) {
         this.status = status;
     }
 

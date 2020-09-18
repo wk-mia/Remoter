@@ -3,7 +3,7 @@ package com.aoligei.remoter.handler;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.enums.CommandEnum;
-import com.aoligei.remoter.enums.StatusEnum;
+import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.manage.ClientManage;
@@ -29,7 +29,7 @@ public class ControlCommandHandler extends AbstractClientHandler {
      */
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
-        if(baseResponse.getStatus() == StatusEnum.OK){
+        if(baseResponse.getStatus() == ResponseStatusEnum.OK){
             if(baseResponse.getTerminalTypeEnum() == TerminalTypeEnum.SERVER_2_SLAVE){
                 /**
                  * 受控端的业务：
@@ -66,7 +66,7 @@ public class ControlCommandHandler extends AbstractClientHandler {
                 clientManage.setConnectionId(baseResponse.getConnectionId());
                 logInfo(baseResponse,baseResponse.getMessage());
             }
-        }else if(baseResponse.getStatus() == StatusEnum.ERROR) {
+        }else if(baseResponse.getStatus() == ResponseStatusEnum.ERROR) {
             logError(baseResponse,baseResponse.getMessage());
         }else {
         }

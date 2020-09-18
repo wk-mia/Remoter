@@ -2,7 +2,6 @@ package com.aoligei.remoter.business.aop;
 
 import com.aoligei.remoter.constant.SponsorConstants;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
-import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.ClientManage;
 import org.aspectj.lang.JoinPoint;
@@ -13,7 +12,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 import java.lang.reflect.Method;
 
 /**

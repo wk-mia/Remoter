@@ -1,0 +1,9 @@
+REGISTER::handler::com.aoligei.remoter.handler.RegisterCommandHandler
+CONNECT::handler::com.aoligei.remoter.handler.ConnectCommandHandler
+CONTROL::handler::com.aoligei.remoter.handler.ControlCommandHandler
+HEART_BEAT::handler::com.aoligei.remoter.handler.HeartbeatCommandHandler
+SCREEN_SHOTS::handler::com.aoligei.remoter.handler.ScreenShotsCommandHandler
+KEYBOARD_INPUT::handler::com.aoligei.remoter.handler.MouseCommandHandler
+MOUSE_INPUT::handler::com.aoligei.remoter.handler.KeyboardCommandHandler
+VOICE_OUTPUT::handler::com.aoligei.remoter.handler.VoiceCommandHandler
+DISCONNECT::handler::com.aoligei.remoter.handler.DisConnectCommandHandler
