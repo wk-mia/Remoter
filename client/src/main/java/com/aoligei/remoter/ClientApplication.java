@@ -1,9 +1,8 @@
 package com.aoligei.remoter;
 
 import com.aoligei.remoter.ui.IHomePage;
-import com.aoligei.remoter.ui.form.MainForm;
+import com.aoligei.remoter.ui.listener.MainActionListener;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -15,7 +14,7 @@ public class ClientApplication {
         /**
          * 启动一个客户端的实例
          */
-        IHomePage homePage = context.getBean(MainForm.class);
+        IHomePage homePage = context.getBean(MainActionListener.class);
         homePage.start();
     }
 

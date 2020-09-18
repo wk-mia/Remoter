@@ -2,14 +2,14 @@ package com.aoligei.remoter.business;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.ClientMeta;
-import com.aoligei.remoter.constant.ClientConstants;
+import com.aoligei.remoter.business.aop.SponsorRequestInspect;
 import com.aoligei.remoter.enums.CommandEnum;
+import com.aoligei.remoter.enums.SponsorInspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.ClientException;
+import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.ClientManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /**
  * @author wk-mia
@@ -25,12 +25,10 @@ public class RequestProcessor {
     /**
      * 连接请求
      * @return 请求主体
-     * @throws ClientException
+     * @throws SponsorException
      */
-    public BaseRequest buildConnectRequest() throws ClientException {
-        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientId())){
-            throw new ClientException(ClientConstants.NEED_REGISTER);
-        }
+    @SponsorRequestInspect(inspectItem = {SponsorInspectEnum.CLIENT_ID})
+    public BaseRequest buildConnectRequest() throws SponsorException {
         /**
          * 向服务器发起连接时，只需指定身份识别码
          */
@@ -47,9 +45,10 @@ public class RequestProcessor {
     /**
      * 注册请求
      * @return 请求主体
-     * @throws ClientException
+     * @throws SponsorException
      */
-    public BaseRequest buildRegisterRequest() throws ClientException{
+    @SponsorRequestInspect(inspectItem = {SponsorInspectEnum.CLIENT_NAME,SponsorInspectEnum.CLIENT_IP,SponsorInspectEnum.IS_REJECT_CONNECTION})
+    public BaseRequest buildRegisterRequest() throws SponsorException{
         /**
          * 向服务器发起注册请求时，只需指定客户端的主要信息，放入Data域中。
          */
@@ -71,9 +70,10 @@ public class RequestProcessor {
      * 控制请求，该请求为MASTER发起。
      * @param slaveClientId 受控端身份识别码
      * @return 请求主体
-     * @throws ClientException
+     * @throws SponsorException
      */
-    public BaseRequest buildControlRequest(String slaveClientId)throws ClientException{
+    @SponsorRequestInspect(inspectItem = {SponsorInspectEnum.CLIENT_ID})
+    public BaseRequest buildControlRequest(String slaveClientId)throws SponsorException{
         /**
          * 向服务器发起控制请求时，需指定主控端的身份识别码、受控端的身份识别码、终端
          * 类型。

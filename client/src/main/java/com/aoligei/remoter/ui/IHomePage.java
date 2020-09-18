@@ -25,4 +25,14 @@ public interface IHomePage {
      * 发起远程控制请求
      */
     void control();
+
+    /**
+     * 断开连接
+     */
+    void disconnect();
+
+    /**
+     * 停止控制
+     */
+    void stopControl();
 }

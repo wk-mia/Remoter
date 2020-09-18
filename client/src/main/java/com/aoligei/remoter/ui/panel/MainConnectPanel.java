@@ -1,22 +1,22 @@
 package com.aoligei.remoter.ui.panel;
 
-import com.aoligei.remoter.constant.RequestUrlConstants;
-import com.aoligei.remoter.net.http.HttpRequestFactory;
-import com.aoligei.remoter.ui.form.RemoteForm;
-import com.aoligei.remoter.util.Result;
 
+import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
 
 /**
  * @author wk-mia
  * 2020-8-31
  * 主窗体中远程连接区面板
  */
+@Component
 public class MainConnectPanel extends JPanel {
+
+    /**
+     * 连接按钮
+     */
+    private JButton connectButton;
 
     /**
      * 面板构造函数
@@ -39,7 +39,6 @@ public class MainConnectPanel extends JPanel {
          */
         JTextField textField = new JTextField(36);
         textField.setFont(new Font("宋体",Font.PLAIN,12));
-        //textField.setBounds(0,0,200,20);
         textField.setSize(200,30);
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setBackground(Color.WHITE);
@@ -47,26 +46,16 @@ public class MainConnectPanel extends JPanel {
         /**
          * 连接按钮
          */
-        JButton button = new JButton("连接");
-        button.setFont(new Font("宋体",Font.PLAIN,12));
-        button.setSize(60,30);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                /**
-                 * 检查身份识别码是否合法
-                 */
-                HashMap hashMap = new HashMap(){{
-                    put("clientId","14eed539-2876-4a55-b4db-7ff9b5278e16");
-                }};
-                Result<String> result =
-                HttpRequestFactory.post("localhost","60000", RequestUrlConstants.IS_CLIENT_ID_LEGAL,hashMap);
-                if(result != null){
-
-                }
-            }
-        });
-        this.add(button);
+        connectButton = new JButton("连接");
+        connectButton.setFont(new Font("宋体",Font.PLAIN,12));
+        connectButton.setSize(60,30);
+        this.add(connectButton);
     }
 
+    /**
+     * 获取连接按钮
+     */
+    public JButton getConnectButton() {
+        return connectButton;
+    }
 }

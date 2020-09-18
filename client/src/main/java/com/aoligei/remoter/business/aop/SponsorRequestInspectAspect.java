@@ -1,19 +1,18 @@
 package com.aoligei.remoter.business.aop;
 
-import com.aoligei.remoter.aop.RequestInspect;
-import com.aoligei.remoter.beans.BaseRequest;
-import com.aoligei.remoter.enums.InspectEnum;
+import com.aoligei.remoter.constant.SponsorConstants;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
+import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.ClientManage;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -60,5 +59,99 @@ public class SponsorRequestInspectAspect {
         /**
          * 开始检查
          */
+        inspect(inspectEnums);
+    }
+
+    /**
+     * 检查各个待检查项
+     * @param inspectEnums 待检查项
+     * @throws SponsorException 异常信息
+     */
+    private void inspect(SponsorInspectEnum[] inspectEnums) throws SponsorException{
+        for (int i = 0; i < inspectEnums.length; i++){
+            switch (inspectEnums[i]){
+                case CLIENT_ID:
+                    inspectClientId();
+                    break;
+                case CONNECTION_ID:
+                    inspectConnectionId();
+                    break;
+                case CLIENT_IP:
+                    inspectClientIp();
+                    break;
+                case CLIENT_NAME:
+                    inspectClientName();
+                    break;
+                case IS_REJECT_CONNECTION:
+                    inspectIsRejectConnection();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 客户端信息非空检查
+     * @throws SponsorException
+     */
+    private void inspectClientInfo()throws SponsorException{
+        if(clientManage == null || clientManage.getClientInfo() == null){
+            throw new SponsorException(SponsorConstants.CLIENT_INFO_NULL);
+        }
+    }
+
+    /**
+     * 客户端身份识别码非空检查
+     * @throws SponsorException
+     */
+    private void inspectClientId()throws SponsorException{
+        this.inspectClientInfo();
+        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientId())){
+            throw new SponsorException(SponsorConstants.CLIENT_ID_NULL);
+        }
+    }
+
+    /**
+     * 连接编码非空检查
+     * @throws SponsorException
+     */
+    private void inspectConnectionId()throws SponsorException{
+        if(clientManage == null || StringUtils.isEmpty(clientManage.getConnectionId())){
+            throw new SponsorException(SponsorConstants.CONNECTION_ID_NULL);
+        }
+    }
+
+    /**
+     * 客户端ip地址非空检查
+     * @throws SponsorException
+     */
+    private void inspectClientIp()throws SponsorException{
+        this.inspectClientInfo();
+        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientIp())){
+            throw new SponsorException(SponsorConstants.CLIENT_IP_NULL);
+        }
+    }
+
+    /**
+     * 客户端名称非空检查
+     * @throws SponsorException
+     */
+    private void inspectClientName()throws SponsorException{
+        this.inspectClientInfo();
+        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientName())){
+            throw new SponsorException(SponsorConstants.CLIENT_NAME_NULL);
+        }
+    }
+
+    /**
+     * 客户端是否拒绝所有控制请求非空检查
+     * @throws SponsorException
+     */
+    private void inspectIsRejectConnection()throws SponsorException{
+        this.inspectClientInfo();
+        if(clientManage.getClientInfo().getRejectConnection() == null){
+            throw new SponsorException(SponsorConstants.IS_REJECT_CONNECTION_NULL);
+        }
     }
 }

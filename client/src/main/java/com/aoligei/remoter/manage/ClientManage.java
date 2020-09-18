@@ -25,7 +25,8 @@ public class ClientManage {
      * 加载客户端信息到当前管理器
      */
     {
-        clientInfo = null;
+        clientInfo = new ClientMeta("3f791e1b-3819-45f4-b37c-f757c371c728",
+                "ClientA",0,"127.0.0.1",false);
     }
 
     /**
