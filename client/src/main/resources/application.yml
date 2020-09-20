@@ -1,3 +1,13 @@
 spring:
   application:
   name: Remoter-Client
+
+
+#####################################################################################################
+# 日志
+logging:
+  level:
+    root: INFO
+    com.aoligei.remoter: trace
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss

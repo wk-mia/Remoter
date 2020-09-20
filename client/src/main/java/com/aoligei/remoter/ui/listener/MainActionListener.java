@@ -103,6 +103,7 @@ public class MainActionListener implements ActionListener, IHomePage {
     public void connect() {
         try{
             nettyClient.connect();
+            DialogForm.informationDialog("connect-ok","connect to server request ok");
         }catch (Exception e){
             DialogForm.errorDialog("connect-error",e.getMessage());
         }

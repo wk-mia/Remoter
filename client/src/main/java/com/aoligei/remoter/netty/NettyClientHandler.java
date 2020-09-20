@@ -19,7 +19,12 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws Exception {
-
+        // log.info(baseRequest.toString());
+        /**
+         * 分发命令并进行处理
+         */
+        ICommandHandler commandHandler = CommandFactory.getCommandHandler(baseResponse.getCommandEnum(),"handler");
+        commandHandler.handle(channelHandlerContext,baseResponse);
     }
 
     @Override
