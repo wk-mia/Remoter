@@ -10,7 +10,7 @@ spring:
 # 日志
 logging:
   level:
-    root: INFO
+    root: DEBUG
     com.aoligei.remoter: trace
   pattern:
     dateformat: yyyy-MM-dd HH:mm:ss

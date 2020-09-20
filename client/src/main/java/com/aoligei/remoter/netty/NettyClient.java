@@ -68,7 +68,8 @@ public class NettyClient {
                 .option(ChannelOption.TCP_NODELAY, true)
                 .handler(channelInitializer);
         final ChannelFuture sync = bootstrap.connect(host, port).sync();
-        sync.channel().writeAndFlush(processor.buildConnectRequest());
+        final BaseRequest connectRequest = processor.buildConnectRequest();
+        sync.channel().writeAndFlush(connectRequest);
         try {
             sync.channel().closeFuture();
         }catch (Exception e){

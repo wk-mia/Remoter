@@ -3,13 +3,20 @@ package com.aoligei.remoter.manage;
 import com.aoligei.remoter.beans.ClientMeta;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 /**
  * @author wk-mia
  * 2020-9-14
  * 客户端身份管理器
  */
 @Component
-public class ClientManage {
+public class ClientManage implements Serializable {
+
+    /**
+     * 序列化常量
+     */
+    private static final long serialVersionUID = -3911255650485738676L;
 
     /**
      * 当前客户端信息

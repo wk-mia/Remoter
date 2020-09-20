@@ -82,7 +82,7 @@ public class RemoterDecoder extends ByteToMessageDecoder {
                  */
                 byte[] data = new byte[length];
                 byteBuf.readBytes(data);
-                Object obj = SerializationUtil.deserialize(data, definedClass.getClass());
+                Object obj = SerializationUtil.deserialize(data, definedClass);
                 list.add(obj);
             }
         }else {

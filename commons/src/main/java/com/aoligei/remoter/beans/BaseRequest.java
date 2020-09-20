@@ -2,13 +2,20 @@ package com.aoligei.remoter.beans;
 
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 
+import java.io.Serializable;
+
 /**
  * @author wk-mia
  * 2020-9-1
  * 用于Netty的自定义请求体
  * 客户端发起的都是BaseRequest，接受的都是BaseResponse
  */
-public class BaseRequest extends BaseDataBody {
+public class BaseRequest extends BaseDataBody  implements Serializable {
+
+    /**
+     * 序列化常量
+     */
+    private static final long serialVersionUID = -3911255650485738676L;
 
     /**
      * 客户端编码
