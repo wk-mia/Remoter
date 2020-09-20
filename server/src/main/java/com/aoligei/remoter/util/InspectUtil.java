@@ -41,26 +41,4 @@ public class InspectUtil {
         return true;
     }
 
-    /**
-     * 待连接的客户端信息是否完备
-     * @param clientId 客户端身份识别码
-     * @param channel 通道
-     * @return
-     * @throws ServerException
-     */
-    public static boolean isConnectInfoComplete(String clientId, Channel channel)throws ServerException{
-        /**
-         * 客户端身份识别码为空
-         */
-        if(clientId == null || "".equals(clientId)){
-            throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
-        }
-        /**
-         * 通道异常
-         */
-        if(channel == null || !channel.isOpen()){
-            throw new ServerException(ServerExceptionConstants.CLIENT_WORK_ERROR);
-        }
-        return true;
-    }
 }

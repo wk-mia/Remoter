@@ -49,16 +49,20 @@ public class OnlineConnectionManage implements IOnlineConnectionManage {
      */
     @Override
     public void add(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum)throws ServerException {
-        if(InspectUtil.isConnectInfoComplete(clientId,channel)){
-            /**
-             * 当客户端身份识别码能在基本信息的账册中找到，添加进在线连接集合中
-             */
-            if(clientMetaManage.allClientMetas().stream().filter(item -> clientId.equals(item.getClientId())).findAny().isPresent()){
-                MetaCache metaCache = BuildUtil.buildMetaCache(clientId, channel, scheduledFuture, terminalTypeEnum);
-                onlineConn.add(metaCache);
-            }else {
-                throw new ServerException(ServerExceptionConstants.CLIENT_NOT_REGISTER);
-            }
+        /**
+         * 通道异常
+         */
+        if(channel == null || !channel.isOpen()){
+            throw new ServerException(ServerExceptionConstants.CLIENT_WORK_ERROR);
+        }
+        /**
+         * 当客户端身份识别码能在基本信息的账册中找到，添加进在线连接集合中
+         */
+        if(clientMetaManage.allClientMetas().stream().filter(item -> clientId.equals(item.getClientId())).findAny().isPresent()){
+            MetaCache metaCache = BuildUtil.buildMetaCache(clientId, channel, scheduledFuture, terminalTypeEnum);
+            onlineConn.add(metaCache);
+        }else {
+            throw new ServerException(ServerExceptionConstants.CLIENT_NOT_REGISTER);
         }
     }
 

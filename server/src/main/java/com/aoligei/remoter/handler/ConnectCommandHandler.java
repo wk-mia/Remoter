@@ -11,6 +11,7 @@ import com.aoligei.remoter.manage.OnlineConnectionManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -21,10 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 了：主控端和服务器的连接、受控端和服务器的连接。具体参见GroupCacheManage和
  * OnlineConnectionManage的定义。
  */
+@Component
 public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
 
-    @Autowired
+
     private OnlineConnectionManage onlineConnectionManage;
+    @Autowired
+    public void setOnlineConnectionManage(OnlineConnectionManage onlineConnectionManage){
+        this.onlineConnectionManage = onlineConnectionManage;
+    }
 
     /**
      * 特定的处理器：连接处理器
@@ -40,7 +46,7 @@ public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
         /**
          * 连接时不需要设备类型，设备类型在Control处理器中指定
          */
-        TerminalTypeEnum terminalTypeEnum = null;
+        TerminalTypeEnum terminalTypeEnum = TerminalTypeEnum.UNKNOWN;
         onlineConnectionManage.add(baseRequest.getClientId(),channelHandlerContext.channel(),
                 onlineConnectionManage.getScheduled(channelHandlerContext,3),terminalTypeEnum);
 

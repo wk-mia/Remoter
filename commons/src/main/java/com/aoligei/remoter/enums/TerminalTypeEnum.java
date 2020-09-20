@@ -7,6 +7,10 @@ package com.aoligei.remoter.enums;
  */
 public enum TerminalTypeEnum {
     /**
+     * 未知
+     */
+    UNKNOWN,
+    /**
      * 主控端-服务器
      */
     MASTER,
