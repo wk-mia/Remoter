@@ -1,9 +1,15 @@
 package com.aoligei.remoter.netty;
 
 import com.aoligei.remoter.beans.BaseRequest;
+import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.beans.ChannelCache;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandHandler;
+import com.aoligei.remoter.constant.ExceptionStyleConstants;
+import com.aoligei.remoter.constant.ResponseConstants;
+import com.aoligei.remoter.enums.CommandEnum;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -42,6 +48,8 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws Exception {
         log.info(baseRequest.toString());
+//        BaseResponse baseResponse = BuildUtil.buildResponseFAIL(null, TerminalTypeEnum.SERVER, CommandEnum.CONNECT, null, "========");
+//        channelHandlerContext.writeAndFlush(baseResponse);
         /**
          * 分发命令并进行处理
          */
@@ -60,6 +68,31 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
     @Override
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) throws Exception {
         log.error(cause.getMessage(),cause);
-        channelHandlerContext.close();
+        if(cause.getClass().getSimpleName().equals(ExceptionStyleConstants.CONTROLLABLE)){
+            /**
+             * 可控制的异常类型。
+             */
+            BaseResponse baseResponse = BuildUtil.buildResponseFAIL(null, TerminalTypeEnum.SERVER,
+                    null, null, cause.getMessage());
+            if(channelHandlerContext.channel() != null || channelHandlerContext.channel().isOpen()){
+                channelHandlerContext.writeAndFlush(baseResponse);
+            }
+        }else if(cause.getClass().getSimpleName().equals(ExceptionStyleConstants.NEED_CLOSE_CONNECT)){
+            /**
+             * 需要断开连接的异常
+             */
+            channelHandlerContext.close();
+            BaseResponse baseResponse = BuildUtil.buildResponseFAIL(null, TerminalTypeEnum.SERVER,
+                    CommandEnum.CONNECT, null,
+                    cause.getMessage() + "," + ResponseConstants.WILL_BE_DISCONNECTED);
+            if(channelHandlerContext != null){
+                channelHandlerContext.fireChannelRead(baseResponse);
+                //channelHandlerContext.writeAndFlush(baseResponse);
+            }
+            log.info(ResponseConstants.WILL_BE_DISCONNECTED);
+            // channelHandlerContext.close();
+        }else {
+            channelHandlerContext.close();
+        }
     }
 }

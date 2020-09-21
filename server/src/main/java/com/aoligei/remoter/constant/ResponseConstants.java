@@ -19,5 +19,9 @@ public class ResponseConstants {
      * 受控端接受了这次连接请求
      */
     public static final String SLAVE_AGREE_CONNECTION = "the slave agree this connection";
+    /**
+     * 服务器即将关闭连接
+     */
+    public static final String WILL_BE_DISCONNECTED = "server will be close the disconnection";
 
 }

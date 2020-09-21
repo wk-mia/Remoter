@@ -4,6 +4,7 @@ import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.exception.ClientException;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -11,6 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
  * 点对点模式客户端-连接处理器
  * 负责接受到服务器对于连接请求的处理结果。
  */
+@Component
 public class ConnectCommandHandler extends AbstractClientHandler {
     /**
      * 特定的处理器-连接处理器

@@ -11,15 +11,19 @@ import com.aoligei.remoter.handler.AbstractSponsorCommandHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 @ChannelHandler.Sharable
 public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse> {
 
+    private static Logger log = LoggerFactory.getLogger(NettyClientHandler.class);
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws Exception {
-        // log.info(baseRequest.toString());
+        log.info(baseResponse.toString());
         /**
          * 分发命令并进行处理
          */
