@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  * 了：主控端和服务器的连接、受控端和服务器的连接。具体参见GroupCacheManage和
  * OnlineConnectionManage的定义。
  */
-@Component
+@Component(value = "ConnectCommandHandler")
 public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
 
 

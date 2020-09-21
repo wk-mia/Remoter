@@ -4,6 +4,7 @@ package com.aoligei.remoter.command;
 import com.aoligei.remoter.constant.HandlerLoadConstants;
 import com.aoligei.remoter.exception.HandlerLoadException;
 import com.aoligei.remoter.enums.CommandEnum;
+import com.aoligei.remoter.util.SpringBeanUtil;
 import org.springframework.util.StringUtils;
 import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,7 @@ public class CommandFactory {
      * @param command 命令
      * @param handlerType 处理器类型
      * @return 处理器
-     * @throws ServerException 异常信息
+     * @throws HandlerLoadException 异常信息
      */
     public static ICommandHandler getCommandHandler(Enum<CommandEnum> command, String handlerType) throws HandlerLoadException {
         /**
@@ -75,7 +76,7 @@ public class CommandFactory {
      * 加载并返回一个命令处理器
      * @param command 命令
      * @return 处理器
-     * @throws ServerException 异常信息
+     * @throws HandlerLoadException 异常信息
      */
     private static synchronized ICommandHandler loadCommandHandler(Enum<CommandEnum> command)throws HandlerLoadException {
         /**
@@ -112,8 +113,10 @@ public class CommandFactory {
                         /**
                          * 加载handler
                          */
-                        final Class<?> handlerClass = Class.forName(handlerName);
-                        iCommandHandler = (ICommandHandler) handlerClass.newInstance();
+                        /*final Class<?> handlerClass = Class.forName(handlerName);
+                        iCommandHandler = (ICommandHandler) handlerClass.newInstance();*/
+                        final String handlerBeanName = Class.forName(handlerName).getSimpleName();
+                        iCommandHandler = SpringBeanUtil.getBean(handlerBeanName,ICommandHandler.class);
                         /**
                          * 加入缓存
                          */
