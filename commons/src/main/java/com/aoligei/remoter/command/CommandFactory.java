@@ -113,8 +113,6 @@ public class CommandFactory {
                         /**
                          * 加载handler
                          */
-                        /*final Class<?> handlerClass = Class.forName(handlerName);
-                        iCommandHandler = (ICommandHandler) handlerClass.newInstance();*/
                         final String handlerBeanName = Class.forName(handlerName).getSimpleName();
                         iCommandHandler = SpringBeanUtil.getBean(handlerBeanName,ICommandHandler.class);
                         /**
@@ -132,7 +130,7 @@ public class CommandFactory {
                 }
                 throw new HandlerLoadException(HandlerLoadConstants.COMMAND_NOT_CONFIG);
             }catch (Exception e){
-                throw  new HandlerLoadException(e.getMessage(),e);
+                throw new HandlerLoadException(e.getMessage(),e);
             }
         }
     }

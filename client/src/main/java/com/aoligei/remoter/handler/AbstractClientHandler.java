@@ -6,6 +6,8 @@ import com.aoligei.remoter.exception.ClientException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import java.text.MessageFormat;
 
 /**
@@ -15,6 +17,7 @@ import java.text.MessageFormat;
  * 负责审查消息体是否合法：主要包含消息体中的身份识别码是否合法，如果合
  * 法则执行相应的命令处理器，如果不合法，则给服务器返回响应的错误信息。
  */
+@Component(value = "AbstractClientHandler")
 public abstract class AbstractClientHandler implements ICommandHandler<BaseResponse> {
 
     private static Logger log;

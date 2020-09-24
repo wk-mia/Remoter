@@ -6,9 +6,10 @@ import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ClientException;
-import com.aoligei.remoter.manage.ClientManage;
+import com.aoligei.remoter.manage.TerminalManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -16,10 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 点对点模式客户端-控制处理器
  * 负责接受到服务器对于控制请求的处理结果。
  */
+@Component(value = "ControlCommandHandler")
 public class ControlCommandHandler extends AbstractClientHandler {
 
     @Autowired
-    private ClientManage clientManage;
+    private TerminalManage terminalManage;
 
     /**
      * 特定的处理器-控制处理器
@@ -41,13 +43,13 @@ public class ControlCommandHandler extends AbstractClientHandler {
                     BaseRequest baseRequest = new BaseRequest(){{
                         setConnectionId(baseResponse.getConnectionId());
                         setCommandEnum(CommandEnum.CONTROL);
-                        setClientId(clientManage.getClientInfo().getClientId());
+                        setClientId(terminalManage.getClientInfo().getClientId());
                         setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
                         setData(Boolean.TRUE);
                     }};
                     channelHandlerContext.writeAndFlush(baseRequest);
 
-                    clientManage.setConnectionId(baseResponse.getConnectionId());
+                    terminalManage.setConnectionId(baseResponse.getConnectionId());
                     logInfo(baseResponse,"客户端已同意远程连接");
                     /**
                      * 开始发送屏幕截图
@@ -63,7 +65,7 @@ public class ControlCommandHandler extends AbstractClientHandler {
                 /**
                  * 主控端，拿到连接编码。
                  */
-                clientManage.setConnectionId(baseResponse.getConnectionId());
+                terminalManage.setConnectionId(baseResponse.getConnectionId());
                 logInfo(baseResponse,baseResponse.getMessage());
             }
         }else if(baseResponse.getStatus() == ResponseStatusEnum.ERROR) {

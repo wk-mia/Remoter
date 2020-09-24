@@ -4,9 +4,9 @@ package com.aoligei.remoter.beans;
 /**
  * @author wk-mia
  * 2020-9-9
- * 客户端基本信息元数据，用于表示已经注册过的单个客户端的信息。
+ * 客户端基本信息元数据
  */
-public class ClientMeta {
+public class BasicClientInfo {
 
     /**
      * 客户端身份识别码
@@ -29,7 +29,7 @@ public class ClientMeta {
      */
     private Boolean isRejectConnection;
 
-    public ClientMeta(String clientId, String clientName, int clientSystemType, String clientIp, Boolean isRejectConnection) {
+    public BasicClientInfo(String clientId, String clientName, int clientSystemType, String clientIp, Boolean isRejectConnection) {
         this.clientId = clientId;
         this.clientName = clientName;
         this.clientSystemType = clientSystemType;
@@ -79,7 +79,7 @@ public class ClientMeta {
 
     @Override
     public String toString() {
-        return "ClientMeta{" +
+        return "BasicClientInfo{" +
                 "clientId='" + clientId + '\'' +
                 ", clientName='" + clientName + '\'' +
                 ", clientSystemType=" + clientSystemType +

@@ -3,7 +3,7 @@ package com.aoligei.remoter.business.aop;
 import com.aoligei.remoter.constant.SponsorConstants;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
 import com.aoligei.remoter.exception.SponsorException;
-import com.aoligei.remoter.manage.ClientManage;
+import com.aoligei.remoter.manage.TerminalManage;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 public class SponsorRequestInspectAspect {
 
     @Autowired
-    private ClientManage clientManage;
+    private TerminalManage terminalManage;
 
     /**
      * 指定切入点
@@ -94,7 +94,7 @@ public class SponsorRequestInspectAspect {
      * @throws SponsorException
      */
     private void inspectClientInfo()throws SponsorException{
-        if(clientManage == null || clientManage.getClientInfo() == null){
+        if(terminalManage == null || terminalManage.getClientInfo() == null){
             throw new SponsorException(SponsorConstants.CLIENT_INFO_NULL);
         }
     }
@@ -105,7 +105,7 @@ public class SponsorRequestInspectAspect {
      */
     private void inspectClientId()throws SponsorException{
         this.inspectClientInfo();
-        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientId())){
+        if(StringUtils.isEmpty(terminalManage.getClientInfo().getClientId())){
             throw new SponsorException(SponsorConstants.CLIENT_ID_NULL);
         }
     }
@@ -115,7 +115,7 @@ public class SponsorRequestInspectAspect {
      * @throws SponsorException
      */
     private void inspectConnectionId()throws SponsorException{
-        if(clientManage == null || StringUtils.isEmpty(clientManage.getConnectionId())){
+        if(terminalManage == null || StringUtils.isEmpty(terminalManage.getConnectionId())){
             throw new SponsorException(SponsorConstants.CONNECTION_ID_NULL);
         }
     }
@@ -126,7 +126,7 @@ public class SponsorRequestInspectAspect {
      */
     private void inspectClientIp()throws SponsorException{
         this.inspectClientInfo();
-        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientIp())){
+        if(StringUtils.isEmpty(terminalManage.getClientInfo().getClientIp())){
             throw new SponsorException(SponsorConstants.CLIENT_IP_NULL);
         }
     }
@@ -137,7 +137,7 @@ public class SponsorRequestInspectAspect {
      */
     private void inspectClientName()throws SponsorException{
         this.inspectClientInfo();
-        if(StringUtils.isEmpty(clientManage.getClientInfo().getClientName())){
+        if(StringUtils.isEmpty(terminalManage.getClientInfo().getClientName())){
             throw new SponsorException(SponsorConstants.CLIENT_NAME_NULL);
         }
     }
@@ -148,7 +148,7 @@ public class SponsorRequestInspectAspect {
      */
     private void inspectIsRejectConnection()throws SponsorException{
         this.inspectClientInfo();
-        if(clientManage.getClientInfo().getRejectConnection() == null){
+        if(terminalManage.getClientInfo().getRejectConnection() == null){
             throw new SponsorException(SponsorConstants.IS_REJECT_CONNECTION_NULL);
         }
     }

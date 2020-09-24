@@ -15,7 +15,7 @@ import io.netty.util.concurrent.ScheduledFuture;
  * 当然，你可以用其他任何可以替代的方案来维护此连接，只要能保证超时后这个连接能
  * 感知到状态的变化。
  */
-public class MetaCache {
+public class OnlineElement {
 
     /**
      * 客户端身份识别码
@@ -36,7 +36,7 @@ public class MetaCache {
 
 
 
-    public MetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum) {
+    public OnlineElement(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum) {
         this.clientId = clientId;
         this.channel = channel;
         this.scheduledFuture = scheduledFuture;

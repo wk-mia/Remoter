@@ -3,9 +3,10 @@ package com.aoligei.remoter.handler;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.exception.ClientException;
-import com.aoligei.remoter.manage.ClientManage;
+import com.aoligei.remoter.manage.TerminalManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -13,10 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 点对点模式客户端-注册处理器
  * 负责接受到服务器对于注册请求的处理结果。
  */
+@Component(value = "RegisterCommandHandler")
 public class RegisterCommandHandler extends AbstractClientHandler {
 
     @Autowired
-    private ClientManage clientManage;
+    private TerminalManage terminalManage;
 
     /**
      * 特定的处理器-注册处理器
@@ -26,15 +28,9 @@ public class RegisterCommandHandler extends AbstractClientHandler {
      */
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
-        if(baseResponse.getStatus() == ResponseStatusEnum.OK){
-            /**
-             * 注册成功，服务器会将客户端身份识别码放入Data域中。
-             */
-            logInfo(baseResponse,baseResponse.getMessage());
-
-            clientManage.getClientInfo().setClientId((String) baseResponse.getData());
-        }else {
-            logError(baseResponse,baseResponse.getMessage());
-        }
+        /**
+         * 注册成功，服务器会将客户端身份识别码放入Data域中。
+         */
+        terminalManage.getClientInfo().setClientId((String) baseResponse.getData());
     }
 }

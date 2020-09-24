@@ -1,15 +1,15 @@
 package com.aoligei.remoter.business.aop;
 
 import com.aoligei.remoter.beans.BaseRequest;
-import com.aoligei.remoter.beans.ChannelCache;
-import com.aoligei.remoter.beans.ClientMeta;
+import com.aoligei.remoter.beans.RemotingElement;
+import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.constant.IncompleteParamConstants;
 import com.aoligei.remoter.constant.ServerExceptionConstants;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.IncompleteParamException;
 import com.aoligei.remoter.exception.ServerException;
-import com.aoligei.remoter.manage.GroupCacheManage;
+import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -33,7 +33,7 @@ public class RequestInspectAspect {
      * 当前的所有连接
      */
     @Autowired
-    private GroupCacheManage groupChannelManage;
+    private RemotingRosterManage groupChannelManage;
 
     /**
      * 指定切入点
@@ -132,17 +132,17 @@ public class RequestInspectAspect {
             /**
              * 获取Data中的客户端信息
              */
-            ClientMeta clientMeta = (ClientMeta) baseRequest.getData();
-            if(clientMeta == null){
+            BasicClientInfo basicClientInfo = (BasicClientInfo) baseRequest.getData();
+            if(basicClientInfo == null){
                 throw new IncompleteParamException(IncompleteParamConstants.DATA_NULL);
             }else {
-                if(clientMeta.getClientName() == null || "".equals(clientMeta.getClientName())){
+                if(basicClientInfo.getClientName() == null || "".equals(basicClientInfo.getClientName())){
                     throw new IncompleteParamException(IncompleteParamConstants.CLIENT_NAME_NOT_IN_DATA);
                 }
-                if(clientMeta.getClientIp() == null || "".equals(clientMeta.getClientIp())){
+                if(basicClientInfo.getClientIp() == null || "".equals(basicClientInfo.getClientIp())){
                     throw new IncompleteParamException(IncompleteParamConstants.CLIENT_IP_NOT_IN_DATA);
                 }
-                if(clientMeta.getRejectConnection() == null){
+                if(basicClientInfo.getRejectConnection() == null){
                     throw new IncompleteParamException(IncompleteParamConstants.REJECT_CONNECTION_NOT_IN_DATA);
                 }
             }
@@ -233,8 +233,8 @@ public class RequestInspectAspect {
         if(connectionId == null || "".equals(connectionId)){
             throw new IncompleteParamException(IncompleteParamConstants.CONNECTION_ID_NULL);
         }else {
-            ChannelCache channelCache = groupChannelManage.getChannelCacheByConnectionId(connectionId);
-            if(channelCache == null){
+            RemotingElement remotingElement = groupChannelManage.getChannelCacheByConnectionId(connectionId);
+            if(remotingElement == null){
                 throw new ServerException(ServerExceptionConstants.CONNECTION_NOT_FIND);
             }
         }
@@ -251,7 +251,7 @@ public class RequestInspectAspect {
         if(masterClientId == null || "".equals(masterClientId)){
             throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
         }else {
-            List<ChannelCache> channelCaches = groupChannelManage.getChannelCachesByMasterClientId(masterClientId);
+            List<RemotingElement> channelCaches = groupChannelManage.getChannelCachesByMasterClientId(masterClientId);
             if(channelCaches != null) {
                 if (channelCaches.size() > 1) {
                     throw new ServerException(ServerExceptionConstants.NOT_SUPPORT_MASTER_CONTROL_MULTIPLE_SLAVE);
@@ -271,7 +271,7 @@ public class RequestInspectAspect {
         if(slaveClientId == null || "".equals(slaveClientId)){
             throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
         }else {
-            List<ChannelCache> channelCaches = groupChannelManage.getChannelCachesBySlaveClientId(slaveClientId);
+            List<RemotingElement> channelCaches = groupChannelManage.getChannelCachesBySlaveClientId(slaveClientId);
             if(channelCaches != null) {
                 if (channelCaches.size() > 1) {
                     throw new ServerException(ServerExceptionConstants.NOT_SUPPORT_SLAVE_CONTROL_BY_MULTIPLE_MASTER);
@@ -288,7 +288,7 @@ public class RequestInspectAspect {
     private void masterNotInGroup(BaseRequest baseRequest)throws ServerException{
         masterToSlaves(baseRequest);
         String masterClientId = baseRequest.getClientId();
-        List<ChannelCache> channelCaches = groupChannelManage.getChannelCachesByMasterClientId(masterClientId);
+        List<RemotingElement> channelCaches = groupChannelManage.getChannelCachesByMasterClientId(masterClientId);
         if(channelCaches == null || channelCaches.size() == 0){
             throw new ServerException(ServerExceptionConstants.MASTER_NOT_IN_SLAVE_GROUP);
         }

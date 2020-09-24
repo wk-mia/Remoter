@@ -2,8 +2,8 @@ package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.beans.ChannelCache;
-import com.aoligei.remoter.beans.MetaCache;
+import com.aoligei.remoter.beans.RemotingElement;
+import com.aoligei.remoter.beans.OnlineElement;
 import com.aoligei.remoter.business.aop.RequestInspect;
 import com.aoligei.remoter.constant.IncompleteParamConstants;
 import com.aoligei.remoter.constant.ResponseConstants;
@@ -14,11 +14,12 @@ import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.IncompleteParamException;
 import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.generate.IdentifyFactory;
-import com.aoligei.remoter.manage.GroupCacheManage;
-import com.aoligei.remoter.manage.OnlineConnectionManage;
+import com.aoligei.remoter.manage.impl.RemotingRosterManage;
+import com.aoligei.remoter.manage.impl.OnlineRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -30,18 +31,19 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * Slave和Master收到连接编码后，通过连接编码向服务器申请连接。
  */
+@Component(value = "ControlCommandHandler")
 public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
 
     /**
      * 当前已连接到服务器的所有客户端
      */
     @Autowired
-    private OnlineConnectionManage onlineConnectionManage;
+    private OnlineRosterManage onlineConnectionManage;
     /**
      * 处于连接中的通道组缓存
      */
     @Autowired
-    private GroupCacheManage groupCacheManage;
+    private RemotingRosterManage remotingRosterManage;
 
     @Override
     @RequestInspect(inspectItem = {InspectEnum.CONTROL_PARAMS})
@@ -52,22 +54,22 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
              * 以及该受控端目前是否已被控制。
              */
             String slaveClientId = (String) baseRequest.getData();
-            if(onlineConnectionManage.getOnlineConn().stream().filter(item ->
+            if(onlineConnectionManage.getOnlineRoster().stream().filter(item ->
                     slaveClientId.equals(item.getClientId())).findAny().isPresent()){
 
-                if(groupCacheManage.caches.stream().filter(item ->
-                        slaveClientId.equals(item.getSlaveMeta().getClientId())).findAny().isPresent()){
+                if(remotingRosterManage.remotingRoster.stream().filter(item ->
+                        slaveClientId.equals(item.getSlaveElement().getClientId())).findAny().isPresent()){
                     throw new ServerException(ServerExceptionConstants.SLAVE_BEING_CONTROLLED);
                 }else {
                     /**
                      * 生成连接编码并通知Slave建立与Master的通信。并缓存该通道组，通道组中并没有Slaver。
                      */
                     String connectionId = IdentifyFactory.createConnectionId();
-                    MetaCache slaveMeta = onlineConnectionManage.getSlaveInfoBySlaveClientId(slaveClientId);
+                    OnlineElement slaveMeta = onlineConnectionManage.getSlaveInfoBySlaveClientId(slaveClientId);
                     BaseResponse baseResponse = BuildUtil.buildResponseOK(connectionId,TerminalTypeEnum.SERVER_2_SLAVE,
                             baseRequest.getCommandEnum(),null,null);
-                    groupCacheManage.registerMaster(baseRequest.getConnectionId(),baseRequest.getClientId(),
-                            channelHandlerContext.channel(),groupCacheManage.getScheduled(channelHandlerContext,3));
+                    remotingRosterManage.registerMaster(baseRequest.getConnectionId(),baseRequest.getClientId(),
+                            channelHandlerContext.channel(), remotingRosterManage.getScheduled(channelHandlerContext,3));
                     slaveMeta.getChannel().writeAndFlush(baseResponse);
                 }
             }else {
@@ -87,8 +89,8 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
             /**
              * 获取到Master
              */
-            ChannelCache channelCache = groupCacheManage.getChannelCacheByConnectionId(baseRequest.getConnectionId());
-            if(channelCache == null){
+            RemotingElement remotingElement = remotingRosterManage.getChannelCacheByConnectionId(baseRequest.getConnectionId());
+            if(remotingElement == null){
                 throw new ServerException(ServerExceptionConstants.CONNECTION_NOT_FIND);
             }
             if(canConnect == null || !canConnect){
@@ -97,8 +99,8 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                  */
                 BaseResponse baseResponse = BuildUtil.buildResponse(null,TerminalTypeEnum.SERVER_2_MASTER,
                         baseRequest.getCommandEnum(), null, ResponseStatusEnum.ERROR,ResponseConstants.SLAVE_REFUSED_CONNECTION);
-                channelCache.getMasterMeta().getChannel().writeAndFlush(baseResponse);
-                groupCacheManage.caches.remove(channelCache);
+                remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
+                remotingRosterManage.remotingRoster.remove(remotingElement);
                 logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已拒绝控制");
             }else {
                 /**
@@ -107,9 +109,9 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                  */
                 BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER_2_MASTER,
                         baseRequest.getCommandEnum(),null,ResponseConstants.SLAVE_AGREE_CONNECTION);
-                channelCache.getMasterMeta().getChannel().writeAndFlush(baseResponse);
-                groupCacheManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),
-                        channelHandlerContext.channel(),groupCacheManage.getScheduled(channelHandlerContext,3));
+                remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
+                remotingRosterManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),
+                        channelHandlerContext.channel(), remotingRosterManage.getScheduled(channelHandlerContext,3));
                 logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已接受控制");
             }
         }else {

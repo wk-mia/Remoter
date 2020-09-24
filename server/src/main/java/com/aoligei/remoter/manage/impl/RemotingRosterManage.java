@@ -1,13 +1,14 @@
-package com.aoligei.remoter.manage;
+package com.aoligei.remoter.manage.impl;
 
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.beans.ChannelCache;
-import com.aoligei.remoter.beans.MetaCache;
+import com.aoligei.remoter.beans.RemotingElement;
+import com.aoligei.remoter.beans.OnlineElement;
 import com.aoligei.remoter.constant.IncompleteParamConstants;
 import com.aoligei.remoter.constant.ServerExceptionConstants;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.IncompleteParamException;
 import com.aoligei.remoter.exception.ServerException;
+import com.aoligei.remoter.manage.IRemotingRoster;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,12 +26,12 @@ import java.util.stream.Collectors;
  * 在线通道分组管理器
  */
 @Component
-public class GroupCacheManage implements ICacheManage {
+public class RemotingRosterManage implements IRemotingRoster {
 
     /**
      * 所有的在线连接组
      */
-    public List<ChannelCache> caches = new CopyOnWriteArrayList<>();
+    public List<RemotingElement> remotingRoster = new CopyOnWriteArrayList<>();
 
     @Override
     public void registerSlave(String connectionId,String slaveClientId, Channel channel, ScheduledFuture scheduledFuture) throws ServerException {
@@ -41,20 +42,20 @@ public class GroupCacheManage implements ICacheManage {
         if(slaveClientId == null || "".equals(slaveClientId)){
             throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
         }
-        ChannelCache cache = this.getChannelCacheByConnectionId(connectionId);
+        RemotingElement cache = this.getChannelCacheByConnectionId(connectionId);
         if(cache == null){
             /**
              * 新增缓存
              */
-            MetaCache slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, TerminalTypeEnum.SLAVE);
-            caches.add(new ChannelCache(connectionId,slaveMeta,null));
+            OnlineElement slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, TerminalTypeEnum.SLAVE);
+            remotingRoster.add(new RemotingElement(connectionId,slaveMeta,null));
         }else {
             /**
              * 更新缓存
              */
-            if(cache.getSlaveMeta() == null){
-                MetaCache slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, TerminalTypeEnum.SLAVE);
-                cache.setSlaveMeta(slaveMeta);
+            if(cache.getSlaveElement() == null){
+                OnlineElement slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, TerminalTypeEnum.SLAVE);
+                cache.setSlaveElement(slaveMeta);
             }else {
                 throw new ServerException(ServerExceptionConstants.SLAVE_BEING_CONTROLLED);
             }
@@ -70,20 +71,20 @@ public class GroupCacheManage implements ICacheManage {
         if(masterClientId == null || "".equals(masterClientId)){
             throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
         }
-        ChannelCache cache = this.getChannelCacheByConnectionId(connectionId);
+        RemotingElement cache = this.getChannelCacheByConnectionId(connectionId);
         if(cache == null){
             /**
              * 新增缓存
              */
-            MetaCache masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, scheduledFuture, TerminalTypeEnum.MASTER);
-            caches.add(new ChannelCache(connectionId,null,masterMeta));
+            OnlineElement masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, scheduledFuture, TerminalTypeEnum.MASTER);
+            remotingRoster.add(new RemotingElement(connectionId,null,masterMeta));
         }else {
             /**
              * 更新缓存
              */
-            if(cache.getMasterMeta() == null){
-                MetaCache masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, scheduledFuture, TerminalTypeEnum.MASTER);
-                cache.setMasterMeta(masterMeta);
+            if(cache.getMasterElement() == null){
+                OnlineElement masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, scheduledFuture, TerminalTypeEnum.MASTER);
+                cache.setMasterElement(masterMeta);
             }else {
                 throw new ServerException(ServerExceptionConstants.MASTER_ALREADY_CONNECTED);
             }
@@ -108,10 +109,10 @@ public class GroupCacheManage implements ICacheManage {
         if(slaveClientId == null || "".equals(slaveClientId)){
             throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
         }
-        List<ChannelCache> masters = this.getChannelCachesBySlaveClientId(slaveClientId);
+        List<RemotingElement> masters = this.getChannelCachesBySlaveClientId(slaveClientId);
         if(masters != null && masters.size() >= 1){
             masters.forEach(item ->
-                    item.getMasterMeta().getChannel().writeAndFlush(baseResponse)
+                    item.getMasterElement().getChannel().writeAndFlush(baseResponse)
             );
         }
     }
@@ -121,11 +122,11 @@ public class GroupCacheManage implements ICacheManage {
         /**
          * 找到所有受控端，将消息转送出去
          */
-        ChannelCache slaveCache = caches.stream().filter(item ->
+        RemotingElement slaveCache = remotingRoster.stream().filter(item ->
                 connectionId.equals(item.getConnectionId())).findFirst().get();
-        if(slaveCache.getSlaveMeta() != null){
-            if(slaveCache.getSlaveMeta().getChannel() != null && slaveCache.getSlaveMeta().getChannel().isOpen()){
-                slaveCache.getSlaveMeta().getChannel().writeAndFlush(baseResponse);
+        if(slaveCache.getSlaveElement() != null){
+            if(slaveCache.getSlaveElement().getChannel() != null && slaveCache.getSlaveElement().getChannel().isOpen()){
+                slaveCache.getSlaveElement().getChannel().writeAndFlush(baseResponse);
             }
         }else {
             throw new ServerException(ServerExceptionConstants.SLAVE_NOT_FIND);
@@ -138,8 +139,8 @@ public class GroupCacheManage implements ICacheManage {
      * @return 通道组
      * @throws ServerException
      */
-    public ChannelCache getChannelCacheByConnectionId(String connectionId){
-        return caches.stream().filter(item ->
+    public RemotingElement getChannelCacheByConnectionId(String connectionId){
+        return remotingRoster.stream().filter(item ->
                 connectionId.equals(item.getConnectionId())).findFirst().get();
     }
 
@@ -152,9 +153,9 @@ public class GroupCacheManage implements ICacheManage {
      * @return 数量
      * @throws ServerException 异常信息
      */
-    public List<ChannelCache> getChannelCachesBySlaveClientId(String slaveClientId){
-        return caches.stream().filter(item ->
-                slaveClientId.equals(item.getSlaveMeta().getClientId())).collect(Collectors.toList());
+    public List<RemotingElement> getChannelCachesBySlaveClientId(String slaveClientId){
+        return remotingRoster.stream().filter(item ->
+                slaveClientId.equals(item.getSlaveElement().getClientId())).collect(Collectors.toList());
     }
 
     /**
@@ -162,9 +163,9 @@ public class GroupCacheManage implements ICacheManage {
      * @param masterClientId 主控端身份识别码
      * @return 数量
      */
-    public List<ChannelCache> getChannelCachesByMasterClientId(String masterClientId) {
-        return caches.stream().filter(item ->
-                masterClientId.equals(item.getMasterMeta().getClientId())).collect(Collectors.toList());
+    public List<RemotingElement> getChannelCachesByMasterClientId(String masterClientId) {
+        return remotingRoster.stream().filter(item ->
+                masterClientId.equals(item.getMasterElement().getClientId())).collect(Collectors.toList());
     }
 
     /**

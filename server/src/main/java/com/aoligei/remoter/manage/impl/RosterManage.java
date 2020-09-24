@@ -1,9 +1,10 @@
-package com.aoligei.remoter.manage;
+package com.aoligei.remoter.manage.impl;
 
-import com.aoligei.remoter.beans.ClientMeta;
+import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.constant.ServerExceptionConstants;
 import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.generate.IdentifyFactory;
+import com.aoligei.remoter.manage.IRoster;
 import com.aoligei.remoter.util.InspectUtil;
 import org.springframework.stereotype.Component;
 
@@ -15,48 +16,52 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 客户端信息账册管理器
  */
 @Component
-public class ClientMetaManage implements IClientMetaManage {
+public class RosterManage implements IRoster {
 
     /**
      * 所有客户端信息
      */
-    private CopyOnWriteArrayList<ClientMeta> clientMetas;
+    private CopyOnWriteArrayList<BasicClientInfo> roster = new CopyOnWriteArrayList<BasicClientInfo>();
 
     /**
      * 如所有客户端的信息都已经持久化
      * 可在代码块中加载所有客户端信息
      */
     {
-        clientMetas = new CopyOnWriteArrayList<ClientMeta>();
+        /**
+         * 测试数据
+         */
+        roster.add(new BasicClientInfo("3f791e1b-3819-45f4-b37c-f757c371c728",
+                "ClientA",0,"127.0.0.1",false));
     }
 
     /**
-     * 获取所有客户端账册
+     * 获取所有花名册
      * @return 客户端账册
      */
-    public CopyOnWriteArrayList<ClientMeta> allClientMetas(){
-        return clientMetas;
+    public CopyOnWriteArrayList<BasicClientInfo> getRoster(){
+        return roster;
     }
 
     /**
      * 客户端注册
-     * @param clientMeta 客户端信息
+     * @param basicClientInfo 客户端信息
      * @throws ServerException
      */
     @Override
-    public void register(ClientMeta clientMeta) throws ServerException {
-        if(InspectUtil.isInfoComplete(clientMeta)){
+    public void register(BasicClientInfo basicClientInfo) throws ServerException {
+        if(InspectUtil.isInfoComplete(basicClientInfo)){
             /**
              * 该客户端是否已经注册过
              */
-            if(clientMetas.stream().filter(item -> clientMeta.getClientIp().equals(item.getClientIp())).findAny().isPresent()){
+            if(roster.stream().filter(item -> basicClientInfo.getClientIp().equals(item.getClientIp())).findAny().isPresent()){
                 throw new ServerException(ServerExceptionConstants.CLIENT_ALREADY_REGISTER);
             }else {
                 /**
                  * 生成客户端识别码并注册
                  */
-                clientMeta.setClientId(IdentifyFactory.createClientId());
-                this.clientMetas.add(clientMeta);
+                basicClientInfo.setClientId(IdentifyFactory.createClientId());
+                this.roster.add(basicClientInfo);
             }
         }
     }
@@ -68,12 +73,12 @@ public class ClientMetaManage implements IClientMetaManage {
      */
     @Override
     public void unRegister(String clientId) throws ServerException {
-        ClientMeta clientMeta = clientMetas.stream().filter(item ->
+        BasicClientInfo basicClientInfo = roster.stream().filter(item ->
                 clientId.equals(item.getClientId())).findAny().get();
-        if(clientMeta == null){
+        if(basicClientInfo == null){
             throw new ServerException(ServerExceptionConstants.CLIENT_NOT_FIND);
         }else {
-            clientMetas.remove(clientMeta);
+            roster.remove(basicClientInfo);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.aoligei.remoter.manage;
 
-import com.aoligei.remoter.beans.ClientMeta;
+import com.aoligei.remoter.beans.BasicClientInfo;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 客户端身份管理器
  */
 @Component
-public class ClientManage implements Serializable {
+public class TerminalManage implements Serializable {
 
     /**
      * 序列化常量
@@ -21,7 +21,7 @@ public class ClientManage implements Serializable {
     /**
      * 当前客户端信息
      */
-    private ClientMeta clientInfo;
+    private BasicClientInfo clientInfo;
 
     /**
      * 客户端与服务器的连接编码
@@ -32,7 +32,7 @@ public class ClientManage implements Serializable {
      * 加载客户端信息到当前管理器
      */
     {
-        clientInfo = new ClientMeta("3f791e1b-3819-45f4-b37c-f757c371c728",
+        clientInfo = new BasicClientInfo("3f791e1b-3819-45f4-b37c-f757c371c728",
                 "ClientA",0,"127.0.0.1",false);
     }
 
@@ -40,7 +40,7 @@ public class ClientManage implements Serializable {
      * 获取客户端信息
      * @return
      */
-    public ClientMeta getClientInfo(){
+    public BasicClientInfo getClientInfo(){
         return clientInfo;
     }
 

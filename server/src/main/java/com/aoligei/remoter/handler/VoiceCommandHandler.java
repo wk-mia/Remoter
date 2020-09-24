@@ -6,10 +6,11 @@ import com.aoligei.remoter.business.aop.RequestInspect;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.exception.ServerException;
-import com.aoligei.remoter.manage.GroupCacheManage;
+import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -20,10 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 中，是遍历Masters集合分别转发该消息；但因目前暂不支持单个Slaver同时被多个Masters
  * 关注，所以实质上仍是点对点的业务场景。
  */
+@Component(value = "VoiceCommandHandler")
 public class VoiceCommandHandler extends AbstractServerCensorC2CHandler {
 
     @Autowired
-    private GroupCacheManage groupCacheManage;
+    private RemotingRosterManage remotingRosterManage;
 
     /**
      * 特定的处理器：声音输出处理器
@@ -39,6 +41,6 @@ public class VoiceCommandHandler extends AbstractServerCensorC2CHandler {
          * 转发消息给主控客户端
          */
         BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getClientId(),null, CommandEnum.VOICE_OUTPUT,baseRequest.getData(),null);
-        groupCacheManage.notifyAllMaster(baseRequest.getClientId(),baseResponse);
+        remotingRosterManage.notifyAllMaster(baseRequest.getClientId(),baseResponse);
     }
 }

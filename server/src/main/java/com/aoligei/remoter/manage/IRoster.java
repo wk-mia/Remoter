@@ -1,22 +1,22 @@
 package com.aoligei.remoter.manage;
 
-import com.aoligei.remoter.beans.ClientMeta;
+import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.exception.ServerException;
 
 /**
  * @author wk-mia
  * 2020-9-9
- * 客户端信息账册管理接口
+ * 已注册过的客户端花名册
  */
-public interface IClientMetaManage {
+public interface IRoster {
 
     /**
      * 向账册中注册账户
-     * @param ClientMeta 客户端信息
+     * @param BasicClientInfo 客户端信息
      * @return true/false
      * @throws ServerException
      */
-    void register(ClientMeta ClientMeta) throws ServerException;
+    void register(BasicClientInfo BasicClientInfo) throws ServerException;
 
     /**
      * 注销客户端

@@ -13,7 +13,7 @@ import java.util.concurrent.ArrayBlockingQueue;
  * 点对点模式客户端-命令发起处理器
  * 负责客户端向服务器发起命令，包括MASTER以及SLAVE的各种业务命令。
  */
-@Component
+@Component(value = "SponsorCommandHandler")
 public class SponsorCommandHandler extends AbstractSponsorCommandHandler {
 
     /**

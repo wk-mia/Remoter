@@ -9,5 +9,9 @@ logging:
   level:
     root: DEBUG
     com.aoligei.remoter: trace
+    sun: ERROR
+    javax: INFO
+    java.awt: ERROR
+    io.netty: INFO
   pattern:
     dateformat: yyyy-MM-dd HH:mm:ss

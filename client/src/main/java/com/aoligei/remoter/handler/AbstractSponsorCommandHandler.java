@@ -8,6 +8,7 @@ import com.aoligei.remoter.exception.SponsorException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 
@@ -18,6 +19,7 @@ import java.text.MessageFormat;
  * 负责客户端向服务器发起命令，包括MASTER以及SLAVE的各种业务命令。该处理器仅仅负责发起命令，
  * 不负责处理客户端给出的应答。
  */
+@Component(value = "AbstractSponsorCommandHandler")
 public abstract class AbstractSponsorCommandHandler extends AbstractClientHandler{
 
     private static Logger log;

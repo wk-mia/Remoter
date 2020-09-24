@@ -10,9 +10,9 @@ import io.netty.util.concurrent.ScheduledFuture;
 /**
  * @author wk-mia
  * 2020-9-2
- * 在线通道管理接口
+ * 远程控制工作中的客户端花名册
  */
-public interface ICacheManage {
+public interface IRemotingRoster {
 
     /**
      * 向在线通道分组管理器注册受控端的实例

@@ -4,12 +4,12 @@ package com.aoligei.remoter.beans;
 /**
  * @author wk-mia
  * 2020-9-2
- * 连接通道，用于维护单组连接。
+ * 控制元数据，用于维护单组连接。
  * 里面包含了slaveChannel和masterChannels两个对象。slaveChannel表示受控端，任何一个连接场景中
  * 只允许存在一个受控端；masterChannels表示主控端，主控端可以有多个，即是说，一个受控端可同时被
  * 多个主控端访问。
  */
-public class ChannelCache {
+public class RemotingElement {
 
     /**
      * 连接的唯一编码，用于标识一个Master和Slave的连接
@@ -18,17 +18,17 @@ public class ChannelCache {
     /**
      * 受控端元数据
      */
-    private MetaCache slaveMeta;
+    private OnlineElement slaveElement;
     /**
      * 主控端元数据
      */
-    private MetaCache masterMeta;
+    private OnlineElement masterElement;
 
 
-    public ChannelCache(String connectionId, MetaCache slaveMeta, MetaCache masterMeta) {
+    public RemotingElement(String connectionId, OnlineElement slaveElement, OnlineElement masterElement) {
         this.connectionId = connectionId;
-        this.slaveMeta = slaveMeta;
-        this.masterMeta = masterMeta;
+        this.slaveElement = slaveElement;
+        this.masterElement = masterElement;
     }
 
     public String getConnectionId() {
@@ -39,19 +39,19 @@ public class ChannelCache {
         this.connectionId = connectionId;
     }
 
-    public MetaCache getSlaveMeta() {
-        return slaveMeta;
+    public OnlineElement getSlaveElement() {
+        return slaveElement;
     }
 
-    public void setSlaveMeta(MetaCache slaveMeta) {
-        this.slaveMeta = slaveMeta;
+    public void setSlaveElement(OnlineElement slaveElement) {
+        this.slaveElement = slaveElement;
     }
 
-    public MetaCache getMasterMeta() {
-        return masterMeta;
+    public OnlineElement getMasterElement() {
+        return masterElement;
     }
 
-    public void setMasterMeta(MetaCache masterMeta) {
-        this.masterMeta = masterMeta;
+    public void setMasterElement(OnlineElement masterElement) {
+        this.masterElement = masterElement;
     }
 }

@@ -5,6 +5,7 @@ import com.aoligei.remoter.business.aop.RequestInspect;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.exception.ServerException;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -12,6 +13,7 @@ import io.netty.channel.ChannelHandlerContext;
  * 点对点模式服务端-心跳包处理器
  * 目前仅仅只是日志输出心跳包
  */
+@Component(value = "HeartbeatCommandHandler")
 public class HeartbeatCommandHandler extends AbstractServerCensorC2CHandler {
 
     /**

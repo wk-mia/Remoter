@@ -8,9 +8,9 @@ import io.netty.util.concurrent.ScheduledFuture;
 /**
  * @author wk-mia
  * 2020-9-9
- * 保持客户端在线连接的管理接口
+ * 在线连接的客户端花名册
  */
-public interface IOnlineConnectionManage {
+public interface IOnlineRoster {
 
     /**
      * 添加客户端的连接元数据

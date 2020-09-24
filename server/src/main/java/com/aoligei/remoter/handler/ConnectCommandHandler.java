@@ -7,7 +7,7 @@ import com.aoligei.remoter.constant.ResponseConstants;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ServerException;
-import com.aoligei.remoter.manage.OnlineConnectionManage;
+import com.aoligei.remoter.manage.impl.OnlineRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,9 @@ import org.springframework.stereotype.Component;
 public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
 
 
-    private OnlineConnectionManage onlineConnectionManage;
+    private OnlineRosterManage onlineConnectionManage;
     @Autowired
-    public void setOnlineConnectionManage(OnlineConnectionManage onlineConnectionManage){
+    public void setOnlineConnectionManage(OnlineRosterManage onlineConnectionManage){
         this.onlineConnectionManage = onlineConnectionManage;
     }
 

@@ -76,7 +76,7 @@ public class BuildUtil {
      * @param scheduledFuture 监听任务
      * @return MetaCache对象
      */
-    public static MetaCache buildMetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum){
-        return new MetaCache(clientId,channel,scheduledFuture,terminalTypeEnum);
+    public static OnlineElement buildMetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum){
+        return new OnlineElement(clientId,channel,scheduledFuture,terminalTypeEnum);
     }
 }

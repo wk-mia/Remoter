@@ -4,6 +4,7 @@ import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.handler.AbstractClientHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -11,6 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
  * 点对点模式主控端-屏幕截图处理器
  * 负责接受屏幕截图并处理
  */
+@Component(value = "ScreenShotsCommandHandler")
 public class ScreenShotsCommandHandler extends AbstractClientHandler {
     /**
      * 特定的处理器-屏幕截图处理器，供MASTER使用。

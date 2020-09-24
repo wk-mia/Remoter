@@ -1,13 +1,13 @@
 package com.aoligei.remoter.business;
 
 import com.aoligei.remoter.beans.BaseRequest;
-import com.aoligei.remoter.beans.ClientMeta;
+import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.business.aop.SponsorRequestInspect;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.SponsorException;
-import com.aoligei.remoter.manage.ClientManage;
+import com.aoligei.remoter.manage.TerminalManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class RequestProcessor {
 
     @Autowired
-    private ClientManage clientManage;
+    private TerminalManage terminalManage;
 
     /**
      * 连接请求
@@ -34,7 +34,7 @@ public class RequestProcessor {
          */
         BaseRequest baseRequest = new BaseRequest(){{
             setConnectionId(null);
-            setClientId(clientManage.getClientInfo().getClientId());
+            setClientId(terminalManage.getClientInfo().getClientId());
             setTerminalTypeEnum(null);
             setCommandEnum(CommandEnum.CONNECT);
             setData(null);
@@ -58,9 +58,9 @@ public class RequestProcessor {
             setTerminalTypeEnum(null);
             setCommandEnum(CommandEnum.REGISTER);
             setData(
-                    new ClientMeta(null,clientManage.getClientInfo().getClientName(),
-                            clientManage.getClientInfo().getClientSystemType(),clientManage.getClientInfo().getClientIp(),
-                            clientManage.getClientInfo().getRejectConnection())
+                    new BasicClientInfo(null, terminalManage.getClientInfo().getClientName(),
+                            terminalManage.getClientInfo().getClientSystemType(), terminalManage.getClientInfo().getClientIp(),
+                            terminalManage.getClientInfo().getRejectConnection())
             );
         }};
         return baseRequest;
@@ -80,7 +80,7 @@ public class RequestProcessor {
          */
         BaseRequest baseRequest = new BaseRequest(){{
             setConnectionId(null);
-            setClientId(clientManage.getClientInfo().getClientId());
+            setClientId(terminalManage.getClientInfo().getClientId());
             setTerminalTypeEnum(TerminalTypeEnum.MASTER);
             setCommandEnum(CommandEnum.CONTROL);
             setData(slaveClientId);

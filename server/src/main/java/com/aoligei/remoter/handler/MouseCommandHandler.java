@@ -6,10 +6,11 @@ import com.aoligei.remoter.business.aop.RequestInspect;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.exception.ServerException;
-import com.aoligei.remoter.manage.GroupCacheManage;
+import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
@@ -20,10 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * targetClientId分别转发该消息；但因目前暂不支持单个Master同时关注多个Slaver，
  * 所以实质上仍是点对点的业务场景。这部分的控制在RequestInspect的相关内容中。
  */
+@Component(value = "MouseCommandHandler")
 public class MouseCommandHandler extends AbstractServerCensorC2CHandler{
 
     @Autowired
-    private GroupCacheManage groupCacheManage;
+    private RemotingRosterManage remotingRosterManage;
 
     /**
      * 特定的处理器：鼠标输入处理器
@@ -40,6 +42,6 @@ public class MouseCommandHandler extends AbstractServerCensorC2CHandler{
          */
         BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.MOUSE_INPUT,
                 baseRequest.getData(),null);
-        groupCacheManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
+        remotingRosterManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }
 }
