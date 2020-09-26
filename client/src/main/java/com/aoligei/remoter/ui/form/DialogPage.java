@@ -7,7 +7,7 @@ import javax.swing.*;
  * 2020-8-31
  * 常用的弹窗类
  */
-public class DialogForm {
+public class DialogPage {
 
     /**
      * 警告信息弹窗

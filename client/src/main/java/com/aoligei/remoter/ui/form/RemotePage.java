@@ -2,7 +2,6 @@ package com.aoligei.remoter.ui.form;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -10,28 +9,21 @@ import java.awt.event.WindowListener;
 /**
  * @author wk-mia
  * 2020-8-28
- * 主窗体的定义
+ * 远程控制窗体的定义
  */
-@Component
-public class MainForm extends JFrame implements WindowListener {
+public class RemotePage extends JFrame implements WindowListener {
 
-    private static Logger log = LoggerFactory.getLogger(MainForm.class);
+    private static Logger log = LoggerFactory.getLogger(RemotePage.class);
 
     /**
      * 窗体定义
+     * @param title 窗体名称
      */
-    public MainForm(){
-        initStyle();
-    }
-
-    /**
-     * 初始化窗体样式
-     */
-    public void initStyle(){
-        this.setTitle("Remoter");
-        this.setSize(600,400);
+    public RemotePage(String title){
+        this.setTitle(title);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getOwner());
-        this.setResizable(false);
+        this.setVisible(true);
         this.addWindowListener(this);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
@@ -45,19 +37,11 @@ public class MainForm extends JFrame implements WindowListener {
         /**
          * 客户端实例销毁日志
          */
-        log.info("******客户端实例 [ " + this.getTitle() + " ] 即将关闭");
+        log.info("******远程实例 [ " + this.getTitle() + " ] 即将关闭连接");
         /**
          * 销毁实例
          */
         this.dispose();
-        /**
-         * 程序退出日志
-         */
-        log.info("******程序即将结束");
-        /**
-         * 程序退出
-         */
-        System.exit(0);
     }
 
     /**
@@ -113,5 +97,4 @@ public class MainForm extends JFrame implements WindowListener {
     public void windowDeactivated(WindowEvent e) {
 
     }
-
 }

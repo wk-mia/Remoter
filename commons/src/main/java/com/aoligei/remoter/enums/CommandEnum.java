@@ -29,6 +29,11 @@ public enum CommandEnum {
     CONTROL,
 
     /**
+     * 停止远程控制的命令
+     */
+    STOP_CONTROL,
+
+    /**
      * 发送心跳包时的命令
      */
     HEART_BEAT,

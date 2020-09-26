@@ -1,11 +1,9 @@
 package com.aoligei.remoter;
 
-import com.aoligei.remoter.ui.IHomePage;
-import com.aoligei.remoter.ui.listener.MainActionListener;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import com.aoligei.remoter.ui.service.action.IStart;
+import com.aoligei.remoter.ui.service.listener.HomePageActionListener;
+import com.aoligei.remoter.util.AccessConfigUtil;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -20,8 +18,9 @@ public class RemoterClientApplication {
         /**
          * 启动一个客户端的实例
          */
-        IHomePage homePage = context.getBean(MainActionListener.class);
+        IStart homePage = context.getBean(HomePageActionListener.class);
         homePage.start();
+        System.out.println(AccessConfigUtil.getValue(AccessConfigUtil.Config.PARAM,"component.icons.dir"));
     }
 
 }

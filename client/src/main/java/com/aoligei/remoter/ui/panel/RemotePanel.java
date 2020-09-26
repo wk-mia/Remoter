@@ -8,10 +8,10 @@ import java.awt.*;
 /**
  * @author wk-mia
  * 2020-8-31
- * 主窗体中远程连接区面板
+ * 远程连接区面板
  */
 @Component
-public class MainConnectPanel extends JPanel {
+public class RemotePanel extends JPanel {
 
     /**
      * 连接按钮
@@ -21,7 +21,7 @@ public class MainConnectPanel extends JPanel {
     /**
      * 面板构造函数
      */
-    public MainConnectPanel(){
+    public RemotePanel(){
         this.setBackground(Color.WHITE);
         this.setSize(300,200);
         /**
