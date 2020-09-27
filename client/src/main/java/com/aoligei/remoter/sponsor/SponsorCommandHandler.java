@@ -1,8 +1,9 @@
-package com.aoligei.remoter.handler;
+package com.aoligei.remoter.sponsor;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.TaskManage;
+import com.aoligei.remoter.sponsor.AbstractSponsorCommandHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ArrayBlockingQueue;

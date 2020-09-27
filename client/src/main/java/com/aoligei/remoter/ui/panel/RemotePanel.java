@@ -19,6 +19,23 @@ public class RemotePanel extends JPanel {
     private JButton connectButton;
 
     /**
+     * 控制按钮
+     */
+    private JButton controlButton;
+
+    /**
+     * 获取连接按钮
+     */
+    public JButton getConnectButton() {
+        return connectButton;
+    }
+
+    /**
+     * 获取控制按钮
+     */
+    public JButton getControlButton(){return controlButton;}
+
+    /**
      * 面板构造函数
      */
     public RemotePanel(){
@@ -49,13 +66,14 @@ public class RemotePanel extends JPanel {
         connectButton = new JButton("连接");
         connectButton.setFont(new Font("宋体",Font.PLAIN,12));
         connectButton.setSize(60,30);
+        /**
+         * 控制按钮
+         */
+        controlButton = new JButton("控制");
+        controlButton.setFont(new Font("宋体",Font.PLAIN,12));
+        controlButton.setSize(60,30);
         this.add(connectButton);
+        this.add(controlButton);
     }
 
-    /**
-     * 获取连接按钮
-     */
-    public JButton getConnectButton() {
-        return connectButton;
-    }
 }

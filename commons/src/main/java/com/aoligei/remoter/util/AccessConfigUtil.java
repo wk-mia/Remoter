@@ -28,11 +28,13 @@ public class AccessConfigUtil {
             /**防止bean的对象还没有被初始化完成*/
             bean.afterPropertiesSet();
             properties = bean.getObject();
+            String value = (String) properties.get(key);
+            /**转换编码*/
+            return new String(value.getBytes("ISO8859-1"),"UTF-8");
         }catch (Exception e){
             e.printStackTrace();
             return null;
         }
-        return (String) properties.get(key);
     }
 
     /**

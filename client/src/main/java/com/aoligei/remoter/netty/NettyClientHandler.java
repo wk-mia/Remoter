@@ -7,7 +7,7 @@ import com.aoligei.remoter.command.ICommandHandler;
 import com.aoligei.remoter.constant.HandlerLoadConstants;
 import com.aoligei.remoter.exception.HandlerLoadException;
 import com.aoligei.remoter.exception.SponsorException;
-import com.aoligei.remoter.handler.AbstractSponsorCommandHandler;
+import com.aoligei.remoter.sponsor.AbstractSponsorCommandHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

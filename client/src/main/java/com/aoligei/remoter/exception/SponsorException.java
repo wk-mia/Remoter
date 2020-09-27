@@ -5,7 +5,7 @@ package com.aoligei.remoter.exception;
  * 2020-9-8
  * 客户端发起请求异常
  */
-public class SponsorException extends Exception {
+public class SponsorException extends ClientException {
     /**
      * 无参构造函数
      */

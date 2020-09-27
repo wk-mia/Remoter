@@ -79,6 +79,9 @@ public class HomePageActionListener implements WindowListener, IStart {
         remotePanel.getConnectButton().setActionCommand(CommandEnum.CONNECT.name());
         remotePanel.getConnectButton().addActionListener(remoteListener);
 
+        remotePanel.getControlButton().setActionCommand(CommandEnum.CONTROL.name());
+        remotePanel.getControlButton().addActionListener(remoteListener);
+
         form.addWindowListener(this);
     }
 

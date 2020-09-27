@@ -11,6 +11,8 @@ import com.aoligei.remoter.manage.TerminalManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 /**
  * @author wk-mia
  * 2020-9-14
@@ -84,6 +86,22 @@ public class RequestProcessor {
             setTerminalTypeEnum(TerminalTypeEnum.MASTER);
             setCommandEnum(CommandEnum.CONTROL);
             setData(slaveClientId);
+        }};
+        return baseRequest;
+    }
+
+    /**
+     * 心跳请求
+     * @return 请求主体
+     * @throws SponsorException
+     */
+    public BaseRequest buildHeartbeatRequest()throws SponsorException{
+        BaseRequest baseRequest = new BaseRequest(){{
+            setConnectionId(terminalManage.getConnectionId());
+            setClientId(terminalManage.getClientInfo().getClientId());
+            setTerminalTypeEnum(TerminalTypeEnum.UNKNOWN);
+            setCommandEnum(CommandEnum.HEART_BEAT);
+            setData(new Date().toString());
         }};
         return baseRequest;
     }

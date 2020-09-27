@@ -1,9 +1,9 @@
-package com.aoligei.remoter.handler;
+package com.aoligei.remoter.sponsor;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
+import com.aoligei.remoter.command.ICommandHandler;
 import com.aoligei.remoter.constant.SponsorConstants;
-import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.exception.SponsorException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -20,9 +20,14 @@ import java.text.MessageFormat;
  * 不负责处理客户端给出的应答。
  */
 @Component(value = "AbstractSponsorCommandHandler")
-public abstract class AbstractSponsorCommandHandler extends AbstractClientHandler{
+public abstract class AbstractSponsorCommandHandler implements ICommandHandler<BaseResponse> {
 
     private static Logger log;
+
+    /**
+     * 通道缓存
+     */
+    private ChannelHandlerContext context;
 
     public AbstractSponsorCommandHandler(){
         /**
@@ -31,16 +36,14 @@ public abstract class AbstractSponsorCommandHandler extends AbstractClientHandle
         log = LoggerFactory.getLogger(this.getClass());
     }
 
-    /**
-     * 不负责处理服务器给出的应答，此处不作任何处理。
-     * @param channelHandlerContext 当前连接的处理器上下文
-     * @param baseResponse 原始消息
-     * @throws ClientException
-     */
-    @Override
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
-        return;
+    public void setContext(ChannelHandlerContext context){
+        this.context = context;
     }
+
+    public ChannelHandlerContext getContext(){
+        return this.context ;
+    }
+
 
     /**
      * 发送请求
@@ -48,10 +51,9 @@ public abstract class AbstractSponsorCommandHandler extends AbstractClientHandle
      * @throws SponsorException
      */
     protected void sendRequest(BaseRequest request) throws SponsorException {
-        ChannelHandlerContext chc = super.getChannelHandlerContext();
-        if (chc != null && chc.channel() != null && chc.channel().isOpen()){
+        if (context != null && context.channel() != null && context.channel().isOpen()){
             logInfo(request, SponsorConstants.PREPARE_SEND);
-            chc.writeAndFlush(request);
+            context.writeAndFlush(request);
         }else{
             logError(request, SponsorConstants.LOST_CONNECTION);
             throw new SponsorException(SponsorConstants.LOST_CONNECTION);
@@ -82,4 +84,25 @@ public abstract class AbstractSponsorCommandHandler extends AbstractClientHandle
      * @throws SponsorException 发起命令异常
      */
     public abstract void sponsor(BaseRequest baseRequest) throws SponsorException;
+
+    /**
+     * 发起命令处理器不会处理任何请求
+     * @param channelHandlerContext 当前连接的处理器上下文
+     * @param base Channel输入对象
+     * @throws Exception
+     */
+    @Override
+    public void handle(ChannelHandlerContext channelHandlerContext, BaseResponse base) throws Exception {
+        return;
+    }
+
+    /**
+     * 发起命令处理器不会丢弃任何请求
+     * @param channelHandlerContext 当前连接的处理器上下文
+     * @param baseBound Channel输入对象
+     */
+    @Override
+    public void abandon(ChannelHandlerContext channelHandlerContext, BaseResponse baseBound) {
+        return;
+    }
 }

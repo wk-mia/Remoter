@@ -22,11 +22,6 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
 
     private static Logger log;
 
-    /**
-     * 通道缓存
-     */
-    private ChannelHandlerContext chc;
-
     public AbstractClientHandler(){
         /**
          * 初始化实现类的日志处理器
@@ -73,12 +68,6 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
         log.error(MessageFormat.format("{0};error:{1}",baseResponse,error));
     }
 
-
-    protected void setChannelHandlerContext(ChannelHandlerContext chc){
-        this.chc = chc;
-    }
-
-    protected ChannelHandlerContext getChannelHandlerContext(){return chc;}
 
     /**
      * 审查完后具体的处理器

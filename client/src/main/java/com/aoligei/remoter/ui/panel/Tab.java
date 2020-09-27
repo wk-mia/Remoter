@@ -41,7 +41,6 @@ public class Tab extends JTabbedPane {
      * 初始化窗体样式
      */
     private void initStyle(){
-//        this.setSize(600,400);
         this.setTabPlacement(JTabbedPane.LEFT);
         for (int i = 0; i < tabNames.length; i++) {
             this.addTab(tabNames[i],
