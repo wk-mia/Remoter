@@ -2,7 +2,7 @@ package com.aoligei.remoter.sponsor;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.exception.SponsorException;
-import com.aoligei.remoter.manage.TaskManage;
+import com.aoligei.remoter.manage.ThreadPoolManage;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -10,11 +10,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 /**
  * @author wk-mia
  * 2020-9-16
- * 点对点模式客户端-命令发起处理器
- * 负责客户端向服务器发起命令，包括MASTER以及SLAVE的各种业务命令。
+ * 点对点模式客户端-单次命令发起处理器
+ * 负责客户端向服务器发起命令，包括MASTER以及SLAVE的各种单次业务命令。
  */
-@Component(value = "CommandSponsor")
-public class CommandSponsor extends AbstractCommandSponsor {
+@Component(value = "SingleCommandSponsor")
+public class SingleCommandSponsor extends AbstractCommandSponsor {
 
     /**
      * 请求队列
@@ -52,10 +52,9 @@ public class CommandSponsor extends AbstractCommandSponsor {
      * 构造器
      * 提交任务
      */
-    public CommandSponsor(){
-        TaskManage.submit(SponsorTask);
+    public SingleCommandSponsor(){
+        ThreadPoolManage.submit(SponsorTask);
     }
-
 
     /**
      * 向服务器发起命令

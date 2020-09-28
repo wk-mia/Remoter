@@ -2,8 +2,10 @@ package com.aoligei.remoter.handler;
 
 
 import com.aoligei.remoter.beans.BaseResponse;
+import com.aoligei.remoter.command.CommandFactory;
+import com.aoligei.remoter.command.ICommandSponsor;
+import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.exception.ClientException;
-import com.aoligei.remoter.manage.SponsorManage;
 import com.aoligei.remoter.manage.TerminalManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,11 @@ import org.springframework.stereotype.Component;
 @Component(value = "ConnectCommandHandler")
 public class ConnectCommandHandler extends AbstractClientHandler {
 
+    /**客户端身份管理器*/
     private TerminalManage terminalManage;
-    private SponsorManage sponsorManage;
     @Autowired
-    private void setTerminalManage(TerminalManage terminalManage,SponsorManage sponsorManage){
+    private void setTerminalManage(TerminalManage terminalManage){
         this.terminalManage = terminalManage;
-        this.sponsorManage = sponsorManage;
     }
 
     /**
@@ -36,9 +37,14 @@ public class ConnectCommandHandler extends AbstractClientHandler {
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
         /**更新客户端缓存*/
         terminalManage.setConnectionId(baseResponse.getConnectionId());
-        /**记录通道*/
-        sponsorManage.setContext(channelHandlerContext);
-        /**连接成功后，开始给服务器发送心跳*/
-        sponsorManage.startHeartbeat();
+        try {
+            ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.HEART_BEAT);
+            /**记录通道*/
+            sponsor.setContext(channelHandlerContext);
+            /**连接成功后开始心跳任务*/
+            sponsor.sponsor(null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

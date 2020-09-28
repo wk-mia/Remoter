@@ -29,7 +29,7 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
     /**
      * 通道上下文缓存
      */
-    private ChannelHandlerContext context;
+    protected ChannelHandlerContext context;
 
     public AbstractCommandSponsor(){
         /**

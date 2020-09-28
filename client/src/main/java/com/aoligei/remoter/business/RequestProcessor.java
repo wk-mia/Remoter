@@ -95,7 +95,7 @@ public class RequestProcessor {
      * @return 请求主体
      * @throws SponsorException
      */
-    public BaseRequest buildHeartbeatRequest()throws SponsorException{
+    public BaseRequest buildHeartbeatRequest(){
         BaseRequest baseRequest = new BaseRequest(){{
             setConnectionId(terminalManage.getConnectionId());
             setClientId(terminalManage.getClientInfo().getClientId());

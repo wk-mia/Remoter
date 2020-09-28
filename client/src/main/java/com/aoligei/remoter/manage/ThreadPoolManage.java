@@ -7,9 +7,9 @@ import java.util.concurrent.*;
 /**
  * @author wk-mia
  * 2020-9-16
- * 任务管理器
+ * 线程池管理器
  */
-public class TaskManage {
+public class ThreadPoolManage {
 
     /**
      * 线程池

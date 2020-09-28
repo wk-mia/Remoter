@@ -29,6 +29,11 @@ public class TerminalManage implements Serializable {
     private String connectionId;
 
     /**
+     * 是否正在远程工作中
+     */
+    private boolean remotingFlag = false;
+
+    /**
      * 加载客户端信息到当前管理器
      */
     {
@@ -51,4 +56,6 @@ public class TerminalManage implements Serializable {
     public void setConnectionId(String connectionId){
         this.connectionId = connectionId;
     }
+
+    public boolean getRemotingFlag(){return remotingFlag;}
 }

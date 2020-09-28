@@ -1,15 +1,8 @@
 package com.aoligei.remoter.netty;
 
-import com.aoligei.remoter.beans.BaseRequest;
-import com.aoligei.remoter.business.RequestProcessor;
-import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.exception.SponsorException;
-import com.aoligei.remoter.manage.SponsorManage;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
+import com.aoligei.remoter.manage.SingleTaskManage;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +18,16 @@ public class NettyClient {
 
     private static final Logger log = LoggerFactory.getLogger(NettyClient.class);
 
-
-    @Autowired
-    private SponsorManage manage;
-
-    /**
-     * 处理器初始化器
-     */
-    @Autowired
+    /**单次任务管理器*/
+    private SingleTaskManage singleTaskManage;
+    /**处理器初始化器*/
     private ClientChannelInitializer channelInitializer;
+    @Autowired
+    private NettyClient(SingleTaskManage singleTaskManage, ClientChannelInitializer channelInitializer){
+        this.singleTaskManage = singleTaskManage;
+        this.channelInitializer = channelInitializer;
+    }
+
     /**
      * IO线程池
      */
@@ -56,6 +50,10 @@ public class NettyClient {
         port = 60001;
     }
 
+    /**
+     * 注册
+     * @throws Exception
+     */
     public void register() throws Exception{
 
     }
@@ -65,7 +63,7 @@ public class NettyClient {
      * @throws Exception
      */
     public void connect() throws Exception{
-        manage.startConnect(host,port,group,channelInitializer);
+        singleTaskManage.startConnect(host,port,group,channelInitializer);
     }
 
     /**
@@ -73,7 +71,7 @@ public class NettyClient {
      * @param slaveId 请求类型
      */
     public void control(String slaveId) throws SponsorException {
-        manage.startControl(slaveId);
+        singleTaskManage.startControl(slaveId);
     }
 
     /**

@@ -22,35 +22,18 @@ import org.springframework.stereotype.Component;
 /**
  * @author wk-mia
  * 2020-9-28
- * 发起命令处理器管理器
- * 负责向Sponsors处理器发起命令，由具体的处理器发起请求。目前，Sponsor只有一个通用的处理器。
+ * 单次任务管理器：注册、连接、控制、断开等。
  */
 @Component
-public class SponsorManage {
+public class SingleTaskManage {
 
-    private static final Logger log = LoggerFactory.getLogger(SponsorManage.class);
+    private static final Logger log = LoggerFactory.getLogger(SingleTaskManage.class);
 
-    /**
-     * 请求组装器
-     */
+    /**请求组装器*/
     private RequestProcessor processor;
     @Autowired
     private void setProcessor(RequestProcessor processor){
         this.processor = processor;
-    }
-
-    /**
-     * Sponsor
-     */
-    private ICommandSponsor sponsor;
-
-    public void setContext(ChannelHandlerContext context){
-        try {
-            sponsor = CommandFactory.getCommandSponsor(CommandEnum.CONNECT);
-            sponsor.setContext(context);
-        }catch (HandlerLoadException e){
-
-        }
     }
 
     /**
@@ -78,18 +61,6 @@ public class SponsorManage {
         }
     }
 
-    /**
-     * 心跳请求
-     */
-    public void startHeartbeat(){
-        try {
-            sponsor.sponsor(processor.buildHeartbeatRequest());
-        }catch (SponsorException e){
-
-        }catch (Exception e){
-
-        }
-    }
 
     /**
      * 控制请求
@@ -97,11 +68,10 @@ public class SponsorManage {
      */
     public void startControl(String slaveId){
         try {
+            ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.CONTROL);
             sponsor.sponsor(processor.buildControlRequest(slaveId));
-        }catch (SponsorException e){
-
         }catch (Exception e){
-
+            e.printStackTrace();
         }
     }
 }
