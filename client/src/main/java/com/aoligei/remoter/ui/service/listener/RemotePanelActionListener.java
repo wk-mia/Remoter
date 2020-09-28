@@ -1,5 +1,6 @@
 package com.aoligei.remoter.ui.service.listener;
 
+import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.netty.NettyClient;
@@ -27,9 +28,6 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
     @Autowired
     private NettyClient nettyClient;
 
-    @Autowired
-    private RequestProcessor processor;
-
     /**
      * 连接服务器
      */
@@ -56,7 +54,7 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
     @Override
     public void control() {
         try{
-            nettyClient.sponsorCommand(processor.buildControlRequest("555"));
+            nettyClient.control("555");
         }catch (Exception e){
             DialogPage.errorDialog("connect-error",e.getMessage());
         }

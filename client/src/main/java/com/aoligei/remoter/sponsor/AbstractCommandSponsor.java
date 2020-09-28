@@ -3,7 +3,9 @@ package com.aoligei.remoter.sponsor;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.ICommandHandler;
+import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.constant.SponsorConstants;
+import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.exception.SponsorException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -20,30 +22,21 @@ import java.text.MessageFormat;
  * 不负责处理客户端给出的应答。
  */
 @Component(value = "AbstractSponsorCommandHandler")
-public abstract class AbstractSponsorCommandHandler implements ICommandHandler<BaseResponse> {
+public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequest> {
 
     private static Logger log;
 
     /**
-     * 通道缓存
+     * 通道上下文缓存
      */
     private ChannelHandlerContext context;
 
-    public AbstractSponsorCommandHandler(){
+    public AbstractCommandSponsor(){
         /**
          * 初始化实现类的日志处理器
          */
         log = LoggerFactory.getLogger(this.getClass());
     }
-
-    public void setContext(ChannelHandlerContext context){
-        this.context = context;
-    }
-
-    public ChannelHandlerContext getContext(){
-        return this.context ;
-    }
-
 
     /**
      * 发送请求
@@ -78,31 +71,26 @@ public abstract class AbstractSponsorCommandHandler implements ICommandHandler<B
         log.error(MessageFormat.format("{0};error:{1}",object.getClass().getCanonicalName(),error));
     }
 
+
     /**
      * 发起请求
-     * @param baseRequest 请求体
+     * @param request 请求体
      * @throws SponsorException 发起命令异常
      */
-    public abstract void sponsor(BaseRequest baseRequest) throws SponsorException;
-
-    /**
-     * 发起命令处理器不会处理任何请求
-     * @param channelHandlerContext 当前连接的处理器上下文
-     * @param base Channel输入对象
-     * @throws Exception
-     */
     @Override
-    public void handle(ChannelHandlerContext channelHandlerContext, BaseResponse base) throws Exception {
-        return;
+    public void sponsor(BaseRequest request) throws SponsorException {
+        particularSponsor(request);
+    }
+
+    @Override
+    public void setContext(ChannelHandlerContext context){
+        this.context = context;
     }
 
     /**
-     * 发起命令处理器不会丢弃任何请求
-     * @param channelHandlerContext 当前连接的处理器上下文
-     * @param baseBound Channel输入对象
+     * 特定的发起器
+     * @param request 待发送消息
+     * @throws SponsorException 异常信息
      */
-    @Override
-    public void abandon(ChannelHandlerContext channelHandlerContext, BaseResponse baseBound) {
-        return;
-    }
+    protected abstract void particularSponsor(BaseRequest request) throws SponsorException;
 }

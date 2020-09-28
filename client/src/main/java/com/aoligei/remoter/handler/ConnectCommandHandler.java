@@ -1,13 +1,10 @@
 package com.aoligei.remoter.handler;
 
-import com.aoligei.remoter.beans.BaseRequest;
+
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.business.RequestProcessor;
-import com.aoligei.remoter.enums.ResponseStatusEnum;
-import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ClientException;
+import com.aoligei.remoter.manage.SponsorManage;
 import com.aoligei.remoter.manage.TerminalManage;
-import com.aoligei.remoter.sponsor.SponsorCommandHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,14 +18,12 @@ import org.springframework.stereotype.Component;
 @Component(value = "ConnectCommandHandler")
 public class ConnectCommandHandler extends AbstractClientHandler {
 
-    private TerminalManage manage;
-    private RequestProcessor processor;
-    private SponsorCommandHandler sponsorCommandHandler;
+    private TerminalManage terminalManage;
+    private SponsorManage sponsorManage;
     @Autowired
-    private void setTerminalManage(TerminalManage manage,RequestProcessor processor,SponsorCommandHandler sponsorCommandHandler){
-        this.manage = manage;
-        this.processor = processor;
-        this.sponsorCommandHandler = sponsorCommandHandler;
+    private void setTerminalManage(TerminalManage terminalManage,SponsorManage sponsorManage){
+        this.terminalManage = terminalManage;
+        this.sponsorManage = sponsorManage;
     }
 
     /**
@@ -39,12 +34,11 @@ public class ConnectCommandHandler extends AbstractClientHandler {
      */
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
-        /**记录通道*/
-        sponsorCommandHandler.setContext(channelHandlerContext);
         /**更新客户端缓存*/
-        manage.setConnectionId(baseResponse.getConnectionId());
+        terminalManage.setConnectionId(baseResponse.getConnectionId());
+        /**记录通道*/
+        sponsorManage.setContext(channelHandlerContext);
         /**连接成功后，开始给服务器发送心跳*/
-        BaseRequest baseRequest = processor.buildHeartbeatRequest();
-        sponsorCommandHandler.sponsor(baseRequest);
+        sponsorManage.startHeartbeat();
     }
 }

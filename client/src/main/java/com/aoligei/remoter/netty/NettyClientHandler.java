@@ -4,10 +4,11 @@ import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandHandler;
+import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.constant.HandlerLoadConstants;
 import com.aoligei.remoter.exception.HandlerLoadException;
 import com.aoligei.remoter.exception.SponsorException;
-import com.aoligei.remoter.sponsor.AbstractSponsorCommandHandler;
+import com.aoligei.remoter.sponsor.AbstractCommandSponsor;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -27,7 +28,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse
         /**
          * 分发命令并进行处理
          */
-        ICommandHandler commandHandler = CommandFactory.getCommandHandler(baseResponse.getCommandEnum(),"handler");
+        ICommandHandler commandHandler = CommandFactory.getCommandHandler(baseResponse.getCommandEnum());
         commandHandler.handle(channelHandlerContext,baseResponse);
     }
 
@@ -36,20 +37,4 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse
 
     }
 
-    protected void sponsorCommand(BaseRequest request) throws SponsorException{
-        /**
-         * 调用Sponsor处理器处理命令
-         */
-        try{
-            final ICommandHandler commandHandler = CommandFactory.getCommandHandler(request.getCommandEnum(),"sponsor");
-            if(commandHandler instanceof AbstractSponsorCommandHandler){
-                AbstractSponsorCommandHandler handler = (AbstractSponsorCommandHandler) commandHandler;
-                handler.sponsor(request);
-            }else {
-                throw new HandlerLoadException(HandlerLoadConstants.HANDLER_TYPE_ERROR);
-            }
-        }catch (HandlerLoadException e){
-            throw new SponsorException(e.getMessage(),e);
-        }
-    }
 }

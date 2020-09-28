@@ -2,7 +2,9 @@ package com.aoligei.remoter.netty;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.business.RequestProcessor;
+import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.exception.SponsorException;
+import com.aoligei.remoter.manage.SponsorManage;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -23,8 +25,9 @@ public class NettyClient {
 
     private static final Logger log = LoggerFactory.getLogger(NettyClient.class);
 
+
     @Autowired
-    private RequestProcessor processor;
+    private SponsorManage manage;
 
     /**
      * 处理器初始化器
@@ -62,29 +65,15 @@ public class NettyClient {
      * @throws Exception
      */
     public void connect() throws Exception{
-        final Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(group)
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .handler(channelInitializer);
-        final ChannelFuture sync = bootstrap.connect(host, port).sync();
-        final BaseRequest connectRequest = processor.buildConnectRequest();
-        sync.channel().writeAndFlush(connectRequest);
-        try {
-            sync.channel().closeFuture();
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            throw e;
-        }
+        manage.startConnect(host,port,group,channelInitializer);
     }
 
     /**
-     * 向服务器发送请求
-     * @param baseRequest 请求体
+     * 向服务器发送控制请求
+     * @param slaveId 请求类型
      */
-    public void sponsorCommand(BaseRequest baseRequest) throws SponsorException {
-        NettyClientHandler channelHandler = channelInitializer.getChannelHandler();
-        channelHandler.sponsorCommand(baseRequest);
+    public void control(String slaveId) throws SponsorException {
+        manage.startControl(slaveId);
     }
 
     /**

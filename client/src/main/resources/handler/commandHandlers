@@ -1,6 +1,3 @@
-REGISTER::handler::com.aoligei.remoter.handler.RegisterCommandHandler
-CONNECT::handler::com.aoligei.remoter.handler.ConnectCommandHandler
-REGISTER::sponsor::com.aoligei.remoter.sponsor.SponsorCommandHandler
-CONNECT::sponsor::com.aoligei.remoter.sponsor.SponsorCommandHandler
-EXCEPTION::handler::com.aoligei.remoter.handler.ExceptionHandler
-CONTROL::sponsor::com.aoligei.remoter.sponsor.SponsorCommandHandler
+REGISTER::com.aoligei.remoter.handler.RegisterCommandHandler
+CONNECT::com.aoligei.remoter.handler.ConnectCommandHandler
+EXCEPTION::com.aoligei.remoter.handler.ExceptionHandler

@@ -3,7 +3,6 @@ package com.aoligei.remoter.sponsor;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.TaskManage;
-import com.aoligei.remoter.sponsor.AbstractSponsorCommandHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -14,8 +13,8 @@ import java.util.concurrent.ArrayBlockingQueue;
  * 点对点模式客户端-命令发起处理器
  * 负责客户端向服务器发起命令，包括MASTER以及SLAVE的各种业务命令。
  */
-@Component(value = "SponsorCommandHandler")
-public class SponsorCommandHandler extends AbstractSponsorCommandHandler {
+@Component(value = "CommandSponsor")
+public class CommandSponsor extends AbstractCommandSponsor {
 
     /**
      * 请求队列
@@ -53,17 +52,18 @@ public class SponsorCommandHandler extends AbstractSponsorCommandHandler {
      * 构造器
      * 提交任务
      */
-    public SponsorCommandHandler(){
+    public CommandSponsor(){
         TaskManage.submit(SponsorTask);
     }
 
+
     /**
      * 向服务器发起命令
-     * @param baseRequest 请求体
+     * @param request 请求体
      * @throws SponsorException 发起命令异常
      */
     @Override
-    public void sponsor(BaseRequest baseRequest) throws SponsorException {
-        queue.offer(baseRequest);
+    protected void particularSponsor(BaseRequest request) throws SponsorException {
+        queue.offer(request);
     }
 }

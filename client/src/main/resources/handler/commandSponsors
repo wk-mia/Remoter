@@ -1,0 +1,3 @@
+REGISTER::com.aoligei.remoter.sponsor.CommandSponsor
+CONNECT::com.aoligei.remoter.sponsor.CommandSponsor
+CONTROL::com.aoligei.remoter.sponsor.CommandSponsor
