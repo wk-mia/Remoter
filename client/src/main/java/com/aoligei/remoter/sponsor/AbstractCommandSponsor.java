@@ -26,10 +26,6 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
 
     private static Logger log;
 
-    /**
-     * 通道上下文缓存
-     */
-    protected ChannelHandlerContext context;
 
     public AbstractCommandSponsor(){
         /**
@@ -38,20 +34,6 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
         log = LoggerFactory.getLogger(this.getClass());
     }
 
-    /**
-     * 发送请求
-     * @param request 请求体
-     * @throws SponsorException
-     */
-    protected void sendRequest(BaseRequest request) throws SponsorException {
-        if (context != null && context.channel() != null && context.channel().isOpen()){
-            logInfo(request, SponsorConstants.PREPARE_SEND);
-            context.writeAndFlush(request);
-        }else{
-            logError(request, SponsorConstants.LOST_CONNECTION);
-            throw new SponsorException(SponsorConstants.LOST_CONNECTION);
-        }
-    }
 
     /**
      * Info级别日志，发起任务处理器使用
@@ -82,10 +64,6 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
         particularSponsor(request);
     }
 
-    @Override
-    public void setContext(ChannelHandlerContext context){
-        this.context = context;
-    }
 
     /**
      * 特定的发起器
