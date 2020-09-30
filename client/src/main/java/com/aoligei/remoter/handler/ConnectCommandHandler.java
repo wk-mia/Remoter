@@ -38,10 +38,8 @@ public class ConnectCommandHandler extends AbstractClientHandler {
         /**更新客户端缓存*/
         terminalManage.setConnectionId(baseResponse.getConnectionId());
         try {
-            ICommandSponsor singleSponsor = CommandFactory.getCommandSponsor(CommandEnum.CONTROL);
             ICommandSponsor cycleSponsor = CommandFactory.getCommandSponsor(CommandEnum.HEART_BEAT);
             /**记录通道：所有Sponsor记录下context*/
-            singleSponsor.setContext(channelHandlerContext);
             cycleSponsor.setContext(channelHandlerContext);
             /**连接成功后开始心跳任务*/
             cycleSponsor.sponsor(null);

@@ -19,10 +19,6 @@ import java.util.concurrent.TimeUnit;
 @Component(value = "CycleCommandSponsor")
 public class CycleCommandSponsor extends AbstractCommandSponsor  {
 
-    /**
-     * 通道上下文缓存
-     */
-    protected ChannelHandlerContext context;
 
     /**周期性任务管理器*/
     private CycleTaskManage cycleTaskManage;
@@ -31,14 +27,6 @@ public class CycleCommandSponsor extends AbstractCommandSponsor  {
         this.cycleTaskManage = cycleTaskManage;
     }
 
-    /**
-     * 设置通道
-     * @param context 通道上下文
-     */
-    @Override
-    public void setContext(ChannelHandlerContext context){
-        this.context = context;
-    }
 
     /**
      * 周期性向服务器发起命令

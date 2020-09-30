@@ -18,19 +18,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 @Component(value = "SingleCommandSponsor")
 public class SingleCommandSponsor extends AbstractCommandSponsor {
 
-    /**
-     * 通道上下文缓存
-     */
-    protected ChannelHandlerContext context;
-
-    /**
-     * 设置通道
-     * @param context 通道上下文
-     */
-    @Override
-    public void setContext(ChannelHandlerContext context){
-        this.context = context;
-    }
 
     /**
      * 请求队列
@@ -82,18 +69,4 @@ public class SingleCommandSponsor extends AbstractCommandSponsor {
         queue.offer(request);
     }
 
-    /**
-     * 发送请求
-     * @param request 请求体
-     * @throws SponsorException
-     */
-    protected void sendRequest(BaseRequest request) throws SponsorException {
-        if (context != null && context.channel() != null && context.channel().isOpen()){
-            logInfo(request, SponsorConstants.PREPARE_SEND);
-            context.writeAndFlush(request);
-        }else{
-            logError(request, SponsorConstants.LOST_CONNECTION);
-            throw new SponsorException(SponsorConstants.LOST_CONNECTION);
-        }
-    }
 }

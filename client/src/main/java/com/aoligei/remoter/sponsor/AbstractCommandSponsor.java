@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
+import java.util.Map;
 
 /**
  * @author wk-mia
@@ -25,6 +26,9 @@ import java.text.MessageFormat;
 public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequest> {
 
     private static Logger log;
+
+    /**抽象类不能注入到容器中，保证实现类拿到的context是同一个，所以用静态*/
+    protected static ChannelHandlerContext context;
 
 
     public AbstractCommandSponsor(){
@@ -53,6 +57,29 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
         log.error(MessageFormat.format("{0};error:{1}",object.getClass().getCanonicalName(),error));
     }
 
+    /**
+     * 设置通道上下文
+     * @param context 通道上下文
+     */
+    @Override
+    public void setContext(ChannelHandlerContext context) {
+        this.context = context;
+    }
+
+    /**
+     * 发送请求
+     * @param request 请求体
+     * @throws SponsorException
+     */
+    protected void sendRequest(BaseRequest request) throws SponsorException {
+        if (context != null && context.channel() != null && context.channel().isOpen()){
+            logInfo(request, SponsorConstants.PREPARE_SEND);
+            context.writeAndFlush(request);
+        }else{
+            logError(request, SponsorConstants.LOST_CONNECTION);
+            throw new SponsorException(SponsorConstants.LOST_CONNECTION);
+        }
+    }
 
     /**
      * 发起请求
