@@ -47,7 +47,6 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
      */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws Exception {
-        log.info(baseRequest.toString());
         /**
          * 分发命令并进行处理
          */
@@ -87,7 +86,7 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.info(ctx.name()+"下线了");
     }
 }

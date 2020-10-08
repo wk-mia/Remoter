@@ -48,16 +48,20 @@ public class SingleTaskManage {
         final Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
+                .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                 .handler(channelInitializer);
-        final ChannelFuture sync = bootstrap.connect(host, port).sync();
-        final BaseRequest connectRequest = processor.buildConnectRequest();
-        sync.channel().writeAndFlush(connectRequest);
         try {
-            sync.channel().closeFuture();
+            final ChannelFuture sync = bootstrap.connect(host, port).sync();
+            final BaseRequest connectRequest = processor.buildConnectRequest();
+            sync.channel().writeAndFlush(connectRequest);
+            sync.channel().closeFuture().sync();
         }catch (Exception e){
             log.error(e.getMessage(),e);
             throw e;
+        }finally {
+
         }
     }
 

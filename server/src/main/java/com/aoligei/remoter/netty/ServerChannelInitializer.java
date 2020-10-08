@@ -4,8 +4,9 @@ import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.convert.RemoterDecoder;
 import com.aoligei.remoter.convert.RemoterEncoder;
-import com.aoligei.remoter.initial.AbstractRemoterChannelInitializer;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.socket.SocketChannel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,23 +17,32 @@ import org.springframework.stereotype.Component;
  * 服务器通道初始化器
  */
 @Component
-public class ServerChannelInitializer  extends AbstractRemoterChannelInitializer {
+public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     @Autowired
     private ServerChannelC2CHandler channelHandler;
 
+    /**
+     * 通道初始化
+     * 添加编码器、解码器及handler
+     */
     @Override
-    protected ChannelHandler setHandler() {
+    protected void initChannel(SocketChannel socketChannel) throws Exception {
+        socketChannel.pipeline()
+                .addLast(setDecoder())
+                .addLast(setEncoder())
+                .addLast(setHandler());
+    }
+
+    private ChannelHandler setHandler() {
         return channelHandler;
     }
 
-    @Override
-    protected RemoterDecoder setDecoder() {
+    private RemoterDecoder setDecoder() {
         return new RemoterDecoder(BaseRequest.class);
     }
 
-    @Override
-    protected RemoterEncoder setEncoder() {
+    private RemoterEncoder setEncoder() {
         return new RemoterEncoder(BaseResponse.class);
     }
 

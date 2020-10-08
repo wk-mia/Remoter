@@ -34,7 +34,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
+        log.info("----" + cause.getMessage());
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        log.info(ctx.name()+"断开连接");
+    }
 }

@@ -31,20 +31,22 @@ public class NettyServer {
     private void bind(int port) throws InterruptedException{
         final NioEventLoopGroup boss=new NioEventLoopGroup();
         final NioEventLoopGroup worker=new NioEventLoopGroup();
-
+        final ServerBootstrap bootstrap = new ServerBootstrap();
+        bootstrap.group(boss,worker)
+                .channel(NioServerSocketChannel.class)
+                /**保持连接数*/
+                .option(ChannelOption.SO_BACKLOG,1024)
+                /**保持连接*/
+                .childOption(ChannelOption.SO_KEEPALIVE,true)
+                .childHandler(channelInitialize);
         try{
-            final ServerBootstrap bootstrap = new ServerBootstrap();
-            bootstrap.group(boss,worker)
-                    .channel(NioServerSocketChannel.class)
-                    .localAddress(new InetSocketAddress(port))
-                    .option(ChannelOption.SO_BACKLOG,1024)
-                    .childOption(ChannelOption.SO_KEEPALIVE,true)
-                    .childHandler(channelInitialize);
 
-            final ChannelFuture f = bootstrap.bind().sync();
+            final ChannelFuture future = bootstrap.bind(port).sync();
+            if(future.isSuccess()){
+                log.info("server start on port:{}",port);
+            }
 
-            log.info("server start on port:{}",port);
-            f.channel().closeFuture().sync();
+            future.channel().closeFuture().sync();
         }finally {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
