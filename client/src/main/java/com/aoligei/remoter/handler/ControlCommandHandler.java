@@ -50,7 +50,7 @@ public class ControlCommandHandler extends AbstractClientHandler {
                     channelHandlerContext.writeAndFlush(baseRequest);
 
                     terminalManage.setConnectionId(baseResponse.getConnectionId());
-                    logInfo(baseResponse,"客户端已同意远程连接");
+                    logInfo("the client has agreed to the remote connection,the screen shots mission is about to begin");
                     /**
                      * 开始发送屏幕截图
                      */
@@ -66,10 +66,10 @@ public class ControlCommandHandler extends AbstractClientHandler {
                  * 主控端，拿到连接编码。
                  */
                 terminalManage.setConnectionId(baseResponse.getConnectionId());
-                logInfo(baseResponse,baseResponse.getMessage());
+                logInfo(baseResponse.getMessage());
             }
         }else if(baseResponse.getStatus() == ResponseStatusEnum.ERROR) {
-            logError(baseResponse,baseResponse.getMessage());
+            logError(baseResponse.getMessage());
         }else {
         }
     }

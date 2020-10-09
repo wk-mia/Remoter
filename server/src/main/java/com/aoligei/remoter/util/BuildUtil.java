@@ -73,10 +73,9 @@ public class BuildUtil {
      * 构建并返回一个MetaCache
      * @param clientId 身份识别码
      * @param channel 通道
-     * @param scheduledFuture 监听任务
-     * @return MetaCache对象
+     * @return OnlineElement对象
      */
-    public static OnlineElement buildMetaCache(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum){
-        return new OnlineElement(clientId,channel,scheduledFuture,terminalTypeEnum);
+    public static OnlineElement buildMetaCache(String clientId, Channel channel, TerminalTypeEnum terminalTypeEnum){
+        return new OnlineElement(clientId,channel,terminalTypeEnum);
     }
 }

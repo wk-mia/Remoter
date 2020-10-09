@@ -69,7 +69,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                     BaseResponse baseResponse = BuildUtil.buildResponseOK(connectionId,TerminalTypeEnum.SERVER_2_SLAVE,
                             baseRequest.getCommandEnum(),null,null);
                     remotingRosterManage.registerMaster(baseRequest.getConnectionId(),baseRequest.getClientId(),
-                            channelHandlerContext.channel(), remotingRosterManage.getScheduled(channelHandlerContext,3));
+                            channelHandlerContext.channel());
                     slaveMeta.getChannel().writeAndFlush(baseResponse);
                 }
             }else {
@@ -101,7 +101,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                         baseRequest.getCommandEnum(), null, ResponseStatusEnum.ERROR,ResponseConstants.SLAVE_REFUSED_CONNECTION);
                 remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
                 remotingRosterManage.remotingRoster.remove(remotingElement);
-                logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已拒绝控制");
+                logInfo("slaver [" + baseRequest.getClientId() + "] has refused the connection");
             }else {
                 /**
                  * Slave同意Master发起的连接，将Slave的连接注册到连接组中，返回同意连接的消息给Master
@@ -111,8 +111,8 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                         baseRequest.getCommandEnum(),null,ResponseConstants.SLAVE_AGREE_CONNECTION);
                 remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
                 remotingRosterManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),
-                        channelHandlerContext.channel(), remotingRosterManage.getScheduled(channelHandlerContext,3));
-                logInfo(baseRequest,"Slave[" + baseRequest.getClientId() + "]已接受控制");
+                        channelHandlerContext.channel());
+                logInfo("slaver [" + baseRequest.getClientId() + "]  has accepted the connection");
             }
         }else {
             throw new IncompleteParamException(IncompleteParamConstants.TERMINAL_TYPE_ERROR);

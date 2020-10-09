@@ -43,12 +43,11 @@ public class OnlineRosterManage implements IOnlineRoster {
      * 添加客户端的连接元数据
      * @param clientId 客户端身份识别码
      * @param channel 通道
-     * @param scheduledFuture 监听任务
      * @param terminalTypeEnum 终端类型
      * @throws ServerException
      */
     @Override
-    public void add(String clientId, Channel channel, ScheduledFuture scheduledFuture, TerminalTypeEnum terminalTypeEnum)throws ServerException {
+    public void add(String clientId, Channel channel, TerminalTypeEnum terminalTypeEnum)throws ServerException {
         /**
          * 通道异常
          */
@@ -59,7 +58,7 @@ public class OnlineRosterManage implements IOnlineRoster {
          * 当客户端身份识别码能在基本信息的账册中找到，添加进在线连接集合中
          */
         if(rosterManage.getRoster().stream().filter(item -> clientId.equals(item.getClientId())).findAny().isPresent()){
-            OnlineElement onlineElement = BuildUtil.buildMetaCache(clientId, channel, scheduledFuture, terminalTypeEnum);
+            OnlineElement onlineElement = BuildUtil.buildMetaCache(clientId, channel, terminalTypeEnum);
             onlineRoster.add(onlineElement);
         }else {
             throw new ServerException(ServerExceptionConstants.CLIENT_NOT_REGISTER);

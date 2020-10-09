@@ -37,6 +37,7 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
      */
     @Override
     public void handle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
+        log.debug(MessageFormat.format("request: {0}",baseRequest));
         particularHandle(channelHandlerContext,baseRequest);
     }
 
@@ -52,20 +53,18 @@ public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<
 
     /**
      * Info级别日志
-     * @param baseRequest 请求体
      * @param info 输出信息
      */
-    protected void logInfo(BaseRequest baseRequest,String info){
-        log.info(MessageFormat.format("{0};message:{1}",baseRequest,info));
+    protected void logInfo(String info){
+        log.info(MessageFormat.format("info:{0}",info));
     }
 
     /**
      * Error级别日志
-     * @param baseRequest 请求体
      * @param error 异常信息
      */
-    protected void logError(BaseRequest baseRequest,String error){
-        log.error(MessageFormat.format("{0};message:{1}",baseRequest,error));
+    protected void logError(String error){
+        log.error(MessageFormat.format("error:{0}",error));
     }
 
 

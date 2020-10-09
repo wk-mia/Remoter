@@ -27,7 +27,7 @@ public class HeartbeatCommandHandler extends AbstractServerCensorC2CHandler {
     @RequestInspect(inspectItem = {InspectEnum.ORDINARY_PARAMS})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
         String clientId = baseRequest.getClientId();
-        StringBuilder info = new StringBuilder().append("receive a heartbeat from:").append(clientId);
-        logInfo(baseRequest,info.toString());
+        StringBuilder info = new StringBuilder().append("receive a heartbeat from: ").append(clientId);
+        logInfo(info.toString());
     }
 }

@@ -37,6 +37,7 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
      */
     @Override
     public void handle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
+        log.debug(MessageFormat.format("response: {0}",baseResponse));
         particularHandle(channelHandlerContext,baseResponse);
     }
 
@@ -52,20 +53,18 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
 
     /**
      * Info级别日志
-     * @param baseResponse 返回体
      * @param info 输出信息
      */
-    protected void logInfo(BaseResponse baseResponse, String info){
-        log.info(MessageFormat.format("{0};message:{1}",baseResponse,info));
+    protected void logInfo(String info){
+        log.info(MessageFormat.format("info: {0}",info));
     }
 
     /**
      * Error级别日志
-     * @param baseResponse 返回体
      * @param error 异常信息
      */
-    protected void logError(BaseResponse baseResponse,String error){
-        log.error(MessageFormat.format("{0};error:{1}",baseResponse,error));
+    protected void logError(String error){
+        log.info(MessageFormat.format("error: {0}",error));
     }
 
 

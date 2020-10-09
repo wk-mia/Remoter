@@ -42,6 +42,7 @@ public class ConnectCommandHandler extends AbstractClientHandler {
             /**记录通道：所有Sponsor记录下context*/
             cycleSponsor.setContext(channelHandlerContext);
             /**连接成功后开始心跳任务*/
+            logInfo("the server has processed the connection,the heartbeat mission is about to begin");
             cycleSponsor.sponsor(null);
         }catch (Exception e){
             e.printStackTrace();

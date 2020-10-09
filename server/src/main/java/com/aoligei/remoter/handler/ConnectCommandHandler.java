@@ -47,13 +47,12 @@ public class ConnectCommandHandler extends AbstractServerCensorC2CHandler  {
          * 连接时不需要设备类型，设备类型在Control处理器中指定
          */
         TerminalTypeEnum terminalTypeEnum = TerminalTypeEnum.UNKNOWN;
-        onlineConnectionManage.add(baseRequest.getClientId(),channelHandlerContext.channel(),
-                onlineConnectionManage.getScheduled(channelHandlerContext,3),terminalTypeEnum);
+        onlineConnectionManage.add(baseRequest.getClientId(),channelHandlerContext.channel(),terminalTypeEnum);
 
         BaseResponse baseResponse = BuildUtil.buildResponseOK(null, TerminalTypeEnum.SERVER,baseRequest.getCommandEnum(),
                 null,ResponseConstants.CLIENT_CONNECT_SUCCEEDED);
         channelHandlerContext.writeAndFlush(baseResponse);
 
-        logInfo(baseRequest,"客户端[" + baseRequest.getClientId() + "]连接服务器成功");
+        logInfo("client [" + baseRequest.getClientId() + "] connected success");
     }
 }

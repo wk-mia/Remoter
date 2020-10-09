@@ -19,20 +19,18 @@ public interface IRemotingRoster {
      * @param connectionId 连接编码
      * @param slaveClientId 受控端的身份识别码
      * @param channel 通道
-     * @param scheduledFuture 监听任务
      * @throws ServerException 异常信息
      */
-    void registerSlave(String connectionId, String slaveClientId, Channel channel, ScheduledFuture scheduledFuture)throws ServerException;
+    void registerSlave(String connectionId, String slaveClientId, Channel channel)throws ServerException;
 
     /**
      * 向在线通道分组管理器注册主控端的实例
      * @param connectionId 受连接编码
      * @param masterClientId 主控端的身份识别码
      * @param channel 通道
-     * @param scheduledFuture 监听任务
      * @throws ServerException 异常信息
      */
-    void registerMaster(String connectionId, String masterClientId, Channel channel, ScheduledFuture scheduledFuture)throws ServerException;
+    void registerMaster(String connectionId, String masterClientId, Channel channel)throws ServerException;
 
     /**
      * 从在线通道分组管理器中注销受控端的实例

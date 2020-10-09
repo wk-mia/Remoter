@@ -41,11 +41,11 @@ public class SingleCommandSponsor extends AbstractCommandSponsor {
                         try{
                             sendRequest(request);
                         }catch (SponsorException e){
-                            logError(request,e.getMessage());
+                            logError(e.getMessage());
                         }
                     }
                 }catch (InterruptedException e){
-                    logError(this,e.getMessage());
+                    logError(e.getMessage());
                 }
             }
         }

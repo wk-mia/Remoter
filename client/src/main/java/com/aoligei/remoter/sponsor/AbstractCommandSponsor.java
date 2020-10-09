@@ -41,20 +41,18 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
 
     /**
      * Info级别日志，发起任务处理器使用
-     * @param object 对象
      * @param info 输出信息
      */
-    protected void logInfo(Object object, String info){
-        log.info(MessageFormat.format("{0};message:{1}",object.getClass().getCanonicalName(),info));
+    protected void logInfo(String info){
+        log.info(MessageFormat.format("info: {0}",info));
     }
 
     /**
      * Error级别日志，发起任务处理器使用
-     * @param object 对象
      * @param error 异常信息
      */
-    protected void logError(Object object,String error){
-        log.error(MessageFormat.format("{0};error:{1}",object.getClass().getCanonicalName(),error));
+    protected void logError(String error){
+        log.info(MessageFormat.format("error: {0}",error));
     }
 
     /**
@@ -73,10 +71,10 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
      */
     protected void sendRequest(BaseRequest request) throws SponsorException {
         if (context != null && context.channel() != null && context.channel().isOpen()){
-            logInfo(request, SponsorConstants.PREPARE_SEND);
+            logInfo(SponsorConstants.PREPARE_SEND);
             context.writeAndFlush(request);
         }else{
-            logError(request, SponsorConstants.LOST_CONNECTION);
+            logError(SponsorConstants.LOST_CONNECTION);
             throw new SponsorException(SponsorConstants.LOST_CONNECTION);
         }
     }
@@ -88,6 +86,7 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
      */
     @Override
     public void sponsor(BaseRequest request) throws SponsorException {
+        log.debug(MessageFormat.format("sponsor request: {0}",request));
         particularSponsor(request);
     }
 

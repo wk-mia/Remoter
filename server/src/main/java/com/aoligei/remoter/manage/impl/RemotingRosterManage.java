@@ -34,7 +34,7 @@ public class RemotingRosterManage implements IRemotingRoster {
     public List<RemotingElement> remotingRoster = new CopyOnWriteArrayList<>();
 
     @Override
-    public void registerSlave(String connectionId,String slaveClientId, Channel channel, ScheduledFuture scheduledFuture) throws ServerException {
+    public void registerSlave(String connectionId,String slaveClientId, Channel channel) throws ServerException {
         /**
          * 如果连接编码在缓存中找到，则根据受控端元数据是否为空决定是否需要更新缓存；
          * 如果连接编码在缓存中未找到，新增缓存；如果客户端身份识别码为空，抛出提示。
@@ -47,14 +47,14 @@ public class RemotingRosterManage implements IRemotingRoster {
             /**
              * 新增缓存
              */
-            OnlineElement slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, TerminalTypeEnum.SLAVE);
+            OnlineElement slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, TerminalTypeEnum.SLAVE);
             remotingRoster.add(new RemotingElement(connectionId,slaveMeta,null));
         }else {
             /**
              * 更新缓存
              */
             if(cache.getSlaveElement() == null){
-                OnlineElement slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, scheduledFuture, TerminalTypeEnum.SLAVE);
+                OnlineElement slaveMeta = BuildUtil.buildMetaCache(slaveClientId, channel, TerminalTypeEnum.SLAVE);
                 cache.setSlaveElement(slaveMeta);
             }else {
                 throw new ServerException(ServerExceptionConstants.SLAVE_BEING_CONTROLLED);
@@ -63,7 +63,7 @@ public class RemotingRosterManage implements IRemotingRoster {
     }
 
     @Override
-    public void registerMaster(String connectionId, String masterClientId, Channel channel, ScheduledFuture scheduledFuture) throws ServerException {
+    public void registerMaster(String connectionId, String masterClientId, Channel channel) throws ServerException {
         /**
          * 如果连接编码在缓存中找到，则根据主控端元数据是否为空决定是否需要更新缓存；
          * 如果连接编码在缓存中未找到，新增缓存；如果客户端身份识别码为空，抛出提示。
@@ -76,14 +76,14 @@ public class RemotingRosterManage implements IRemotingRoster {
             /**
              * 新增缓存
              */
-            OnlineElement masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, scheduledFuture, TerminalTypeEnum.MASTER);
+            OnlineElement masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, TerminalTypeEnum.MASTER);
             remotingRoster.add(new RemotingElement(connectionId,null,masterMeta));
         }else {
             /**
              * 更新缓存
              */
             if(cache.getMasterElement() == null){
-                OnlineElement masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, scheduledFuture, TerminalTypeEnum.MASTER);
+                OnlineElement masterMeta = BuildUtil.buildMetaCache(masterClientId, channel, TerminalTypeEnum.MASTER);
                 cache.setMasterElement(masterMeta);
             }else {
                 throw new ServerException(ServerExceptionConstants.MASTER_ALREADY_CONNECTED);
@@ -168,15 +168,4 @@ public class RemotingRosterManage implements IRemotingRoster {
                 masterClientId.equals(item.getMasterElement().getClientId())).collect(Collectors.toList());
     }
 
-    /**
-     * 定义一个处理器的监听任务
-     * @param channelHandlerContext 通道上下文
-     * @param timeout 超时时间
-     * @return
-     */
-    public ScheduledFuture getScheduled(ChannelHandlerContext channelHandlerContext,int timeout){
-        return channelHandlerContext.executor().schedule(
-                () -> channelHandlerContext.channel().close(),timeout, TimeUnit.SECONDS
-        );
-    }
 }

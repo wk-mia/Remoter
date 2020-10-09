@@ -13,6 +13,7 @@ logging:
     root: DEBUG
     com.aoligei.remoter: trace
     sun: ERROR
-    io.netty: INFO
+    javax: INFO
+    io.netty: DEBUG
   pattern:
     dateformat: yyyy-MM-dd HH:mm:ss
