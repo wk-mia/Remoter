@@ -2,6 +2,7 @@ package com.aoligei.remoter.manage;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.business.RequestProcessor;
+import com.aoligei.remoter.util.AccessConfigUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -83,8 +84,8 @@ public class CycleTaskManage {
      * @return 返回任务执行器
      */
     private ScheduledFuture<?> startHeartbeat(){
-        int intervals = 2000;
-        return context.executor().scheduleAtFixedRate(HeartbeatTask,0,intervals, TimeUnit.MILLISECONDS);
+        int intervals = AccessConfigUtil.getNumber(AccessConfigUtil.Config.PARAM,"task.heartbeat.intervals");
+        return context.executor().scheduleAtFixedRate(HeartbeatTask,0,intervals, TimeUnit.SECONDS);
     }
 
     /**

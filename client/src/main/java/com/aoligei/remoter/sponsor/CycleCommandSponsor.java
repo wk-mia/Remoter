@@ -3,6 +3,7 @@ package com.aoligei.remoter.sponsor;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.CycleTaskManage;
+import com.aoligei.remoter.util.AccessConfigUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,8 +36,9 @@ public class CycleCommandSponsor extends AbstractCommandSponsor  {
      */
     @Override
     protected void particularSponsor(BaseRequest request) throws SponsorException {
+        int intervals = AccessConfigUtil.getNumber(AccessConfigUtil.Config.PARAM,"task.heartbeat.intervals");
         context.executor().scheduleAtFixedRate(() ->{
             cycleTaskManage.offer(context);
-        },0,2000, TimeUnit.MILLISECONDS);
+        },0,intervals, TimeUnit.SECONDS);
     }
 }

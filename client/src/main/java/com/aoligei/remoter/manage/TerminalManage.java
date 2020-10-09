@@ -58,4 +58,6 @@ public class TerminalManage implements Serializable {
     }
 
     public boolean getRemotingFlag(){return remotingFlag;}
+
+    public void setRemotingFlag(boolean remotingFlag){this.remotingFlag = remotingFlag;}
 }

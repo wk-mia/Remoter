@@ -44,6 +44,21 @@ public class BuildUtil {
         return baseResponse;
     }
 
+    /**
+     * 构建并返回一个处理异常的Response
+     * @param connectionId 连接编码
+     * @param terminalTypeEnum 终端类型
+     * @param commandEnum 命令类型
+     * @param data 数据
+     * @param <T> Object对象
+     * @param message 处理结果描述
+     * @return BaseResponse对象
+     */
+    public static <T> BaseResponse buildResponseERROR(String connectionId, Enum<TerminalTypeEnum> terminalTypeEnum, Enum<CommandEnum> commandEnum, T data,String message){
+        BaseResponse baseResponse = BuildUtil.buildResponse(connectionId,terminalTypeEnum,commandEnum,data, ResponseStatusEnum.ERROR,message);
+        return baseResponse;
+    }
+
 
     /**
      * 构建并返回一个Response

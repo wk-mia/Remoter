@@ -37,6 +37,17 @@ public class AccessConfigUtil {
         }
     }
 
+    public static int getNumber(Config config,String key){
+        String number = getValue(config,key);
+        /**转换数字*/
+        try {
+            return Integer.valueOf(number).intValue();
+        }catch (NumberFormatException e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
     /**
      * 配置类型枚举
      */

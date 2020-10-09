@@ -74,8 +74,8 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
             }
         }else{
             /**需要断开连接的异常,通知客户端异常信息并断开连接*/
-            String message = cause.getMessage() + "," + ResponseConstants.WILL_BE_DISCONNECTED;
-            BaseResponse baseResponse = BuildUtil.buildResponseFAIL(null, TerminalTypeEnum.SERVER,
+            String message = cause.getMessage() + ", " + ResponseConstants.WILL_BE_DISCONNECTED;
+            BaseResponse baseResponse = BuildUtil.buildResponseERROR(null, TerminalTypeEnum.SERVER,
                     CommandEnum.EXCEPTION, null, message);
             if(channelHandlerContext != null){
                 channelHandlerContext.writeAndFlush(baseResponse);
