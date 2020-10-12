@@ -1,14 +1,18 @@
 package com.aoligei.remoter.business.screen;
 
+import com.aoligei.remoter.util.AccessConfigUtil;
+import com.aoligei.remoter.util.AccessConfigUtil.Config;
 import com.aoligei.remoter.util.ImageUtil;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wk-mia
  * 2020-10-9
  * 屏幕捕获器
  */
+@Component
 public class ScreenCatcher {
 
     /**
@@ -36,7 +40,8 @@ public class ScreenCatcher {
         /**截取屏幕*/
         BufferedImage bufferedImage = robot.createScreenCapture(screenRectangle);
         /**当前：按原图传输*/
-        return ImageUtil.compress(bufferedImage,1);
+        float quality = AccessConfigUtil.getFloat(Config.PARAM, "system.screenshots.quality");
+        return ImageUtil.compress(bufferedImage,quality);
     }
 
 }

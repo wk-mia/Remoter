@@ -37,6 +37,12 @@ public class AccessConfigUtil {
         }
     }
 
+    /**
+     * 获取参数
+     * @param config 配置类型
+     * @param key 键
+     * @return 值
+     */
     public static int getNumber(Config config,String key){
         String number = getValue(config,key);
         /**转换数字*/
@@ -45,6 +51,23 @@ public class AccessConfigUtil {
         }catch (NumberFormatException e){
             e.printStackTrace();
             return -1;
+        }
+    }
+
+    /**
+     * 获取参数
+     * @param config 配置类型
+     * @param key 键
+     * @return 值
+     */
+    public static float getFloat(Config config,String key){
+        String number = getValue(config,key);
+        /**转换数字*/
+        try {
+            return Float.parseFloat(number);
+        }catch (NumberFormatException e){
+            e.printStackTrace();
+            return -1.0f;
         }
     }
 
