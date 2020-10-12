@@ -37,6 +37,9 @@ public class CycleTaskManage {
     /**任务池*/
     private final Map<Runnable, ScheduledFuture> tasks = new ConcurrentHashMap<>();
 
+    /**前一个截屏*/
+    private byte[] previousScreen;
+
 
 
     /**
@@ -58,22 +61,41 @@ public class CycleTaskManage {
     private Runnable ScreenShotTask = new Runnable() {
         @Override
         public void run() {
-
+            BaseRequest request = processor.buildScreenShotsRequest();
+            if(isOldScreen(previousScreen,(byte[])request.getData())){
+                /**与上一个屏幕截图相同，不发送该屏幕截图，发送心跳*/
+                HeartbeatTask.run();
+            }else {
+                /**发送屏幕截图*/
+                if(usable()){
+                    context.writeAndFlush(request);
+                }
+            }
         }
     };
 
 
 
     /**
-     * 任务初始化
+     * 调度任务：停止旧任务，开始新任务
      */
-    public void offer(ChannelHandlerContext context){
+    public void schedule(ChannelHandlerContext context){
         this.context = context;
         if(terminalManage.getRemotingFlag()){
-            /**当前正在远程工作中*/
+            /**当前正在远程工作中，发送屏幕截图，并取消心跳任务*/
+            if(tasks.get(ScreenShotTask) == null || tasks.get(ScreenShotTask).isCancelled()){
+                tasks.put(ScreenShotTask,starScreenshot());
+            }
+            if(tasks.get(HeartbeatTask) != null && ! tasks.get(HeartbeatTask).isCancelled()){
+                tasks.get(HeartbeatTask).cancel(true);
+            }
         }else {
+            /**当前不在远程工作中，发送心跳，并取消屏幕截图任务*/
             if(tasks.get(HeartbeatTask) == null || tasks.get(HeartbeatTask).isCancelled()){
                 tasks.put(HeartbeatTask,startHeartbeat());
+            }
+            if(tasks.get(ScreenShotTask) != null && ! tasks.get(ScreenShotTask).isCancelled()){
+                tasks.get(ScreenShotTask).cancel(true);
             }
         }
     }
@@ -89,6 +111,16 @@ public class CycleTaskManage {
     }
 
     /**
+     * 开始发送屏幕截图
+     * 初始化延时设置为0
+     * @return 返回任务执行器
+     */
+    private ScheduledFuture<?> starScreenshot(){
+        int intervals = AccessConfigUtil.getNumber(AccessConfigUtil.Config.PARAM,"task.screenshots.intervals");
+        return context.executor().scheduleAtFixedRate(ScreenShotTask,0,intervals, TimeUnit.SECONDS);
+    }
+
+    /**
      * 通道是否可用
      * @return 可用：true
      */
@@ -97,5 +129,33 @@ public class CycleTaskManage {
                 && this.context.channel() != null
                 && this.context.channel().isActive()
                 && this.context.channel().isOpen();
+    }
+
+    /**
+     * 比较屏幕截图和上一个屏幕截图是否一样
+     * @param previousScreen 上一个屏幕截图
+     * @param currentScreen 当前屏幕截图
+     * @return 是：true
+     */
+    private boolean isOldScreen(byte[] previousScreen,byte[] currentScreen){
+        /**当前屏幕截图为空*/
+        if(currentScreen == null){
+            return true;
+        }
+        /**前一个屏幕截图为空：设置新的屏幕截图并返回*/
+        if(previousScreen == null || previousScreen.length == 0){
+            this.previousScreen = currentScreen;
+            return false;
+        }
+        /**比较两个数组，发现有元素不一致时：设置新的屏幕截图并返回*/
+        boolean changed = true;
+        for(int i = 0;i < previousScreen.length;i++){
+            if(previousScreen[i] != currentScreen[i] ){
+                this.previousScreen = currentScreen;
+                changed = false;
+                break;
+            }
+        }
+        return changed;
     }
 }

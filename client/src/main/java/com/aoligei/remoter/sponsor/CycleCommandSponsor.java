@@ -37,7 +37,7 @@ public class CycleCommandSponsor extends AbstractCommandSponsor  {
     @Override
     protected void particularSponsor(BaseRequest request) throws SponsorException {
         int intervals = AccessConfigUtil.getNumber(AccessConfigUtil.Config.PARAM,"task.heartbeat.intervals");
-        cycleTaskManage.offer(context);
+        cycleTaskManage.schedule(context);
 //        context.executor().scheduleAtFixedRate(() ->{
 //            cycleTaskManage.offer(context);
 //        },0,intervals, TimeUnit.SECONDS);

@@ -37,6 +37,10 @@ public class ScreenShotsCommandHandler extends AbstractServerCensorC2CHandler {
     @Override
     @RequestInspect(inspectItem = {InspectEnum.ORDINARY_PARAMS,InspectEnum.CONNECTION_NOT_FIND})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
+
+        String clientId = baseRequest.getClientId();
+        StringBuilder info = new StringBuilder().append("receive a screenshot from: ").append(clientId);
+        logInfo(info.toString());
         /**
          * 转发消息给主控客户端
          */

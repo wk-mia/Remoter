@@ -3,6 +3,7 @@ package com.aoligei.remoter.business;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.business.aop.SponsorRequestInspect;
+import com.aoligei.remoter.business.screen.ScreenCatcher;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
@@ -21,8 +22,20 @@ import java.util.Date;
 @Component
 public class RequestProcessor {
 
-    @Autowired
+    /**
+     * 终端管理器
+     */
     private TerminalManage terminalManage;
+    /**
+     * 屏幕截图捕获器
+     */
+    private ScreenCatcher screenCatcher;
+
+    @Autowired
+    public RequestProcessor(TerminalManage terminalManage,ScreenCatcher screenCatcher){
+        this.terminalManage = terminalManage;
+        this.screenCatcher = screenCatcher;
+    }
 
     /**
      * 连接请求
@@ -93,7 +106,6 @@ public class RequestProcessor {
     /**
      * 心跳请求
      * @return 请求主体
-     * @throws SponsorException
      */
     public BaseRequest buildHeartbeatRequest(){
         BaseRequest baseRequest = new BaseRequest(){{
@@ -102,6 +114,22 @@ public class RequestProcessor {
             setTerminalTypeEnum(TerminalTypeEnum.UNKNOWN);
             setCommandEnum(CommandEnum.HEART_BEAT);
             setData(new Date().toString());
+        }};
+        return baseRequest;
+    }
+
+    /**
+     * 屏幕截图请求
+     * @return 请求主体
+     */
+    public BaseRequest buildScreenShotsRequest(){
+        byte[] data = screenCatcher.captureScreen();
+        BaseRequest baseRequest = new BaseRequest(){{
+            setConnectionId(terminalManage.getConnectionId());
+            setClientId(terminalManage.getClientInfo().getClientId());
+            setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
+            setCommandEnum(CommandEnum.SCREEN_SHOTS);
+            setData(data);
         }};
         return baseRequest;
     }
