@@ -100,9 +100,9 @@ public class OnlineRosterManage implements IOnlineRoster {
     }
 
     /**
-     * 通过主控端身份识别码获取在线连接
-     * @param slaveClientId 主控端身份识别码
-     * @return 主控端连接
+     * 通过受控端身份识别码获取在线连接
+     * @param slaveClientId 受控端身份识别码
+     * @return 受控端连接
      * @throws ServerException 异常信息
      */
     public OnlineElement getSlaveInfoBySlaveClientId(String slaveClientId)throws ServerException {
@@ -117,16 +117,13 @@ public class OnlineRosterManage implements IOnlineRoster {
         return slaveMeta;
     }
 
-
     /**
-     * 定义一个处理器的监听任务
-     * @param channelHandlerContext 通道上下文
-     * @param timeout 超时时间
-     * @return
+     * 客户端是否在线
+     * @param clientId 客户端身份识别码
+     * @return 在线:true
      */
-    public ScheduledFuture getScheduled(ChannelHandlerContext channelHandlerContext, int timeout){
-        return channelHandlerContext.executor().schedule(
-                () -> channelHandlerContext.channel().close(),timeout, TimeUnit.SECONDS
-        );
+    public boolean isOnline(String clientId){
+        return onlineRoster.stream().filter(item ->
+                clientId.equals(item.getClientId())).findAny().isPresent();
     }
 }

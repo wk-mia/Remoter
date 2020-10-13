@@ -168,4 +168,13 @@ public class RemotingRosterManage implements IRemotingRoster {
                 masterClientId.equals(item.getMasterElement().getClientId())).collect(Collectors.toList());
     }
 
+    /**
+     * 受控端是否正在远程工作中
+     * @param slaverClientId 受控端身份识别码
+     * @return 工作中:true
+     */
+    public boolean isSlaverWorking(String slaverClientId){
+        return remotingRoster.stream().filter(item ->
+                slaverClientId.equals(item.getSlaveElement().getClientId())).findAny().isPresent();
+    }
 }
