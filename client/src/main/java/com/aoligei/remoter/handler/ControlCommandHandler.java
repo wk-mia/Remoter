@@ -2,6 +2,8 @@ package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
+import com.aoligei.remoter.command.CommandFactory;
+import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
@@ -10,6 +12,7 @@ import com.aoligei.remoter.manage.TerminalManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * @author wk-mia
@@ -20,8 +23,14 @@ import org.springframework.stereotype.Component;
 @Component(value = "ControlCommandHandler")
 public class ControlCommandHandler extends AbstractClientHandler {
 
-    @Autowired
+    /**
+     * 客户端身份管理器
+     */
     private TerminalManage terminalManage;
+    @Autowired
+    public ControlCommandHandler(TerminalManage terminalManage){
+        this.terminalManage = terminalManage;
+    }
 
     /**
      * 特定的处理器-控制处理器
@@ -31,46 +40,65 @@ public class ControlCommandHandler extends AbstractClientHandler {
      */
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
-        if(baseResponse.getStatus() == ResponseStatusEnum.OK){
-            if(baseResponse.getTerminalTypeEnum() == TerminalTypeEnum.SERVER_2_SLAVE){
-                /**
-                 * 受控端的业务：
-                 * 拿到连接编码，交由客户决定是否拒绝主控端发来的连接请求，并将结果返回服务器。
-                 * 此处暂时为客户端直接同意。
-                 * 同意后，就开始发送屏幕截图信息。
-                 */
-                if(baseResponse.getConnectionId() != null || "".equals(baseResponse.getConnectionId())){
-                    BaseRequest baseRequest = new BaseRequest(){{
-                        setConnectionId(baseResponse.getConnectionId());
-                        setCommandEnum(CommandEnum.CONTROL);
-                        setClientId(terminalManage.getClientInfo().getClientId());
-                        setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
-                        setData(Boolean.TRUE);
-                    }};
-                    channelHandlerContext.writeAndFlush(baseRequest);
-
-                    terminalManage.setConnectionId(baseResponse.getConnectionId());
-                    logInfo("the client has agreed to the remote connection,the screen shots mission is about to begin");
-                    /**
-                     * 开始发送屏幕截图
-                     */
-
-
-
-
-                }else {
-
-                }
-            }else if(baseResponse.getTerminalTypeEnum() == TerminalTypeEnum.SERVER_2_MASTER){
-                /**
-                 * 主控端，拿到连接编码。
-                 */
-                terminalManage.setConnectionId(baseResponse.getConnectionId());
-                logInfo(baseResponse.getMessage());
-            }
-        }else if(baseResponse.getStatus() == ResponseStatusEnum.ERROR) {
-            logError(baseResponse.getMessage());
-        }else {
+        if(baseResponse.getTerminalTypeEnum() == TerminalTypeEnum.SERVER_2_SLAVE){
+            /**受控端的业务逻辑*/
+            this.slaverHandle(channelHandlerContext,baseResponse);
+        }else if(baseResponse.getTerminalTypeEnum() == TerminalTypeEnum.SERVER_2_MASTER){
+            /**主控端的业务逻辑*/
+            this.masterHandle(channelHandlerContext,baseResponse);
         }
+    }
+
+    /**
+     * 受控端的业务处理：
+     * 1. 选择是否接受该连接，并返回服务器结果；
+     * 2. 如接受，更新客户端相关信息，开始发送屏幕截图信息。
+     * @param channelHandlerContext 通道上下文
+     * @param baseResponse 原始返回
+     */
+    private void slaverHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse){
+        if(! StringUtils.isEmpty(baseResponse.getConnectionId())){
+            /**此处为客户端直接同意控制请求*/
+            Boolean agree = Boolean.TRUE;
+            BaseRequest baseRequest = new BaseRequest(){{
+                setConnectionId(baseResponse.getConnectionId());
+                setCommandEnum(CommandEnum.CONTROL);
+                setClientId(terminalManage.getClientInfo().getClientId());
+                setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
+                setData(agree);
+            }};
+            channelHandlerContext.writeAndFlush(baseRequest);
+            /**更新客户端连接编码、当前受控状态*/
+            terminalManage.setConnectionId(baseResponse.getConnectionId());
+            terminalManage.setRemotingFlag(true);
+            logInfo("the client has agreed to the remote connection,the screen shots mission is about to begin...");
+            /**开始发送屏幕截图*/
+            try{
+                ICommandSponsor cycleSponsor = CommandFactory.getCommandSponsor(CommandEnum.SCREEN_SHOTS);
+                cycleSponsor.sponsor(null);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 主控端的业务处理：
+     * 1. 如受控端同意连接，保存连接编码并启动远程窗口，准备展示屏幕截图；
+     * 2. 如连接失败，则记录日志。
+     * @param channelHandlerContext
+     * @param baseResponse
+     */
+    private void masterHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse){
+        if(baseResponse.getStatus() == ResponseStatusEnum.OK){
+            logInfo(baseResponse.getMessage());
+            /**成功，设置连接编码。*/
+            terminalManage.setConnectionId(baseResponse.getConnectionId());
+            /**启动远程窗口*/
+
+        }else {
+            logError(baseResponse.getMessage());
+        }
+
     }
 }

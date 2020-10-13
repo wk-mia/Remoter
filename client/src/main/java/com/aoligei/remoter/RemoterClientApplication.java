@@ -12,15 +12,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class RemoterClientApplication {
 
     public static void main(String[] args) {
-        // ConfigurableApplicationContext context = SpringApplication.run(RemoterClientApplication.class, args);
         SpringApplicationBuilder builder = new SpringApplicationBuilder(RemoterClientApplication.class);
         ConfigurableApplicationContext context = builder.headless(false).run(args);
-        /**
-         * 启动一个客户端的实例
-         */
+        /**启动一个客户端的实例*/
         IStart homePage = context.getBean(HomePageActionListener.class);
         homePage.start();
-        System.out.println(AccessConfigUtil.getValue(AccessConfigUtil.Config.PARAM,"component.icons.dir"));
     }
 
 }
