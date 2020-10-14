@@ -4,7 +4,7 @@ package com.aoligei.remoter.ui.service.listener;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.ui.form.HomePage;
 import com.aoligei.remoter.ui.panel.RemotePanel;
-import com.aoligei.remoter.ui.panel.Tab;
+import com.aoligei.remoter.ui.panel.HomeTab;
 import com.aoligei.remoter.ui.service.action.IStart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class HomePageActionListener implements WindowListener, IStart {
     /**窗体对象*/
     private HomePage form;
     /**选项卡*/
-    private Tab tab;
+    private HomeTab tab;
     /**远程区面板*/
     private RemotePanel remotePanel;
     /**远程面板区事件监听*/
@@ -43,7 +43,7 @@ public class HomePageActionListener implements WindowListener, IStart {
      * @param remoteListener 远程面板区事件监听
      */
     @Autowired
-    HomePageActionListener(HomePage form,Tab tab,RemotePanel remotePanel,RemotePanelActionListener remoteListener){
+    HomePageActionListener(HomePage form, HomeTab tab,RemotePanel remotePanel,RemotePanelActionListener remoteListener){
         this.form = form;
         this.tab = tab;
         this.remotePanel = remotePanel;

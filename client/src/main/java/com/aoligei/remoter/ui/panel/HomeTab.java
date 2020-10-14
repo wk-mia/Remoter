@@ -11,7 +11,7 @@ import javax.swing.*;
  * 主窗体选项卡
  */
 @Component
-public class Tab extends JTabbedPane {
+public class HomeTab extends JTabbedPane {
 
     /**
      * 标签名称
@@ -33,7 +33,7 @@ public class Tab extends JTabbedPane {
 
     private final String labelIcon = AccessConfigUtil.getValue(AccessConfigUtil.Config.PARAM,"component.icons.dir") + "\\404.png";
 
-    public Tab(){
+    public HomeTab(){
         initStyle();
     }
 

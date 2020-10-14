@@ -1,5 +1,6 @@
 package com.aoligei.remoter.util;
 
+import java.io.ByteArrayInputStream;
 import net.coobird.thumbnailator.Thumbnails;
 
 import java.awt.image.BufferedImage;
@@ -34,4 +35,23 @@ public class ImageUtil {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 字节数组转化为图像
+     * @param bytes
+     * @return
+     */
+    public static BufferedImage decode(byte[] bytes){
+        try(ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes)) {
+            return Thumbnails.of(inputStream)
+                    .scale(1f)
+                    .outputFormat("jpg")
+                    .asBufferedImage();
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
 }
+
+

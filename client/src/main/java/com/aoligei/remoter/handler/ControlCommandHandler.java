@@ -9,6 +9,9 @@ import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.manage.TerminalManage;
+import com.aoligei.remoter.ui.service.action.IInteract;
+import com.aoligei.remoter.ui.service.listener.SlaverPageActionListener;
+import com.aoligei.remoter.util.SpringBeanUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,13 +26,14 @@ import org.springframework.util.StringUtils;
 @Component(value = "ControlCommandHandler")
 public class ControlCommandHandler extends AbstractClientHandler {
 
-    /**
-     * 客户端身份管理器
-     */
+    /**客户端身份管理器*/
     private TerminalManage terminalManage;
+    /**远程窗口事件监听器*/
+    private SlaverPageActionListener remoteListener;
     @Autowired
-    public ControlCommandHandler(TerminalManage terminalManage){
+    public ControlCommandHandler(TerminalManage terminalManage, SlaverPageActionListener remoteListener){
         this.terminalManage = terminalManage;
+        this.remoteListener = remoteListener;
     }
 
     /**
@@ -86,16 +90,17 @@ public class ControlCommandHandler extends AbstractClientHandler {
      * 主控端的业务处理：
      * 1. 如受控端同意连接，保存连接编码并启动远程窗口，准备展示屏幕截图；
      * 2. 如连接失败，则记录日志。
-     * @param channelHandlerContext
-     * @param baseResponse
+     * @param channelHandlerContext 通道上下文
+     * @param baseResponse 原始返回
      */
     private void masterHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse){
         if(baseResponse.getStatus() == ResponseStatusEnum.OK){
             logInfo(baseResponse.getMessage());
             /**成功，设置连接编码。*/
             terminalManage.setConnectionId(baseResponse.getConnectionId());
-            /**启动远程窗口*/
-
+            /**启动远程窗口,窗口标题为连接编码*/
+            IInteract remotePage = remoteListener;
+            remotePage.call(terminalManage.getConnectionId(),terminalManage.getConnectionId());
         }else {
             logError(baseResponse.getMessage());
         }

@@ -9,9 +9,10 @@ public interface IInteract {
 
     /**
      * 调出远程窗口
+     * @param connectionId 连接编码
      * @param pageTitle 窗口标题
      */
-    void call(String pageTitle);
+    void call(String connectionId, String pageTitle);
 
     /**
      * 发出键盘指令
@@ -23,7 +24,10 @@ public interface IInteract {
 
     /**
      * 播放屏幕截图
+     * @param connectionId 连接编码
+     * @param bytes 屏幕截图字节流
      */
+    void play(String connectionId,byte[] bytes);
 
     /**
      * 播放声音
