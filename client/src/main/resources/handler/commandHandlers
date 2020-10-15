@@ -1,4 +1,5 @@
 REGISTER::com.aoligei.remoter.handler.RegisterCommandHandler
 CONNECT::com.aoligei.remoter.handler.ConnectCommandHandler
 CONTROL::com.aoligei.remoter.handler.ControlCommandHandler
+SCREEN_SHOTS::com.aoligei.remoter.handler.master.ScreenShotsCommandHandler
 EXCEPTION::com.aoligei.remoter.handler.ExceptionHandler
