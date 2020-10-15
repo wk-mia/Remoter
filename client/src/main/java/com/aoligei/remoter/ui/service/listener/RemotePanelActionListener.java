@@ -29,6 +29,42 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
     private NettyClient nettyClient;
 
     /**
+     * 远程面板区控件的事件处理
+     * @param e 事件
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        /**新开线程处理任务，防止界面假死*/
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                allotEvent(e);
+            }
+        }).start();
+    }
+
+    /**
+     * 分发事件进行处理
+     * @param e 事件
+     */
+    private void allotEvent(ActionEvent e){
+        switch (CommandEnum.valueOf(e.getActionCommand())) {
+            case CONNECT:
+                connect();
+                break;
+            case DISCONNECT:
+                disconnect();
+                break;
+            case CONTROL:
+                control();
+                break;
+            case STOP_CONTROL:
+                stopControl();
+                break;
+        }
+    }
+
+    /**
      * 连接服务器
      */
     @Override
@@ -54,7 +90,7 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
     @Override
     public void control() {
         try{
-            nettyClient.control("555");
+            nettyClient.control("14927006-002");
         }catch (Exception e){
             DialogPage.errorDialog("connect-error",e.getMessage());
         }
@@ -68,26 +104,4 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
 
     }
 
-    /**
-     * 远程面板区控件的事件处理
-     * @param e 事件
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        switch (CommandEnum.valueOf(e.getActionCommand())) {
-            case CONNECT:
-                connect();
-                break;
-            case DISCONNECT:
-                disconnect();
-                break;
-            case CONTROL:
-                control();
-                break;
-            case STOP_CONTROL:
-                stopControl();
-                break;
-        }
-    }
 }
