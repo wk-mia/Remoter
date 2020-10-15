@@ -2,6 +2,8 @@ package com.aoligei.remoter.netty;
 
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.SingleTaskManage;
+import com.aoligei.remoter.util.AccessConfigUtil;
+import com.aoligei.remoter.util.AccessConfigUtil.Config;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +48,8 @@ public class NettyClient {
      */
     {
         group = new NioEventLoopGroup();
-        host = "127.0.0.1";
-        port = 60001;
+        host = AccessConfigUtil.getValue(Config.PARAM,"remoter.server.ip");
+        port = AccessConfigUtil.getNumber(Config.PARAM,"remoter.server.port");
     }
 
     /**

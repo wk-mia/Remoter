@@ -31,8 +31,10 @@ public class RosterManage implements IRoster {
         /**
          * 测试数据
          */
-        roster.add(new BasicClientInfo("3f791e1b-3819-45f4-b37c-f757c371c728",
-                "ClientA",0,"127.0.0.1",false));
+        roster.add(new BasicClientInfo("14927006-001",
+                "master",0,"127.0.0.1",false));
+        roster.add(new BasicClientInfo("14927006-002",
+                "slaver",0,"127.0.0.2",false));
     }
 
     /**
