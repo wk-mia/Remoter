@@ -122,9 +122,10 @@ public class RemotingRosterManage implements IRemotingRoster {
         /**
          * 找到所有受控端，将消息转送出去
          */
-        RemotingElement slaveCache = remotingRoster.stream().filter(item ->
-                connectionId.equals(item.getConnectionId())).findFirst().get();
-        if(slaveCache.getSlaveElement() != null){
+        RemotingElement slaveCache = remotingRoster.stream()
+                .filter(item -> connectionId.equals(item.getConnectionId()))
+                .findFirst().orElse(null);
+        if(slaveCache != null && slaveCache.getSlaveElement() != null){
             if(slaveCache.getSlaveElement().getChannel() != null && slaveCache.getSlaveElement().getChannel().isOpen()){
                 slaveCache.getSlaveElement().getChannel().writeAndFlush(baseResponse);
             }
@@ -140,8 +141,9 @@ public class RemotingRosterManage implements IRemotingRoster {
      * @throws ServerException
      */
     public RemotingElement getChannelCacheByConnectionId(String connectionId){
-        return remotingRoster.stream().filter(item ->
-                connectionId.equals(item.getConnectionId())).findFirst().get();
+        return remotingRoster.stream()
+                .filter(item -> connectionId.equals(item.getConnectionId()))
+                .findFirst().orElse(null);
     }
 
 
@@ -154,8 +156,9 @@ public class RemotingRosterManage implements IRemotingRoster {
      * @throws ServerException 异常信息
      */
     public List<RemotingElement> getChannelCachesBySlaveClientId(String slaveClientId){
-        return remotingRoster.stream().filter(item ->
-                slaveClientId.equals(item.getSlaveElement().getClientId())).collect(Collectors.toList());
+        return remotingRoster.stream()
+                .filter(item -> slaveClientId.equals(item.getSlaveElement().getClientId()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -164,8 +167,9 @@ public class RemotingRosterManage implements IRemotingRoster {
      * @return 数量
      */
     public List<RemotingElement> getChannelCachesByMasterClientId(String masterClientId) {
-        return remotingRoster.stream().filter(item ->
-                masterClientId.equals(item.getMasterElement().getClientId())).collect(Collectors.toList());
+        return remotingRoster.stream()
+                .filter(item -> masterClientId.equals(item.getMasterElement().getClientId()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -174,7 +178,7 @@ public class RemotingRosterManage implements IRemotingRoster {
      * @return 工作中:true
      */
     public boolean isSlaverWorking(String slaverClientId){
-        return remotingRoster.stream().filter(item ->
-                slaverClientId.equals(item.getSlaveElement().getClientId())).findAny().isPresent();
+        return remotingRoster.stream().anyMatch(item ->
+                slaverClientId.equals(item.getSlaveElement().getClientId()));
     }
 }

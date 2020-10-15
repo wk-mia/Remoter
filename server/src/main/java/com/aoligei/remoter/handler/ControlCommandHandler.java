@@ -129,6 +129,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
             BaseResponse baseResponse = BuildUtil.buildResponseERROR(null,TerminalTypeEnum.SERVER_2_MASTER,
                     baseRequest.getCommandEnum(), null, ResponseConstants.SLAVE_REFUSED_CONNECTION);
             remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
+
             remotingRosterManage.remotingRoster.remove(remotingElement);
             logInfo("slaver [" + baseRequest.getClientId() + "] has refused the connection");
         }else {
@@ -139,6 +140,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
             BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER_2_MASTER,
                     baseRequest.getCommandEnum(),null,ResponseConstants.SLAVE_AGREE_CONNECTION);
             remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
+
             remotingRosterManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),
                     channelHandlerContext.channel());
             logInfo("slaver [" + baseRequest.getClientId() + "]  has accepted the connection");

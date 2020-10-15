@@ -12,6 +12,7 @@ import com.aoligei.remoter.sponsor.AbstractCommandSponsor;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.text.MessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws Exception {
-        log.info(baseResponse.toString());
         /**
          * 分发命令并进行处理
          */
@@ -34,7 +34,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseResponse
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.info("----" + cause.getMessage());
+        log.error(MessageFormat.format("an error has occurred : {0}",cause.getMessage()));
     }
 
     @Override
