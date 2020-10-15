@@ -2,3 +2,4 @@ REGISTER::com.aoligei.remoter.sponsor.SingleCommandSponsor
 CONNECT::com.aoligei.remoter.sponsor.SingleCommandSponsor
 CONTROL::com.aoligei.remoter.sponsor.SingleCommandSponsor
 HEART_BEAT::com.aoligei.remoter.sponsor.CycleCommandSponsor
+SCREEN_SHOTS::com.aoligei.remoter.sponsor.CycleCommandSponsor
