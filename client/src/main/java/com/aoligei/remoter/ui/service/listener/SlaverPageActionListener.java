@@ -12,6 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SlaverPageActionListener implements WindowListener, IInteract {
+
+    private static Logger log = LoggerFactory.getLogger(SlaverPageActionListener.class);
 
     /**本地远程的窗体列表*/
     private Map<String,SlaverPage> slavers = new ConcurrentHashMap<>();
@@ -65,6 +69,8 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
             SwingUtilities.invokeLater(() -> {
                 page.getPanel().repaint();
             });
+        }else {
+            log.error("no such slaverPage, please check the connectionId");
         }
     }
 

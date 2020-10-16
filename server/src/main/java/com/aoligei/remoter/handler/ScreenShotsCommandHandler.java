@@ -5,6 +5,7 @@ import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.business.aop.RequestInspect;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.InspectEnum;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
@@ -44,7 +45,8 @@ public class ScreenShotsCommandHandler extends AbstractServerCensorC2CHandler {
         /**
          * 转发消息给主控客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getClientId(),null, CommandEnum.SCREEN_SHOTS,baseRequest.getData(),null);
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),
+                TerminalTypeEnum.SERVER_2_MASTER,CommandEnum.SCREEN_SHOTS,baseRequest.getData(),null);
         remotingRosterManage.notifyAllMaster(baseRequest.getClientId(),baseResponse);
     }
 }

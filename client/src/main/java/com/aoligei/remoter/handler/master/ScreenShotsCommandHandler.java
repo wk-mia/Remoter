@@ -38,7 +38,8 @@ public class ScreenShotsCommandHandler extends AbstractClientHandler {
         /**播放收到的屏幕截图*/
         if(baseResponse.getData() instanceof byte[]) {
             byte[] bytes = (byte[]) baseResponse.getData();
-            remoteListener.play(baseResponse.getConnectionId(), bytes);
+            IInteract remotePage = remoteListener;
+            remotePage.play(baseResponse.getConnectionId(), bytes);
         }
     }
 }
