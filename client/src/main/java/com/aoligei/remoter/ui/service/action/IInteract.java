@@ -9,10 +9,9 @@ public interface IInteract {
 
     /**
      * 调出远程窗口
-     * @param connectionId 连接编码
      * @param pageTitle 窗口标题
      */
-    void call(String connectionId, String pageTitle);
+    void call(String pageTitle);
 
     /**
      * 发出键盘指令

@@ -19,6 +19,7 @@ public class SlaverPage extends JFrame{
      * @param panel 远程屏幕面板
      */
     public SlaverPage(String title, SlaverScreenPanel panel){
+        this.panel = panel;
         initStyle(title);
         addComponent(panel);
     }
@@ -38,8 +39,12 @@ public class SlaverPage extends JFrame{
      * 添加组件
      */
     private void addComponent(SlaverScreenPanel panel){
-        this.panel = panel;
-        this.add(panel);
+        /**滚动条：始终显示*/
+        JScrollPane scroll = new JScrollPane(panel);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        /**面板加入JFrame中*/
+        this.getContentPane().add(scroll);
     }
 
     public SlaverScreenPanel getPanel() {

@@ -1,6 +1,9 @@
 package com.aoligei.remoter.manage;
 
 import com.aoligei.remoter.beans.BasicClientInfo;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -26,7 +29,10 @@ public class TerminalManage implements Serializable {
     /**
      * 客户端与服务器的连接编码
      */
-    private String connectionId;
+    /**
+     * 客户端与服务器的连接信息：{String:连接编码}
+     */
+    private List<String> connectionIds = new CopyOnWriteArrayList<>();
 
     /**
      * 是否正在远程工作中
@@ -51,12 +57,20 @@ public class TerminalManage implements Serializable {
         return clientInfo;
     }
 
-    public String getConnectionId() {
-        return connectionId;
+    /**
+     * 移除远程控制的连接
+     * @param connectionId 连接编码
+     */
+    public void removeConnection(String connectionId) {
+        connectionIds.remove(connectionId);
     }
 
-    public void setConnectionId(String connectionId){
-        this.connectionId = connectionId;
+    /**
+     * 新建远程控制的连接
+     * @param connectionId 连接编码
+     */
+    public void createConnection(String connectionId){
+        connectionIds.add(connectionId);
     }
 
     public boolean getRemotingFlag(){return remotingFlag;}

@@ -73,7 +73,7 @@ public class ControlCommandHandler extends AbstractClientHandler {
             }};
             channelHandlerContext.writeAndFlush(baseRequest);
             /**更新客户端连接编码、当前受控状态*/
-            terminalManage.setConnectionId(baseResponse.getConnectionId());
+            terminalManage.createConnection(baseResponse.getConnectionId());
             terminalManage.setRemotingFlag(true);
             logInfo("the client has agreed to the remote connection,the screen shots mission is about to begin...");
             /**开始发送屏幕截图*/
@@ -97,10 +97,10 @@ public class ControlCommandHandler extends AbstractClientHandler {
         if(baseResponse.getStatus() == ResponseStatusEnum.OK){
             logInfo(baseResponse.getMessage());
             /**成功，设置连接编码。*/
-            terminalManage.setConnectionId(baseResponse.getConnectionId());
+            terminalManage.createConnection(baseResponse.getConnectionId());
             /**启动远程窗口,窗口标题为连接编码*/
             IInteract remotePage = remoteListener;
-            remotePage.call(terminalManage.getConnectionId(),terminalManage.getConnectionId());
+            remotePage.call(baseResponse.getConnectionId());
         }else {
             logError(baseResponse.getMessage());
         }

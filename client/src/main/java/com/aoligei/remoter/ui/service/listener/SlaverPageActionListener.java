@@ -11,6 +11,8 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,16 +34,15 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
 
     /**
      * 启动远程窗口
-     * @param connectionId 连接编码
      * @param pageTitle 窗口标题
      */
     @Override
-    public void call(String connectionId,String pageTitle) {
+    public void call(String pageTitle) {
         SlaverScreenPanel panel = new SlaverScreenPanel();
         SlaverPage page = new SlaverPage(pageTitle,panel);
         this.addListener(page,panel);
 
-        slavers.put(connectionId,page);
+        slavers.put(pageTitle,page);
         /**展示窗体*/
         try {
             SwingUtilities.invokeAndWait(() -> {
@@ -91,7 +92,14 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
 
     @Override
     public void windowClosing(WindowEvent e) {
+        SlaverPage page = (SlaverPage) e.getSource();
+        String connectId = page.getTitle();
         /**停止远程控制*/
+
+        /**移除远程窗口*/
+        slavers.remove(connectId);
+        /**关闭远程窗口*/
+        page.dispose();
     }
 
     @Override
