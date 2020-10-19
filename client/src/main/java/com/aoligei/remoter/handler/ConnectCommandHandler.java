@@ -36,7 +36,7 @@ public class ConnectCommandHandler extends AbstractClientHandler {
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
         /**更新客户端缓存*/
-        terminalManage.setConnectionId(baseResponse.getConnectionId());
+        terminalManage.createConnection(baseResponse.getConnectionId());
         try {
             ICommandSponsor cycleSponsor = CommandFactory.getCommandSponsor(CommandEnum.HEART_BEAT);
             /**记录通道：所有Sponsor记录下context*/

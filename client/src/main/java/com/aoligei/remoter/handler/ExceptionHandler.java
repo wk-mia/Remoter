@@ -7,6 +7,7 @@ import com.aoligei.remoter.manage.TerminalManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * @author wk-mia
@@ -35,7 +36,9 @@ public class ExceptionHandler extends AbstractClientHandler  {
 
         if(baseResponse.getStatus() == ResponseStatusEnum.ERROR){
             /**服务器处理请求时发生需关闭连接的异常，此处同步客户端的通道信息*/
-            terminalManage.setConnectionId(null);
+            if(! StringUtils.isEmpty(baseResponse.getConnectionId())) {
+                terminalManage.removeConnection(null);
+            }
             terminalManage.setRemotingFlag(false);
         }
     }

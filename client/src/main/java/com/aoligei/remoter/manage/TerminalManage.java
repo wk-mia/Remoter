@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author wk-mia
@@ -27,12 +28,9 @@ public class TerminalManage implements Serializable {
     private BasicClientInfo clientInfo;
 
     /**
-     * 客户端与服务器的连接编码
-     */
-    /**
      * 客户端与服务器的连接信息：{String:连接编码}
      */
-    private List<String> connectionIds = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArraySet<String> connectionIds = new CopyOnWriteArraySet<String>();
 
     /**
      * 是否正在远程工作中
