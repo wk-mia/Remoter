@@ -13,12 +13,17 @@ import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
+import java.text.MessageFormat;
+import java.util.Iterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.util.StringUtils;
 
 /**
  * @author wk-mia
@@ -27,6 +32,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RemotingRosterManage implements IRemotingRoster {
+
+    private static Logger log = LoggerFactory.getLogger(RemotingRosterManage.class);
 
     /**
      * 所有的在线连接组
@@ -91,15 +98,46 @@ public class RemotingRosterManage implements IRemotingRoster {
         }
     }
 
+    /**
+     * 从在线通道分组管理器中注销实例
+     * @param channel 通道
+     * @throws ServerException
+     */
     @Override
-    public void unRegisterSlave(String slaveClientId) throws ServerException {
-        // TODO: 2020/9/3  清除所有Slave的连接
+    public void unRegister(Channel channel)throws ServerException{
+        if(channel == null){
+            return;
+        }
+        Iterator<RemotingElement> iterator = remotingRoster.iterator();
+        while (iterator.hasNext()){
+            RemotingElement next = iterator.next();
+            if(channel == next.getMasterElement().getChannel() || channel == next.getSlaveElement().getChannel()){
+                iterator.remove();
+                log.info(MessageFormat.format("the connection: {0} has been terminated",next.getConnectionId()));
+            }
+        }
     }
 
+    /**
+     * 从在线通道分组管理器中注销实例
+     * @param connectionId 连接编码
+     * @throws ServerException
+     */
     @Override
-    public void unRegisterMaster(String slaveClientId,String masterClientId) throws ServerException {
-        // TODO: 2020/9/3  清除当前Master连接
+    public void unRegister(String connectionId)throws ServerException{
+        if(StringUtils.isEmpty(connectionId)){
+            return;
+        }
+        Iterator<RemotingElement> iterator = remotingRoster.iterator();
+        while (iterator.hasNext()){
+            RemotingElement next = iterator.next();
+            if(connectionId == next.getConnectionId()){
+                iterator.remove();
+                log.info(MessageFormat.format("the connection: {0} has been terminated",next.getConnectionId()));
+            }
+        }
     }
+
 
     @Override
     public void notifyAllMaster(String slaveClientId, BaseResponse baseResponse) throws IncompleteParamException {

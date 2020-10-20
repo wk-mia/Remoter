@@ -7,10 +7,14 @@ import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.IncompleteParamException;
 import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.manage.IOnlineRoster;
+import com.aoligei.remoter.netty.ServerChannelC2CHandler;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
+import java.text.MessageFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +31,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class OnlineRosterManage implements IOnlineRoster {
+
+    private static Logger log = LoggerFactory.getLogger(OnlineRosterManage.class);
 
     /**
      * 客户端基本信息账册
@@ -83,12 +89,37 @@ public class OnlineRosterManage implements IOnlineRoster {
             while (iterator.hasNext()){
                 if(clientId.equals(iterator.next().getClientId())){
                     iterator.remove();
+                    log.info(MessageFormat.format("the client: {0} has been offline",clientId));
                 }
             }
         }else {
             throw new ServerException(ServerExceptionConstants.CLIENT_NOT_FIND);
         }
 
+    }
+
+    /**
+     * 从在线列表中销毁连接
+     * @param channel 通道
+     * @throws ServerException
+     */
+    public void remove(Channel channel)throws ServerException{
+        if(channel == null){
+            return;
+        }
+        if (onlineRoster.stream().filter(item -> channel.equals(item.getChannel())).findAny().isPresent()){
+            /**
+             * 从onlineConn中移除所有通道为channel的元数据，尽管理论上一个客户端只有会存在一个连接的元数据
+             */
+            Iterator<OnlineElement> iterator = onlineRoster.iterator();
+            while (iterator.hasNext()){
+                OnlineElement next = iterator.next();
+                if(channel.equals(next.getChannel())){
+                    iterator.remove();
+                    log.info(MessageFormat.format("the client: {0} has been offline",next.getClientId()));
+                }
+            }
+        }
     }
 
     /**

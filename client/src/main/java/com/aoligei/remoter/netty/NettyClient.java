@@ -77,6 +77,15 @@ public class NettyClient {
     }
 
     /**
+     * 向服务器发送停止控制请求
+     * @param connectionId 连接编码
+     * @throws SponsorException
+     */
+    public void stopControl(String connectionId)throws SponsorException{
+        singleTaskManage.stopControl(connectionId);
+    }
+
+    /**
      * 销毁连接
      */
     public void destroy(){

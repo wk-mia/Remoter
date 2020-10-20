@@ -7,10 +7,6 @@ package com.aoligei.remoter.enums;
  */
 public enum SponsorInspectEnum {
     /**
-     * 连接编码
-     */
-    CONNECTION_ID,
-    /**
      * 客户端身份识别码
      */
     CLIENT_ID,

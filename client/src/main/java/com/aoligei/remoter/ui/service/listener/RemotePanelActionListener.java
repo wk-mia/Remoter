@@ -92,7 +92,7 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
         try{
             nettyClient.control("14927006-002");
         }catch (Exception e){
-            DialogPage.errorDialog("connect-error",e.getMessage());
+            DialogPage.errorDialog("control-error",e.getMessage());
         }
     }
 
@@ -101,7 +101,11 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
      */
     @Override
     public void stopControl() {
-
+        try{
+            nettyClient.stopControl("14927006-002");
+        }catch (Exception e){
+            DialogPage.errorDialog("dis-control-error",e.getMessage());
+        }
     }
 
 }

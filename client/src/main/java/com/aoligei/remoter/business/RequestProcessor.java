@@ -104,12 +104,30 @@ public class RequestProcessor {
     }
 
     /**
+     * 停止控制请求，该请求为MASTER/SLAVER发起。
+     * @param connectionId 连接编码
+     * @return 请求主体
+     * @throws SponsorException
+     */
+    public BaseRequest buildStopControlRequest(String connectionId)throws SponsorException{
+        /**向服务器发起断开控制请求时，需指定连接编码*/
+        BaseRequest baseRequest = new BaseRequest(){{
+            setConnectionId(connectionId);
+            setClientId(terminalManage.getClientInfo().getClientId());
+            setTerminalTypeEnum(TerminalTypeEnum.UNKNOWN);
+            setCommandEnum(CommandEnum.STOP_CONTROL);
+            setData(null);
+        }};
+        return baseRequest;
+    }
+
+    /**
      * 心跳请求
      * @return 请求主体
      */
     public BaseRequest buildHeartbeatRequest(){
         BaseRequest baseRequest = new BaseRequest(){{
-            setConnectionId(terminalManage.getConnectionId());
+            setConnectionId(null);
             setClientId(terminalManage.getClientInfo().getClientId());
             setTerminalTypeEnum(TerminalTypeEnum.UNKNOWN);
             setCommandEnum(CommandEnum.HEART_BEAT);
@@ -122,10 +140,10 @@ public class RequestProcessor {
      * 屏幕截图请求
      * @return 请求主体
      */
-    public BaseRequest buildScreenShotsRequest(){
+    public BaseRequest buildScreenShotsRequest(String connectionId){
         byte[] data = screenCatcher.captureScreen();
         BaseRequest baseRequest = new BaseRequest(){{
-            setConnectionId(terminalManage.getConnectionId());
+            setConnectionId(connectionId);
             setClientId(terminalManage.getClientInfo().getClientId());
             setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
             setCommandEnum(CommandEnum.SCREEN_SHOTS);

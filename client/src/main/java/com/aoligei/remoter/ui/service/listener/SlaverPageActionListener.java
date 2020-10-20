@@ -1,5 +1,7 @@
 package com.aoligei.remoter.ui.service.listener;
 
+import com.aoligei.remoter.netty.NettyClient;
+import com.aoligei.remoter.ui.form.DialogPage;
 import com.aoligei.remoter.ui.form.SlaverPage;
 import com.aoligei.remoter.ui.panel.SlaverScreenPanel;
 import com.aoligei.remoter.ui.service.action.IInteract;
@@ -16,6 +18,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,6 +31,12 @@ import org.springframework.stereotype.Component;
 public class SlaverPageActionListener implements WindowListener, IInteract {
 
     private static Logger log = LoggerFactory.getLogger(SlaverPageActionListener.class);
+
+    /**
+     * Netty客户端
+     */
+    @Autowired
+    private NettyClient nettyClient;
 
     /**本地远程的窗体列表*/
     private Map<String,SlaverPage> slavers = new ConcurrentHashMap<>();
@@ -94,8 +103,12 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
     public void windowClosing(WindowEvent e) {
         SlaverPage page = (SlaverPage) e.getSource();
         String connectId = page.getTitle();
-        /**停止远程控制*/
-
+        /**发送停止远程控制命令*/
+        try{
+            nettyClient.stopControl(connectId);
+        }catch (Exception ex){
+            DialogPage.errorDialog("connect-error",ex.getMessage());
+        }
         /**移除远程窗口*/
         slavers.remove(connectId);
         /**关闭远程窗口*/

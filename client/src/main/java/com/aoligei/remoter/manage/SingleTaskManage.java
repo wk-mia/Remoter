@@ -78,4 +78,17 @@ public class SingleTaskManage {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 停止控制请求
+     * @param connectionId 连接编码
+     */
+    public void stopControl(String connectionId){
+        try{
+            ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.STOP_CONTROL);
+            sponsor.sponsor(processor.buildStopControlRequest(connectionId));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

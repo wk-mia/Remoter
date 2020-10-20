@@ -17,11 +17,8 @@ public class RemoterClientApplication {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(RemoterClientApplication.class);
         ConfigurableApplicationContext context = builder.headless(false).run(args);
         /**启动一个客户端的实例*/
-//        IStart homePage = context.getBean(HomePageActionListener.class);
-//        homePage.start();
-
-        IInteract page = context.getBean(SlaverPageActionListener.class);
-        page.call("xxx");
+        IStart homePage = context.getBean(HomePageActionListener.class);
+        homePage.start();
     }
 
 }

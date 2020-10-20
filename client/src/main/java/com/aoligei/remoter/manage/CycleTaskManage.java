@@ -58,33 +58,22 @@ public class CycleTaskManage {
     /**
      * 屏幕截图任务
      */
-    private Runnable ScreenShotTask = new Runnable() {
-        @Override
-        public void run() {
-            BaseRequest request = processor.buildScreenShotsRequest();
-            if(isOldScreen(previousScreen,(byte[])request.getData())){
-                /**与上一个屏幕截图相同，不发送该屏幕截图，发送心跳*/
-                HeartbeatTask.run();
-            }else {
-                /**发送屏幕截图*/
-                if(usable()){
-                    context.writeAndFlush(request);
-                }
-            }
-        }
-    };
+    private ScreenShot ScreenShotTask = new ScreenShot();
+
+
 
 
 
     /**
      * 调度任务：停止旧任务，开始新任务
      */
-    public void schedule(ChannelHandlerContext context){
+    public void schedule(ChannelHandlerContext context,String connectionId){
         this.context = context;
         if(terminalManage.getRemotingFlag()){
             /**当前正在远程工作中，发送屏幕截图，并取消心跳任务*/
             if(tasks.get(ScreenShotTask) == null || tasks.get(ScreenShotTask).isCancelled()){
-                tasks.put(ScreenShotTask,starScreenshot());
+                /**屏幕截图任务需指定连接编码*/
+                tasks.put(ScreenShotTask.setConnectionId(connectionId),starScreenshot());
             }
             if(tasks.get(HeartbeatTask) != null && ! tasks.get(HeartbeatTask).isCancelled()){
                 tasks.get(HeartbeatTask).cancel(true);
@@ -157,5 +146,30 @@ public class CycleTaskManage {
             }
         }
         return changed;
+    }
+
+    /**
+     * 屏幕截图任务类
+     */
+    private class ScreenShot implements Runnable{
+        private String connectionId;
+        /**设置连接编码*/
+        public ScreenShot setConnectionId(String connectionId){
+            this.connectionId = connectionId;
+            return this;
+        }
+        @Override
+        public void run() {
+            BaseRequest request = processor.buildScreenShotsRequest(connectionId);
+            if(isOldScreen(previousScreen,(byte[])request.getData())){
+                /**与上一个屏幕截图相同，不发送该屏幕截图，发送心跳*/
+                HeartbeatTask.run();
+            }else {
+                /**发送屏幕截图*/
+                if(usable()){
+                    context.writeAndFlush(request);
+                }
+            }
+        }
     }
 }

@@ -9,12 +9,16 @@ import com.aoligei.remoter.constant.ExceptionStyleConstants;
 import com.aoligei.remoter.constant.ResponseConstants;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.manage.impl.OnlineRosterManage;
+import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -33,9 +37,18 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
     private static Logger log = LoggerFactory.getLogger(ServerChannelC2CHandler.class);
 
     /**
-     * 当前的所有连接
+     * 连接组管理器
      */
-    private static Map<Integer, RemotingElement> channelCacheMap = new ConcurrentHashMap<>();
+    private RemotingRosterManage remotingRoster;
+    /**
+     * 在线连接管理器
+     */
+    private OnlineRosterManage onlineRoster;
+    @Autowired
+    public ServerChannelC2CHandler(RemotingRosterManage remotingRoster, OnlineRosterManage onlineRoster){
+        this.remotingRoster = remotingRoster;
+        this.onlineRoster = onlineRoster;
+    }
 
     /**
      * 每个信息入站时都会被调用。
@@ -87,6 +100,9 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        log.info(ctx.name()+"下线了");
+        /**从连接组列表中移除连接组*/
+        remotingRoster.unRegister(ctx.channel());
+        /**从在线连接列表中移除连接*/
+        onlineRoster.remove(ctx.channel());
     }
 }

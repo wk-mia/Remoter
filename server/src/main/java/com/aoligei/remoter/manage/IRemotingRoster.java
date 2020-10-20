@@ -33,19 +33,18 @@ public interface IRemotingRoster {
     void registerMaster(String connectionId, String masterClientId, Channel channel)throws ServerException;
 
     /**
-     * 从在线通道分组管理器中注销受控端的实例
-     * @param slaveClientId 受控端的身份识别码
-     * @throws ServerException 异常信息
+     * 从在线通道分组管理器中注销实例
+     * @param channel 通道
+     * @throws ServerException
      */
-    void unRegisterSlave(String slaveClientId)throws ServerException;
+    void unRegister(Channel channel)throws ServerException;
 
     /**
-     * 从在线通道分组管理器中注销主控端的实例
-     * @param slaveClientId 受控端的身份识别码
-     * @param masterClientId 主控端的身份识别码
-     * @throws ServerException 异常信息
+     * 从在线通道分组管理器中注销实例
+     * @param connectionId 连接编码
+     * @throws ServerException
      */
-    void unRegisterMaster(String slaveClientId, String masterClientId)throws ServerException;
+    void unRegister(String connectionId)throws ServerException;
 
     /**
      * 通知消息给所有主控端

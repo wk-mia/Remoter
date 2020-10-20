@@ -1,6 +1,7 @@
 package com.aoligei.remoter.handler;
 
 
+import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandSponsor;
@@ -43,7 +44,7 @@ public class ConnectCommandHandler extends AbstractClientHandler {
             cycleSponsor.setContext(channelHandlerContext);
             /**连接成功后开始心跳任务*/
             logInfo("the server has processed the connection,the heartbeat mission is about to begin");
-            cycleSponsor.sponsor(null);
+            cycleSponsor.sponsor(new BaseRequest());
         }catch (Exception e){
             e.printStackTrace();
         }

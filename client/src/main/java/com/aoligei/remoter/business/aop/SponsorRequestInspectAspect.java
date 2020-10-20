@@ -71,9 +71,6 @@ public class SponsorRequestInspectAspect {
                 case CLIENT_ID:
                     inspectClientId();
                     break;
-                case CONNECTION_ID:
-                    inspectConnectionId();
-                    break;
                 case CLIENT_IP:
                     inspectClientIp();
                     break;
@@ -107,16 +104,6 @@ public class SponsorRequestInspectAspect {
         this.inspectClientInfo();
         if(StringUtils.isEmpty(terminalManage.getClientInfo().getClientId())){
             throw new SponsorException(SponsorConstants.CLIENT_ID_NULL);
-        }
-    }
-
-    /**
-     * 连接编码非空检查
-     * @throws SponsorException
-     */
-    private void inspectConnectionId()throws SponsorException{
-        if(terminalManage == null || StringUtils.isEmpty(terminalManage.getConnectionId())){
-            throw new SponsorException(SponsorConstants.CONNECTION_ID_NULL);
         }
     }
 

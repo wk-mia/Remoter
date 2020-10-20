@@ -76,10 +76,11 @@ public class ControlCommandHandler extends AbstractClientHandler {
             terminalManage.createConnection(baseResponse.getConnectionId());
             terminalManage.setRemotingFlag(true);
             logInfo("the client has agreed to the remote connection,the screen shots mission is about to begin...");
-            /**开始发送屏幕截图*/
+            /**开始发送屏幕截图：屏幕截图任务需要连接编码*/
             try{
                 ICommandSponsor cycleSponsor = CommandFactory.getCommandSponsor(CommandEnum.SCREEN_SHOTS);
-                cycleSponsor.sponsor(null);
+                BaseRequest request = new BaseRequest(){{setConnectionId(baseResponse.getConnectionId());}};
+                cycleSponsor.sponsor(request);
             }catch (Exception e){
                 e.printStackTrace();
             }
