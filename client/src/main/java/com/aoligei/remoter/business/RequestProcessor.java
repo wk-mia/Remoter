@@ -104,6 +104,24 @@ public class RequestProcessor {
     }
 
     /**
+     * 应答控制请求，该请求为SLAVER发起。
+     * @param connectionId 连接编码
+     * @param data 应答内容
+     * @return 请求主体
+     * @throws SponsorException
+     */
+    public BaseRequest buildAnswerControlRequest(String connectionId, Object data){
+        BaseRequest baseRequest = new BaseRequest(){{
+            setConnectionId(connectionId);
+            setCommandEnum(CommandEnum.CONTROL);
+            setClientId(terminalManage.getClientInfo().getClientId());
+            setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
+            setData(data);
+        }};
+        return baseRequest;
+    }
+
+    /**
      * 停止控制请求，该请求为MASTER/SLAVER发起。
      * @param connectionId 连接编码
      * @return 请求主体

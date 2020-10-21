@@ -2,6 +2,7 @@ package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
+import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
@@ -28,12 +29,15 @@ public class ControlCommandHandler extends AbstractClientHandler {
 
     /**客户端身份管理器*/
     private TerminalManage terminalManage;
+    /**请求组装器*/
+    private RequestProcessor processor;
     /**远程窗口事件监听器*/
     private SlaverPageActionListener remoteListener;
     @Autowired
-    public ControlCommandHandler(TerminalManage terminalManage, SlaverPageActionListener remoteListener){
+    public ControlCommandHandler(TerminalManage terminalManage, SlaverPageActionListener remoteListener, RequestProcessor processor){
         this.terminalManage = terminalManage;
         this.remoteListener = remoteListener;
+        this.processor = processor;
     }
 
     /**
@@ -64,13 +68,7 @@ public class ControlCommandHandler extends AbstractClientHandler {
         if(! StringUtils.isEmpty(baseResponse.getConnectionId())){
             /**此处为客户端直接同意控制请求*/
             Boolean agree = Boolean.TRUE;
-            BaseRequest baseRequest = new BaseRequest(){{
-                setConnectionId(baseResponse.getConnectionId());
-                setCommandEnum(CommandEnum.CONTROL);
-                setClientId(terminalManage.getClientInfo().getClientId());
-                setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
-                setData(agree);
-            }};
+            BaseRequest baseRequest = processor.buildAnswerControlRequest(baseResponse.getConnectionId(),agree);
             channelHandlerContext.writeAndFlush(baseRequest);
             /**更新客户端连接编码、当前受控状态*/
             terminalManage.createConnection(baseResponse.getConnectionId());
