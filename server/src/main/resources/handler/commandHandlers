@@ -1,6 +1,7 @@
 REGISTER::com.aoligei.remoter.handler.RegisterCommandHandler
 CONNECT::com.aoligei.remoter.handler.ConnectCommandHandler
 CONTROL::com.aoligei.remoter.handler.ControlCommandHandler
+STOP_CONTROL::com.aoligei.remoter.handler.StopControlCommandHandler
 HEART_BEAT::com.aoligei.remoter.handler.HeartbeatCommandHandler
 SCREEN_SHOTS::com.aoligei.remoter.handler.ScreenShotsCommandHandler
 KEYBOARD_INPUT::com.aoligei.remoter.handler.MouseCommandHandler

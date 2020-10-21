@@ -5,6 +5,7 @@ import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.HandlerLoadException;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.netty.ClientChannelInitializer;
@@ -82,11 +83,12 @@ public class SingleTaskManage {
     /**
      * 停止控制请求
      * @param connectionId 连接编码
+     * @param terminal 终端类型
      */
-    public void stopControl(String connectionId){
+    public void stopControl(String connectionId, TerminalTypeEnum terminal){
         try{
             ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.STOP_CONTROL);
-            sponsor.sponsor(processor.buildStopControlRequest(connectionId));
+            sponsor.sponsor(processor.buildStopControlRequest(connectionId,terminal));
         }catch (Exception e){
             e.printStackTrace();
         }

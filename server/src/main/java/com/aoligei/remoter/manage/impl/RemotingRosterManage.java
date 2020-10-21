@@ -141,14 +141,14 @@ public class RemotingRosterManage implements IRemotingRoster {
 
 
     @Override
-    public void notifyAllMaster(String slaveClientId, BaseResponse baseResponse) throws IncompleteParamException {
+    public void notifyAllMaster(String connectionId, BaseResponse baseResponse) throws IncompleteParamException {
         /**
          * 找到所有的主控端，将消息转送出去
          */
-        if(slaveClientId == null || "".equals(slaveClientId)){
-            throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
+        if(connectionId == null || "".equals(connectionId)){
+            throw new IncompleteParamException(IncompleteParamConstants.CONNECTION_ID_NULL);
         }
-        List<RemotingElement> masters = this.getChannelCachesBySlaveClientId(slaveClientId);
+        List<RemotingElement> masters = this.getChannelCachesByConnectionId(connectionId);
         if(masters != null && masters.size() >= 1){
             masters.forEach(item ->
                     item.getMasterElement().getChannel().writeAndFlush(baseResponse)
@@ -192,12 +192,23 @@ public class RemotingRosterManage implements IRemotingRoster {
      * connectionId，而能表示这一组连接的只有Slave的身份编码。
      * @param slaveClientId 受控端身份识别码
      * @return 数量
-     * @throws ServerException 异常信息
      */
     public List<RemotingElement> getChannelCachesBySlaveClientId(String slaveClientId){
         return remotingRoster.stream()
                 .filter(item -> item.getSlaveElement() != null)
                 .filter(item -> slaveClientId.equals(item.getSlaveElement().getClientId()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取当前连接组中所有的主控端
+     * @param connectionId 连接编码
+     * @return 数量
+     */
+    public List<RemotingElement> getChannelCachesByConnectionId(String connectionId){
+        return remotingRoster.stream()
+                .filter(item -> ! StringUtils.isEmpty(item.getConnectionId()))
+                .filter(item -> connectionId.equals(item.getConnectionId()))
                 .collect(Collectors.toList());
     }
 

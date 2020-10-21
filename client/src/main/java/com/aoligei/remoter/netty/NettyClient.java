@@ -1,5 +1,6 @@
 package com.aoligei.remoter.netty;
 
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.manage.SingleTaskManage;
 import com.aoligei.remoter.util.AccessConfigUtil;
@@ -82,7 +83,7 @@ public class NettyClient {
      * @throws SponsorException
      */
     public void stopControl(String connectionId)throws SponsorException{
-        singleTaskManage.stopControl(connectionId);
+        singleTaskManage.stopControl(connectionId, TerminalTypeEnum.MASTER);
     }
 
     /**

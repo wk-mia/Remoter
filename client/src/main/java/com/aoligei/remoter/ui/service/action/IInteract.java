@@ -31,4 +31,10 @@ public interface IInteract {
     /**
      * 播放声音
      */
+
+    /**
+     * 关闭远程控制
+     * @param connectionId
+     */
+    void closeControl(String connectionId);
 }

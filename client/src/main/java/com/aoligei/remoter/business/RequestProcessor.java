@@ -124,15 +124,16 @@ public class RequestProcessor {
     /**
      * 停止控制请求，该请求为MASTER/SLAVER发起。
      * @param connectionId 连接编码
+     * @param typeEnum 终端类型
      * @return 请求主体
      * @throws SponsorException
      */
-    public BaseRequest buildStopControlRequest(String connectionId)throws SponsorException{
+    public BaseRequest buildStopControlRequest(String connectionId,TerminalTypeEnum typeEnum)throws SponsorException{
         /**向服务器发起断开控制请求时，需指定连接编码*/
         BaseRequest baseRequest = new BaseRequest(){{
             setConnectionId(connectionId);
             setClientId(terminalManage.getClientInfo().getClientId());
-            setTerminalTypeEnum(TerminalTypeEnum.UNKNOWN);
+            setTerminalTypeEnum(typeEnum);
             setCommandEnum(CommandEnum.STOP_CONTROL);
             setData(null);
         }};

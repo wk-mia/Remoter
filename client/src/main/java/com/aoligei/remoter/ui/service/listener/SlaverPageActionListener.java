@@ -85,6 +85,19 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
     }
 
     /**
+     * 关闭远程控制
+     * @param connectionId
+     */
+    @Override
+    public void closeControl(String connectionId){
+        try{
+            nettyClient.stopControl(connectionId);
+        }catch (Exception ex){
+            DialogPage.errorDialog("connect-error",ex.getMessage());
+        }
+    }
+
+    /**
      * 给面板及窗体注册监听器
      * @param page 窗体
      * @param panel 面板
@@ -104,11 +117,7 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
         SlaverPage page = (SlaverPage) e.getSource();
         String connectId = page.getTitle();
         /**发送停止远程控制命令*/
-        try{
-            nettyClient.stopControl(connectId);
-        }catch (Exception ex){
-            DialogPage.errorDialog("connect-error",ex.getMessage());
-        }
+        this.closeControl(connectId);
         /**移除远程窗口*/
         slavers.remove(connectId);
         /**关闭远程窗口*/
