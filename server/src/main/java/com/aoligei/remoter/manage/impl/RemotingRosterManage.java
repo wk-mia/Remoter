@@ -15,6 +15,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import java.text.MessageFormat;
 import java.util.Iterator;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -195,6 +196,7 @@ public class RemotingRosterManage implements IRemotingRoster {
      */
     public List<RemotingElement> getChannelCachesBySlaveClientId(String slaveClientId){
         return remotingRoster.stream()
+                .filter(item -> item.getSlaveElement() != null)
                 .filter(item -> slaveClientId.equals(item.getSlaveElement().getClientId()))
                 .collect(Collectors.toList());
     }
@@ -206,6 +208,7 @@ public class RemotingRosterManage implements IRemotingRoster {
      */
     public List<RemotingElement> getChannelCachesByMasterClientId(String masterClientId) {
         return remotingRoster.stream()
+                .filter(item -> item.getMasterElement() != null)
                 .filter(item -> masterClientId.equals(item.getMasterElement().getClientId()))
                 .collect(Collectors.toList());
     }
@@ -216,7 +219,8 @@ public class RemotingRosterManage implements IRemotingRoster {
      * @return 工作中:true
      */
     public boolean isSlaverWorking(String slaverClientId){
-        return remotingRoster.stream().anyMatch(item ->
-                slaverClientId.equals(item.getSlaveElement().getClientId()));
+        return remotingRoster.stream()
+                .filter(item -> item.getSlaveElement() != null)
+                .anyMatch(item -> slaverClientId.equals(item.getSlaveElement().getClientId()));
     }
 }
