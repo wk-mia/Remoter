@@ -21,13 +21,6 @@ import org.springframework.stereotype.Component;
 @Component(value = "ConnectCommandHandler")
 public class ConnectCommandHandler extends AbstractClientHandler {
 
-    /**客户端身份管理器*/
-    private TerminalManage terminalManage;
-    @Autowired
-    private void setTerminalManage(TerminalManage terminalManage){
-        this.terminalManage = terminalManage;
-    }
-
     /**
      * 特定的处理器-连接处理器
      * @param channelHandlerContext 当前连接的处理器上下文
@@ -36,8 +29,6 @@ public class ConnectCommandHandler extends AbstractClientHandler {
      */
     @Override
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
-        /**更新客户端缓存*/
-        terminalManage.createConnection(baseResponse.getConnectionId());
         try {
             ICommandSponsor cycleSponsor = CommandFactory.getCommandSponsor(CommandEnum.HEART_BEAT);
             /**记录通道：所有Sponsor记录下context*/

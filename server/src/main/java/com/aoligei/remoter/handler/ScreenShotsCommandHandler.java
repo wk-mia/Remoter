@@ -13,6 +13,8 @@ import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
+
 /**
  * @author wk-mia
  * 2020-9-3
@@ -47,6 +49,8 @@ public class ScreenShotsCommandHandler extends AbstractServerCensorC2CHandler {
          */
         BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),
                 TerminalTypeEnum.SERVER_2_MASTER,CommandEnum.SCREEN_SHOTS,baseRequest.getData(),null);
-        remotingRosterManage.notifyAllMaster(baseRequest.getClientId(),baseResponse);
+        String connectionId = baseRequest.getConnectionId();
+        logInfo(MessageFormat.format("forward the screenshot to:{0}",connectionId));
+        remotingRosterManage.notifyAllMaster(connectionId,baseResponse);
     }
 }

@@ -50,7 +50,7 @@ public class StopControlCommandHandler extends AbstractServerCensorC2CHandler {
         remotingRosterManage.notifySlave(connectionId,response);
         /**移除该连接组*/
         remotingRosterManage.unRegister(connectionId);
-        logInfo(MessageFormat.format("the server has removed connection:{}",connectionId));
+        logInfo(MessageFormat.format("the server has removed connection:{0}",connectionId));
     }
 
 }
