@@ -39,7 +39,7 @@ public class RemotingRosterManage implements IRemotingRoster {
     /**
      * 所有的在线连接组
      */
-    public List<RemotingElement> remotingRoster = new CopyOnWriteArrayList<>();
+    public CopyOnWriteArrayList<RemotingElement> remotingRoster = new CopyOnWriteArrayList<>();
 
     @Override
     public void registerSlave(String connectionId,String slaveClientId, Channel channel) throws ServerException {
@@ -113,7 +113,7 @@ public class RemotingRosterManage implements IRemotingRoster {
         while (iterator.hasNext()){
             RemotingElement next = iterator.next();
             if(channel == next.getMasterElement().getChannel() || channel == next.getSlaveElement().getChannel()){
-                iterator.remove();
+                remotingRoster.remove(next);
                 log.info(MessageFormat.format("the connection: {0} has been terminated",next.getConnectionId()));
             }
         }
@@ -133,7 +133,7 @@ public class RemotingRosterManage implements IRemotingRoster {
         while (iterator.hasNext()){
             RemotingElement next = iterator.next();
             if(connectionId == next.getConnectionId()){
-                iterator.remove();
+                remotingRoster.remove(next);
                 log.info(MessageFormat.format("the connection: {0} has been terminated",next.getConnectionId()));
             }
         }

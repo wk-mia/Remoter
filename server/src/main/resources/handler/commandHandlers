@@ -4,7 +4,7 @@ CONTROL::com.aoligei.remoter.handler.ControlCommandHandler
 STOP_CONTROL::com.aoligei.remoter.handler.StopControlCommandHandler
 HEART_BEAT::com.aoligei.remoter.handler.HeartbeatCommandHandler
 SCREEN_SHOTS::com.aoligei.remoter.handler.ScreenShotsCommandHandler
-KEYBOARD_INPUT::com.aoligei.remoter.handler.MouseCommandHandler
-MOUSE_INPUT::com.aoligei.remoter.handler.KeyboardCommandHandler
-VOICE_OUTPUT::com.aoligei.remoter.handler.VoiceCommandHandler
+KEYBOARD::com.aoligei.remoter.handler.KeyBoardCommandHandler
+MOUSE::com.aoligei.remoter.handler.MouseCommandHandler
+VOICE::com.aoligei.remoter.handler.VoiceCommandHandler
 DISCONNECT::com.aoligei.remoter.handler.DisConnectCommandHandler

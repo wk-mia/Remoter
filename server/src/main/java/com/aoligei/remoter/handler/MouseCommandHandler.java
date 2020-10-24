@@ -40,7 +40,7 @@ public class MouseCommandHandler extends AbstractServerCensorC2CHandler{
         /**
          * 转发消息给受控客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.MOUSE_INPUT,
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.MOUSE,
                 baseRequest.getData(),null);
         remotingRosterManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }

@@ -46,17 +46,17 @@ public enum CommandEnum {
     /**
      * 键盘输入命令
      */
-    KEYBOARD_INPUT,
+    KEYBOARD,
 
     /**
      * 鼠标输入命令
      */
-    MOUSE_INPUT,
+    MOUSE,
 
     /**
      * 声音输出命令
      */
-    VOICE_OUTPUT,
+    VOICE,
 
     /**
      * 异常通知

@@ -1,12 +1,11 @@
-package com.aoligei.remoter.ui.service.listener;
+package com.aoligei.remoter.service.listener;
 
-import com.aoligei.remoter.beans.BaseRequest;
-import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.enums.CommandEnum;
-import com.aoligei.remoter.netty.NettyClient;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.manage.SingleTaskManage;
 import com.aoligei.remoter.ui.form.DialogPage;
-import com.aoligei.remoter.ui.service.action.IConnect;
-import com.aoligei.remoter.ui.service.action.IControl;
+import com.aoligei.remoter.service.action.IConnect;
+import com.aoligei.remoter.service.action.IControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,11 +21,12 @@ import java.awt.event.ActionListener;
 @Component
 public class RemotePanelActionListener implements ActionListener, IConnect, IControl {
 
-    /**
-     * Netty客户端
-     */
+    /**单次任务管理器*/
+    private SingleTaskManage single;
     @Autowired
-    private NettyClient nettyClient;
+    public RemotePanelActionListener(SingleTaskManage single){
+        this.single = single;
+    }
 
     /**
      * 远程面板区控件的事件处理
@@ -70,7 +70,7 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
     @Override
     public void connect() {
         try{
-            nettyClient.connect();
+            single.startConnect();
         }catch (Exception e){
             DialogPage.errorDialog("connect-error",e.getMessage());
         }
@@ -90,7 +90,7 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
     @Override
     public void control() {
         try{
-            nettyClient.control("14927006-002");
+            single.startControl("14927006-002");
         }catch (Exception e){
             DialogPage.errorDialog("control-error",e.getMessage());
         }
@@ -102,7 +102,7 @@ public class RemotePanelActionListener implements ActionListener, IConnect, ICon
     @Override
     public void stopControl() {
         try{
-            nettyClient.stopControl("14927006-002");
+            single.stopControl("14927006-002", TerminalTypeEnum.MASTER);
         }catch (Exception e){
             DialogPage.errorDialog("dis-control-error",e.getMessage());
         }

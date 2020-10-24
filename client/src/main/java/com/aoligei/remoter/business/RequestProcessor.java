@@ -1,9 +1,10 @@
 package com.aoligei.remoter.business;
 
+import com.aoligei.remoter.bean.KeyBoardEvent;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.business.aop.SponsorRequestInspect;
-import com.aoligei.remoter.business.screen.ScreenCatcher;
+import com.aoligei.remoter.service.listener.ScreenCatcher;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
@@ -156,7 +157,7 @@ public class RequestProcessor {
     }
 
     /**
-     * 屏幕截图请求
+     * 屏幕截图请求，该请求为SLAVER发起。
      * @return 请求主体
      */
     public BaseRequest buildScreenShotsRequest(String connectionId){
@@ -167,6 +168,21 @@ public class RequestProcessor {
             setTerminalTypeEnum(TerminalTypeEnum.SLAVE);
             setCommandEnum(CommandEnum.SCREEN_SHOTS);
             setData(data);
+        }};
+        return baseRequest;
+    }
+
+    /**
+     * 屏幕截图请求，该请求为MASTER发起。
+     * @return 请求主体
+     */
+    public BaseRequest buildKeyBoardRequest(String connectionId, KeyBoardEvent event){
+        BaseRequest baseRequest = new BaseRequest(){{
+            setConnectionId(connectionId);
+            setClientId(terminalManage.getClientInfo().getClientId());
+            setTerminalTypeEnum(TerminalTypeEnum.MASTER);
+            setCommandEnum(CommandEnum.KEYBOARD);
+            setData(event);
         }};
         return baseRequest;
     }

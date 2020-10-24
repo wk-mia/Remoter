@@ -1,5 +1,6 @@
 package com.aoligei.remoter.manage;
 
+import com.aoligei.remoter.bean.KeyBoardEvent;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.command.CommandFactory;
@@ -9,6 +10,8 @@ import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.HandlerLoadException;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.netty.ClientChannelInitializer;
+import com.aoligei.remoter.netty.NettyClient;
+import com.aoligei.remoter.util.SpringBeanUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -39,30 +42,26 @@ public class SingleTaskManage {
 
     /**
      * 发起连接请求
-     * @param host 服务器主机
-     * @param port 服务器端口
-     * @param group IO线程池
-     * @param channelInitializer 处理器初始化器
      * @throws Exception
      */
-    public void startConnect(String host, int port, NioEventLoopGroup group, ClientChannelInitializer channelInitializer)throws Exception{
-        final Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(group)
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
-                .handler(channelInitializer);
-        try {
-            final ChannelFuture sync = bootstrap.connect(host, port).sync();
-            final BaseRequest connectRequest = processor.buildConnectRequest();
-            sync.channel().writeAndFlush(connectRequest);
-            sync.channel().closeFuture().sync();
+    public void startConnect(){
+        try{
+            NettyClient nettyClient = SpringBeanUtil.getBean(NettyClient.class);
+            nettyClient.connect(processor.buildConnectRequest());
         }catch (Exception e){
-            log.error(e.getMessage(),e);
-            throw e;
-        }finally {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * 销毁连接
+     */
+    public void destroy(){
+        try{
+            NettyClient nettyClient = SpringBeanUtil.getBean(NettyClient.class);
+            nettyClient.destroy();
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -89,6 +88,20 @@ public class SingleTaskManage {
         try{
             ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.STOP_CONTROL);
             sponsor.sponsor(processor.buildStopControlRequest(connectionId,terminal));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 键盘事件
+     * @param connectionId 连接编码
+     * @param event 源事件
+     */
+    public void sendKeyBoard(String connectionId, KeyBoardEvent event){
+        try{
+            ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.STOP_CONTROL);
+            sponsor.sponsor(processor.buildKeyBoardRequest(connectionId,event));
         }catch (Exception e){
             e.printStackTrace();
         }

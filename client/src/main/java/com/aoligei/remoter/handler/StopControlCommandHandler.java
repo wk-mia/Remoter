@@ -2,14 +2,11 @@ package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
-import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.manage.TerminalManage;
-import com.aoligei.remoter.ui.service.listener.SlaverPageActionListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

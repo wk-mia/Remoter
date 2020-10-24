@@ -1,5 +1,6 @@
-package com.aoligei.remoter.business.screen;
+package com.aoligei.remoter.service.listener;
 
+import com.aoligei.remoter.service.action.IScreen;
 import com.aoligei.remoter.util.AccessConfigUtil;
 import com.aoligei.remoter.util.AccessConfigUtil.Config;
 import com.aoligei.remoter.util.ImageUtil;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
  * 屏幕捕获器
  */
 @Component
-public class ScreenCatcher {
+public class ScreenCatcher implements IScreen {
 
     /**
      *
@@ -32,6 +33,7 @@ public class ScreenCatcher {
      * 捕获屏幕截图
      * @return 屏幕截图转换后的字节数组
      */
+    @Override
     public byte[] captureScreen(){
         /**屏幕分辨率*/
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

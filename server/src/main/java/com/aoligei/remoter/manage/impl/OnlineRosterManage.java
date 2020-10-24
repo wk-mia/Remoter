@@ -87,8 +87,9 @@ public class OnlineRosterManage implements IOnlineRoster {
              */
             Iterator<OnlineElement> iterator = onlineRoster.iterator();
             while (iterator.hasNext()){
-                if(clientId.equals(iterator.next().getClientId())){
-                    iterator.remove();
+                OnlineElement next = iterator.next();
+                if(clientId.equals(next.getClientId())){
+                    onlineRoster.remove(next);
                     log.info(MessageFormat.format("the client: {0} has been offline",clientId));
                 }
             }
@@ -107,15 +108,15 @@ public class OnlineRosterManage implements IOnlineRoster {
         if(channel == null){
             return;
         }
-        if (onlineRoster.stream().filter(item -> channel.equals(item.getChannel())).findAny().isPresent()){
+        if (onlineRoster.stream().filter(item -> channel == item.getChannel()).findAny().isPresent()){
             /**
              * 从onlineConn中移除所有通道为channel的元数据，尽管理论上一个客户端只有会存在一个连接的元数据
              */
             Iterator<OnlineElement> iterator = onlineRoster.iterator();
             while (iterator.hasNext()){
                 OnlineElement next = iterator.next();
-                if(channel.equals(next.getChannel())){
-                    iterator.remove();
+                if(channel == next.getChannel()){
+                    onlineRoster.remove(next);
                     log.info(MessageFormat.format("the client: {0} has been offline",next.getClientId()));
                 }
             }

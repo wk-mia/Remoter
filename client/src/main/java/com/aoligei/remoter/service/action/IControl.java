@@ -1,4 +1,4 @@
-package com.aoligei.remoter.ui.service.action;
+package com.aoligei.remoter.service.action;
 
 /**
  * @author wk-mia

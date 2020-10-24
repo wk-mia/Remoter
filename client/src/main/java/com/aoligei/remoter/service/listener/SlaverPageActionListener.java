@@ -1,10 +1,12 @@
-package com.aoligei.remoter.ui.service.listener;
+package com.aoligei.remoter.service.listener;
 
+import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.manage.SingleTaskManage;
 import com.aoligei.remoter.netty.NettyClient;
 import com.aoligei.remoter.ui.form.DialogPage;
 import com.aoligei.remoter.ui.form.SlaverPage;
 import com.aoligei.remoter.ui.panel.SlaverScreenPanel;
-import com.aoligei.remoter.ui.service.action.IInteract;
+import com.aoligei.remoter.service.action.IInteract;
 
 import com.aoligei.remoter.util.ImageUtil;
 import java.awt.event.WindowEvent;
@@ -30,11 +32,12 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
 
     private static Logger log = LoggerFactory.getLogger(SlaverPageActionListener.class);
 
-    /**
-     * Netty客户端
-     */
+    /**单次任务管理器*/
+    private SingleTaskManage single;
     @Autowired
-    private NettyClient nettyClient;
+    public SlaverPageActionListener(SingleTaskManage single){
+        this.single = single;
+    }
 
     /**本地远程的窗体列表*/
     private Map<String,SlaverPage> slavers = new ConcurrentHashMap<>();
@@ -47,7 +50,7 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
     public void call(String pageTitle) {
         SlaverScreenPanel panel = new SlaverScreenPanel();
         SlaverPage page = new SlaverPage(pageTitle,panel);
-        this.addListener(page,panel);
+        this.addListener(pageTitle, page, panel);
 
         slavers.put(pageTitle,page);
         /**展示窗体*/
@@ -89,7 +92,7 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
     @Override
     public void closeControl(String connectionId){
         try{
-            nettyClient.stopControl(connectionId);
+            single.stopControl(connectionId, TerminalTypeEnum.MASTER);
         }catch (Exception ex){
             DialogPage.errorDialog("connect-error",ex.getMessage());
         }
@@ -97,11 +100,14 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
 
     /**
      * 给面板及窗体注册监听器
+     * @param connectionId 窗体标题：连接编码
      * @param page 窗体
      * @param panel 面板
      */
-    private void addListener(SlaverPage page, SlaverScreenPanel panel){
+    private void addListener(String connectionId, SlaverPage page, SlaverScreenPanel panel){
         page.addWindowListener(this);
+
+        panel.addKeyListener(new KeyBoardActionListener(connectionId));
     }
 
 

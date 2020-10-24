@@ -1,10 +1,7 @@
 package com.aoligei.remoter;
 
-import com.aoligei.remoter.ui.service.action.IInteract;
-import com.aoligei.remoter.ui.service.action.IStart;
-import com.aoligei.remoter.ui.service.listener.HomePageActionListener;
-import com.aoligei.remoter.ui.service.listener.SlaverPageActionListener;
-import com.aoligei.remoter.util.AccessConfigUtil;
+import com.aoligei.remoter.service.action.IStart;
+import com.aoligei.remoter.service.listener.HomePageActionListener;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;

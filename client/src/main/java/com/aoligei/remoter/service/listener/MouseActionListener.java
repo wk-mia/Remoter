@@ -1,4 +1,4 @@
-package com.aoligei.remoter.ui.service.listener;
+package com.aoligei.remoter.service.listener;
 
 import com.aoligei.remoter.manage.SingleTaskManage;
 import com.aoligei.remoter.util.SpringBeanUtil;

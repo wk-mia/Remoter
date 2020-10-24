@@ -1,6 +1,6 @@
-package com.aoligei.remoter.ui.service.listener;
+package com.aoligei.remoter.service.listener;
 
-import com.aoligei.remoter.ui.service.action.IRegister;
+import com.aoligei.remoter.service.action.IRegister;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
