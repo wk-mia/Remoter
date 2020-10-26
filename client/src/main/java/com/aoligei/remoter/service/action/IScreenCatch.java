@@ -5,7 +5,7 @@ package com.aoligei.remoter.service.action;
  * 2020-10-13
  * 主控端的屏幕捕获
  */
-public interface IScreen {
+public interface IScreenCatch {
 
     /**
      * 捕获屏幕截图

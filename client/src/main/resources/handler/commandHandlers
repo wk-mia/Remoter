@@ -3,6 +3,6 @@ CONNECT::com.aoligei.remoter.handler.ConnectCommandHandler
 CONTROL::com.aoligei.remoter.handler.ControlCommandHandler
 STOP_CONTROL::com.aoligei.remoter.handler.StopControlCommandHandler
 SCREEN_SHOTS::com.aoligei.remoter.handler.master.ScreenShotsCommandHandler
-KEYBOARD::com.aoligei.remoter.handler.slave.KeyBoardCommandSponsor
-MOUSE::com.aoligei.remoter.handler.slave.MouseCommandSponsor
+KEYBOARD::com.aoligei.remoter.handler.slave.KeyBoardCommandHandler
+MOUSE::com.aoligei.remoter.handler.slave.MouseCommandHandler
 EXCEPTION::com.aoligei.remoter.handler.ExceptionHandler

@@ -1,6 +1,6 @@
-package com.aoligei.remoter.service.listener;
+package com.aoligei.remoter.service.driver;
 
-import com.aoligei.remoter.service.action.IScreen;
+import com.aoligei.remoter.service.action.IScreenCatch;
 import com.aoligei.remoter.util.AccessConfigUtil;
 import com.aoligei.remoter.util.AccessConfigUtil.Config;
 import com.aoligei.remoter.util.ImageUtil;
@@ -14,20 +14,13 @@ import org.springframework.stereotype.Component;
  * 屏幕捕获器
  */
 @Component
-public class ScreenCatcher implements IScreen {
+public class ScreenCatcher implements IScreenCatch {
 
     /**
-     *
+     * Robot
      */
-    private Robot robot;
+    private Robot robot = RobotFactory.getInstance();
 
-    {
-        try {
-            robot = new Robot();
-        }catch (AWTException e){
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * 捕获屏幕截图

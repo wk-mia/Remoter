@@ -1,12 +1,12 @@
 package com.aoligei.remoter.manage;
 
-import com.aoligei.remoter.bean.KeyBoardEvent;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.business.RequestProcessor;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.event.KeyBoardEvent;
 import com.aoligei.remoter.exception.HandlerLoadException;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.netty.ClientChannelInitializer;

@@ -21,7 +21,7 @@ public class KeyBoardEvent {
         this.keyCode = keyCode;
     }
 
-    public boolean isKeyStatus() {
+    public boolean getKeyStatus() {
         return keyStatus;
     }
 

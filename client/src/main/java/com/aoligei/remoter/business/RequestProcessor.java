@@ -4,7 +4,7 @@ import com.aoligei.remoter.event.KeyBoardEvent;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.business.aop.SponsorRequestInspect;
-import com.aoligei.remoter.service.listener.ScreenCatcher;
+import com.aoligei.remoter.service.driver.ScreenCatcher;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
@@ -33,7 +33,7 @@ public class RequestProcessor {
     private ScreenCatcher screenCatcher;
 
     @Autowired
-    public RequestProcessor(TerminalManage terminalManage,ScreenCatcher screenCatcher){
+    public RequestProcessor(TerminalManage terminalManage, ScreenCatcher screenCatcher){
         this.terminalManage = terminalManage;
         this.screenCatcher = screenCatcher;
     }
