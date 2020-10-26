@@ -96,7 +96,7 @@ public class CycleTaskManage {
      */
     private ScheduledFuture<?> startHeartbeat(){
         int intervals = AccessConfigUtil.getNumber(AccessConfigUtil.Config.PARAM,"task.heartbeat.intervals");
-        return context.executor().scheduleAtFixedRate(HeartbeatTask,0,intervals, TimeUnit.SECONDS);
+        return context.executor().scheduleAtFixedRate(HeartbeatTask,0,intervals, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -106,7 +106,7 @@ public class CycleTaskManage {
      */
     private ScheduledFuture<?> starScreenshot(){
         int intervals = AccessConfigUtil.getNumber(AccessConfigUtil.Config.PARAM,"task.screenshots.intervals");
-        return context.executor().scheduleAtFixedRate(ScreenShotTask,0,intervals, TimeUnit.SECONDS);
+        return context.executor().scheduleAtFixedRate(ScreenShotTask,0,intervals, TimeUnit.MILLISECONDS);
     }
 
     /**
