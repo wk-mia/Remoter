@@ -1,4 +1,4 @@
-package com.aoligei.remoter.bean;
+package com.aoligei.remoter.event;
 
 
 /**

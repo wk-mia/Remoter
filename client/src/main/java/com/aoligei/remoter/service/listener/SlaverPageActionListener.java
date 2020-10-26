@@ -107,7 +107,7 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
     private void addListener(String connectionId, SlaverPage page, SlaverScreenPanel panel){
         page.addWindowListener(this);
 
-        panel.addKeyListener(new KeyBoardActionListener(connectionId));
+        page.addKeyListener(new KeyBoardActionListener(connectionId));
     }
 
 

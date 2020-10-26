@@ -5,6 +5,7 @@ import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.business.aop.RequestInspect;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.InspectEnum;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
@@ -40,7 +41,9 @@ public class KeyBoardCommandHandler extends AbstractServerCensorC2CHandler {
         /**
          * 转发消息给受控客户端
          */
-        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.KEYBOARD,baseRequest.getData(),null);
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),
+                TerminalTypeEnum.SERVER, CommandEnum.KEYBOARD,baseRequest.getData(),null);
+        System.out.println("##########################################################");
         remotingRosterManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }
 }

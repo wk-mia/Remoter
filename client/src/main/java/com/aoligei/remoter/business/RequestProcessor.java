@@ -1,6 +1,6 @@
 package com.aoligei.remoter.business;
 
-import com.aoligei.remoter.bean.KeyBoardEvent;
+import com.aoligei.remoter.event.KeyBoardEvent;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.business.aop.SponsorRequestInspect;

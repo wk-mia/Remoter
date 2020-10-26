@@ -42,7 +42,6 @@ public class SingleTaskManage {
 
     /**
      * 发起连接请求
-     * @throws Exception
      */
     public void startConnect(){
         try{
@@ -100,7 +99,7 @@ public class SingleTaskManage {
      */
     public void sendKeyBoard(String connectionId, KeyBoardEvent event){
         try{
-            ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.STOP_CONTROL);
+            ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.KEYBOARD);
             sponsor.sponsor(processor.buildKeyBoardRequest(connectionId,event));
         }catch (Exception e){
             e.printStackTrace();
