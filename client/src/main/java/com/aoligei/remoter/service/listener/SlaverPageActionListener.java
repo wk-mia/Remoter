@@ -108,6 +108,11 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
         page.addWindowListener(this);
 
         page.addKeyListener(new KeyBoardActionListener(connectionId));
+
+        final MouseActionListener mouseActionListener = new MouseActionListener(connectionId);
+        panel.addMouseListener(mouseActionListener);
+        panel.addMouseMotionListener(mouseActionListener);
+        panel.addMouseWheelListener(mouseActionListener);
     }
 
 

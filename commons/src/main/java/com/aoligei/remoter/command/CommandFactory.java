@@ -49,14 +49,10 @@ public class CommandFactory {
             return null;
         }else {
             ICommandSponsor commandSponsor = null;
-            /**
-             * 从缓存中取处理器
-             */
+            /**从缓存中取处理器*/
             commandSponsor = sponsorCache.get(command);
             if(commandSponsor == null){
-                /**
-                 * 加载处理器，放入缓存中
-                 */
+                /**加载处理器，放入缓存中*/
                 return loadCommandSponsor(command);
             }else {
                 return commandSponsor;
@@ -76,14 +72,10 @@ public class CommandFactory {
             return null;
         }else {
             ICommandHandler commandHandler = null;
-            /**
-             * 从缓存中取处理器
-             */
+            /**从缓存中取处理器*/
             commandHandler = handlerCache.get(command);
             if(commandHandler == null){
-                /**
-                 * 加载处理器，放入缓存中
-                 */
+                /**加载处理器，放入缓存中*/
                 return loadCommandHandler(command);
             }else {
                 return commandHandler;
@@ -98,52 +90,12 @@ public class CommandFactory {
      * @throws HandlerLoadException 异常信息
      */
     private static synchronized ICommandHandler loadCommandHandler(Enum<CommandEnum> command)throws HandlerLoadException {
-        /**
-         * 双重校验锁，防止在getCommandHandler方法中获取后，其他的线程新加载了handler
-         */
+        /**双重校验锁，防止在getCommandHandler方法中获取后，其他的线程新加载了handler*/
         ICommandHandler iCommandHandler = handlerCache.get(command);
         if (iCommandHandler != null){
             return iCommandHandler;
         }
-        /**
-         * 加载配置
-         */
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream stream = classLoader.getResourceAsStream(COMMAND_HANDLER_PATH);
-        if(stream == null){
-            throw new HandlerLoadException(HandlerLoadConstants.HANDLER_NOT_FOUND);
-        }else {
-            try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, "utf-8"))){
-                String lineValue = null;
-                while (! StringUtils.isEmpty(lineValue = bufferedReader.readLine())){
-                    final String[] command_type_handler =lineValue.split("::");
-                    /**
-                     * 配置文件出错
-                     */
-                    if(command_type_handler.length < 2 || command_type_handler.length > 2 ||
-                            StringUtils.isEmpty(command_type_handler[0]) || StringUtils.isEmpty(command_type_handler[1])){
-                        throw new HandlerLoadException(HandlerLoadConstants.CONFIG_ERROR);
-                    }
-                    String commandName = command_type_handler[0];
-                    String handlerName = command_type_handler[1];
-                    if(commandName.equals(command.name())){
-                        /**
-                         * 加载handler
-                         */
-                        final String handlerBeanName = Class.forName(handlerName).getSimpleName();
-                        iCommandHandler = SpringBeanUtil.getBean(handlerBeanName,ICommandHandler.class);
-                        /**
-                         * 加入缓存
-                         */
-                        handlerCache.put(command,iCommandHandler);
-                        return iCommandHandler;
-                    }
-                }
-                throw new HandlerLoadException(HandlerLoadConstants.COMMAND_NOT_CONFIG);
-            }catch (Exception e){
-                throw new HandlerLoadException(e.getMessage(),e);
-            }
-        }
+        return CommandFactory.loadCommand(command,ICommandHandler.class);
     }
 
     /**
@@ -153,47 +105,62 @@ public class CommandFactory {
      * @throws HandlerLoadException 异常信息
      */
     private static synchronized ICommandSponsor loadCommandSponsor(Enum<CommandEnum> command)throws HandlerLoadException {
-        /**
-         * 双重校验锁，防止在getCommandHandler方法中获取后，其他的线程新加载了handler
-         */
+        /**双重校验锁，防止在getCommandHandler方法中获取后，其他的线程新加载了handler*/
         ICommandSponsor iCommandSponsor = sponsorCache.get(command);
         if (iCommandSponsor != null){
             return iCommandSponsor;
         }
-        /**
-         * 加载配置
-         */
+        return CommandFactory.loadCommand(command,ICommandSponsor.class);
+    }
+
+    /**
+     * 加载并返回一个命令处理器
+     * @param command 命令
+     * @param handlerClass 处理器类型
+     * @param <T> 处理器类型
+     * @return 命令处理器
+     * @throws HandlerLoadException
+     */
+    private static <T> T loadCommand(Enum<CommandEnum> command, Class<T> handlerClass)throws HandlerLoadException {
+        /**加载配置*/
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream stream = classLoader.getResourceAsStream(COMMAND_SPONSOR_PATH);
+        String commandConfigPath = handlerClass == ICommandHandler.class
+                ? COMMAND_HANDLER_PATH
+                : COMMAND_SPONSOR_PATH;
+        InputStream stream = classLoader.getResourceAsStream(commandConfigPath);
         if(stream == null){
             throw new HandlerLoadException(HandlerLoadConstants.HANDLER_NOT_FOUND);
         }else {
             try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, "utf-8"))){
                 String lineValue = null;
                 while (! StringUtils.isEmpty(lineValue = bufferedReader.readLine())){
-                    final String[] command_sponsor =lineValue.split("::");
-                    /**
-                     * 配置文件出错
-                     */
-                    if(command_sponsor.length < 2 || command_sponsor.length > 2 ||
-                            StringUtils.isEmpty(command_sponsor[0]) || StringUtils.isEmpty(command_sponsor[1])){
+                    final String[] split =lineValue.split("::");
+                    /**配置文件出错*/
+                    if(split.length < 2 || split.length > 2 ||
+                            StringUtils.isEmpty(split[0]) || StringUtils.isEmpty(split[1])){
                         throw new HandlerLoadException(HandlerLoadConstants.CONFIG_ERROR);
                     }
-                    String commandName = command_sponsor[0];
-                    String sponsorName = command_sponsor[1];
+                    String commandName = split[0];
+                    String handlerName = split[1];
                     if(commandName.equals(command.name())){
-                        /**
-                         * 加载handler
-                         */
-                        final String handlerBeanName = Class.forName(sponsorName).getSimpleName();
-                        iCommandSponsor = SpringBeanUtil.getBean(handlerBeanName,ICommandSponsor.class);
-                        /**
-                         * 加入缓存
-                         */
-                        sponsorCache.put(command,iCommandSponsor);
-                        return iCommandSponsor;
+                        /**加载handler*/
+                        final String handlerBeanName = Class.forName(handlerName).getSimpleName();
+                        if(handlerClass == ICommandHandler.class){
+                            ICommandHandler iCommandHandler = SpringBeanUtil.getBean(handlerBeanName,ICommandHandler.class);
+                            /**加入缓存并返回处理器*/
+                            handlerCache.put(command,iCommandHandler);
+                            return (T) iCommandHandler;
+                        }else if(handlerClass == ICommandSponsor.class){
+                            ICommandSponsor iCommandSponsor = SpringBeanUtil.getBean(handlerBeanName,ICommandSponsor.class);
+                            /**加入缓存并返回处理器*/
+                            sponsorCache.put(command,iCommandSponsor);
+                            return (T) iCommandSponsor;
+                        }else {
+                            /**非法的处理器类型定义*/
+                        }
                     }
                 }
+                /**找不到该命令的配置*/
                 throw new HandlerLoadException(HandlerLoadConstants.COMMAND_NOT_CONFIG);
             }catch (Exception e){
                 throw new HandlerLoadException(e.getMessage(),e);
