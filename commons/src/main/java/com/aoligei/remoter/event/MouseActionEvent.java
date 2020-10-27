@@ -1,5 +1,7 @@
 package com.aoligei.remoter.event;
 
+import java.awt.event.MouseEvent;
+
 /**
  * @author wk-mia
  * 2020-10-27
@@ -29,13 +31,19 @@ public class MouseActionEvent {
      */
     public static MouseActionEnum convert(int button){
         switch (button){
-            case java.awt.event.MouseEvent.BUTTON1:
+            case MouseEvent.BUTTON1:
                 return MouseActionEnum.LEFT;
-            case java.awt.event.MouseEvent.BUTTON2:
+            case MouseEvent.BUTTON2:
                 return MouseActionEnum.MIDDLE;
-            case java.awt.event.MouseEvent.BUTTON3:
+            case MouseEvent.BUTTON3:
                 return MouseActionEnum.RIGHT;
-            case java.awt.event.MouseEvent.MOUSE_WHEEL:
+            case -1:
+                return MouseActionEnum.DOUBLE_CLICK;
+            case MouseEvent.MOUSE_DRAGGED:
+                return MouseActionEnum.DRAGGED;
+            case MouseEvent.MOUSE_MOVED:
+                return MouseActionEnum.MOVE;
+            case MouseEvent.MOUSE_WHEEL:
                 return MouseActionEnum.WHEEL;
             default:
                 throw new RuntimeException("not supported mouse action code");
@@ -43,24 +51,34 @@ public class MouseActionEvent {
     }
 
     /**
+     * 值转换
+     * @param mouseAction MouseActionEnum
+     * @return 事件值
+     */
+    public static int deConvert(MouseActionEnum mouseAction){
+        return mouseAction.code;
+    }
+
+    /**
      * 鼠标动作枚举
      */
     public enum MouseActionEnum{
-        /**鼠标左键*/
-        LEFT,
-        /**鼠标中键*/
-        MIDDLE,
-        /**鼠标右键*/
-        RIGHT,
-        /**鼠标滚轮*/
-        WHEEL,
         /**鼠标拖拽*/
-        DRAGGED,
+        DRAGGED(MouseEvent.MOUSE_DRAGGED),
+        /**鼠标左键*/
+        LEFT(MouseEvent.BUTTON1),
+        /**鼠标中键*/
+        MIDDLE(MouseEvent.BUTTON2),
+        /**鼠标右键*/
+        RIGHT(MouseEvent.BUTTON3),
+        /**鼠标滚轮*/
+        WHEEL(MouseEvent.MOUSE_WHEEL),
         /**鼠标双击*/
-        DOUBLE_CLICK,
+        DOUBLE_CLICK(-1),
         /**鼠标移动*/
-        MOVE;
-        private MouseActionEnum(){}
+        MOVE(MouseEvent.MOUSE_MOVED);
+        private int code;
+        private MouseActionEnum(int code){ this.code = code; }
     }
 
     public MouseActionEnum getMouseAction() {

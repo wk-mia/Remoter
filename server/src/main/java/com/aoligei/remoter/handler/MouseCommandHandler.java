@@ -5,6 +5,7 @@ import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.business.aop.RequestInspect;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.InspectEnum;
+import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
@@ -24,8 +25,11 @@ import org.springframework.stereotype.Component;
 @Component(value = "MouseCommandHandler")
 public class MouseCommandHandler extends AbstractServerCensorC2CHandler{
 
-    @Autowired
     private RemotingRosterManage remotingRosterManage;
+    @Autowired
+    public MouseCommandHandler(RemotingRosterManage remotingRosterManage){
+        this.remotingRosterManage = remotingRosterManage;
+    }
 
     /**
      * 特定的处理器：鼠标输入处理器
@@ -37,11 +41,9 @@ public class MouseCommandHandler extends AbstractServerCensorC2CHandler{
     @Override
     @RequestInspect(inspectItem = {InspectEnum.ORDINARY_PARAMS,InspectEnum.MASTER_TO_SLAVES,InspectEnum.MASTER_NOT_IN_GROUP})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
-        /**
-         * 转发消息给受控客户端
-         */
-        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),baseRequest.getTerminalTypeEnum(), CommandEnum.MOUSE,
-                baseRequest.getData(),null);
+        /**转发消息给受控客户端*/
+        BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),
+                TerminalTypeEnum.SERVER, CommandEnum.MOUSE,baseRequest.getData(),null);
         remotingRosterManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }
 }

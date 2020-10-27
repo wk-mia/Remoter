@@ -1,6 +1,7 @@
 package com.aoligei.remoter.service.action;
 
 import com.aoligei.remoter.event.KeyBoardEvent;
+import com.aoligei.remoter.event.MouseActionEvent;
 
 /**
  * @author wk-mia
@@ -14,4 +15,10 @@ public interface IReplay {
      * @param event 键盘事件
      */
     void replayKeyBoardEvent(KeyBoardEvent event);
+
+    /**
+     * 重放鼠标事件
+     * @param event 鼠标事件
+     */
+    void replayMouseActionEvent(MouseActionEvent event);
 }

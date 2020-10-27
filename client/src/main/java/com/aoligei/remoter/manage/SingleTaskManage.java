@@ -7,6 +7,7 @@ import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.event.KeyBoardEvent;
+import com.aoligei.remoter.event.MouseActionEvent;
 import com.aoligei.remoter.exception.HandlerLoadException;
 import com.aoligei.remoter.exception.SponsorException;
 import com.aoligei.remoter.netty.ClientChannelInitializer;
@@ -101,6 +102,20 @@ public class SingleTaskManage {
         try{
             ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.KEYBOARD);
             sponsor.sponsor(processor.buildKeyBoardRequest(connectionId,event));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 鼠标事件
+     * @param connectionId 连接编码
+     * @param event 源事件
+     */
+    public void sendMouse(String connectionId, MouseActionEvent event){
+        try{
+            ICommandSponsor sponsor = CommandFactory.getCommandSponsor(CommandEnum.MOUSE);
+            sponsor.sponsor(processor.buildMouseRequest(connectionId,event));
         }catch (Exception e){
             e.printStackTrace();
         }

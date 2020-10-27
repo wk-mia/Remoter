@@ -4,6 +4,7 @@ import com.aoligei.remoter.event.KeyBoardEvent;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BasicClientInfo;
 import com.aoligei.remoter.business.aop.SponsorRequestInspect;
+import com.aoligei.remoter.event.MouseActionEvent;
 import com.aoligei.remoter.service.driver.ScreenCatcher;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.SponsorInspectEnum;
@@ -173,7 +174,9 @@ public class RequestProcessor {
     }
 
     /**
-     * 屏幕截图请求，该请求为MASTER发起。
+     * 键事件请求，该请求为MASTER发起。
+     * @param connectionId 连接编码
+     * @param event 键事件
      * @return 请求主体
      */
     public BaseRequest buildKeyBoardRequest(String connectionId, KeyBoardEvent event){
@@ -182,6 +185,23 @@ public class RequestProcessor {
             setClientId(terminalManage.getClientInfo().getClientId());
             setTerminalTypeEnum(TerminalTypeEnum.MASTER);
             setCommandEnum(CommandEnum.KEYBOARD);
+            setData(event);
+        }};
+        return baseRequest;
+    }
+
+    /**
+     * 鼠标事件请求，该请求为MASTER发起。
+     * @param connectionId 连接编码
+     * @param event 鼠标动作事件
+     * @return 请求主体
+     */
+    public BaseRequest buildMouseRequest(String connectionId, MouseActionEvent event){
+        BaseRequest baseRequest = new BaseRequest(){{
+            setConnectionId(connectionId);
+            setClientId(terminalManage.getClientInfo().getClientId());
+            setTerminalTypeEnum(TerminalTypeEnum.MASTER);
+            setCommandEnum(CommandEnum.MOUSE);
             setData(event);
         }};
         return baseRequest;

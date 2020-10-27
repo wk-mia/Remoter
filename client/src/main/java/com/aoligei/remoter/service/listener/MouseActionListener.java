@@ -4,12 +4,16 @@ import com.aoligei.remoter.event.MouseActionEvent;
 import com.aoligei.remoter.event.MouseActionEvent.MouseActionEnum;
 import com.aoligei.remoter.manage.SingleTaskManage;
 import com.aoligei.remoter.manage.ThreadPoolManage;
+import com.aoligei.remoter.service.action.IMouse;
 import com.aoligei.remoter.util.AccessConfigUtil;
 import com.aoligei.remoter.util.AccessConfigUtil.Config;
 import com.aoligei.remoter.util.SpringBeanUtil;
+
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.text.MessageFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * 主控端鼠标事件监听
  * 包含：鼠标单击、双击、移动、滚轮等
  */
-public class MouseActionListener extends MouseAdapter {
+public class MouseActionListener extends MouseAdapter implements IMouse {
 
     private static final Logger log = LoggerFactory.getLogger(MouseActionListener.class);
 
@@ -67,6 +71,36 @@ public class MouseActionListener extends MouseAdapter {
         }
     }
 
+    /**
+     * 鼠标滚轮事件
+     * @param e 源事件
+     */
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        /**发送鼠标滚轮事件*/
+        final MouseActionEvent mouseAction = new MouseActionEvent();
+        mouseAction.setMouseAction(MouseActionEnum.WHEEL);
+        int size = e.getScrollAmount() * e.getWheelRotation();
+        mouseAction.setWheelSize(size);
+        log.debug(MessageFormat.format("mouse wheel moved: {0}", mouseAction));
+        this.sendMouseEvent(mouseAction);
+    }
+
+    /**
+     * 鼠标拖拽事件
+     * @param e 源事件
+     */
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        /**发送鼠标拖拽事件*/
+        final MouseActionEvent mouseAction = new MouseActionEvent();
+        mouseAction.setMouseAction(MouseActionEnum.DRAGGED);
+        int[] site = new int[]{e.getX(),e.getY()};
+        mouseAction.setSite(site);
+        log.debug(MessageFormat.format("mouse dragged: {0}", mouseAction));
+        this.sendMouseEvent(mouseAction);
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -75,16 +109,6 @@ public class MouseActionListener extends MouseAdapter {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
 
     }
 
@@ -125,6 +149,8 @@ public class MouseActionListener extends MouseAdapter {
         mouseAction.setMouseAction(MouseActionEnum.DOUBLE_CLICK);
         int[] site = new int[]{event.getX(),event.getY()};
         mouseAction.setSite(site);
+        log.debug(MessageFormat.format("mouse double clicked: {0}", mouseAction));
+        this.sendMouseEvent(mouseAction);
 
     }
 
@@ -141,6 +167,17 @@ public class MouseActionListener extends MouseAdapter {
         mouseAction.setMouseAction(actionEnum);
         int[] site = new int[]{event.getX(),event.getY()};
         mouseAction.setSite(site);
+        log.debug(MessageFormat.format("mouse clicked: {0}", mouseAction));
+        this.sendMouseEvent(mouseAction);
+    }
 
+    /**
+     * 发送鼠标事件
+     * @param e 源事件
+     */
+    @Override
+    public void sendMouseEvent(MouseActionEvent e) {
+        /**发送鼠标命令*/
+        // single.sendMouse(connectionId,e);
     }
 }

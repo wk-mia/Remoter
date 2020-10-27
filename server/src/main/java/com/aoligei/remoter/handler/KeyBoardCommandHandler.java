@@ -25,8 +25,11 @@ import org.springframework.stereotype.Component;
 @Component(value = "KeyBoardCommandHandler")
 public class KeyBoardCommandHandler extends AbstractServerCensorC2CHandler {
 
-    @Autowired
     private RemotingRosterManage remotingRosterManage;
+    @Autowired
+    public KeyBoardCommandHandler(RemotingRosterManage remotingRosterManage){
+        this.remotingRosterManage = remotingRosterManage;
+    }
 
     /**
      * 特定的处理器：键盘输入处理器
@@ -38,12 +41,9 @@ public class KeyBoardCommandHandler extends AbstractServerCensorC2CHandler {
     @Override
     @RequestInspect(inspectItem = {InspectEnum.ORDINARY_PARAMS,InspectEnum.MASTER_TO_SLAVES,InspectEnum.MASTER_NOT_IN_GROUP})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
-        /**
-         * 转发消息给受控客户端
-         */
+        /**转发消息给受控客户端*/
         BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),
                 TerminalTypeEnum.SERVER, CommandEnum.KEYBOARD,baseRequest.getData(),null);
-        System.out.println("##########################################################");
         remotingRosterManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }
 }
