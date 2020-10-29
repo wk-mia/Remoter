@@ -87,7 +87,7 @@ public class MouseActionListener extends MouseAdapter implements IMouse {
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+//        e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         /**设置拖拽、位置*/
         final MouseActionEvent mouseAction = new MouseActionEvent();
         /**拖拽的键固定为左键*/
