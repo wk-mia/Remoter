@@ -20,14 +20,7 @@ import java.text.MessageFormat;
 @Component(value = "AbstractClientHandler")
 public abstract class AbstractClientHandler implements ICommandHandler<BaseResponse> {
 
-    private static Logger log;
-
-    public AbstractClientHandler(){
-        /**
-         * 初始化实现类的日志处理器
-         */
-        log = LoggerFactory.getLogger(this.getClass());
-    }
+    private static Logger log = LoggerFactory.getLogger(AbstractClientHandler.class);
 
     /**
      * 分发至相应的处理器进行处理

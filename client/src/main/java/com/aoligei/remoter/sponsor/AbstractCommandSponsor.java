@@ -52,7 +52,7 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
      * @param error 异常信息
      */
     protected void logError(String error){
-        log.info(MessageFormat.format("error: {0}",error));
+        log.error(MessageFormat.format("error: {0}",error));
     }
 
     /**

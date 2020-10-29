@@ -20,14 +20,7 @@ import java.text.MessageFormat;
 @Component
 public abstract class AbstractServerCensorC2CHandler implements ICommandHandler<BaseRequest> {
 
-    private static Logger log;
-
-    public AbstractServerCensorC2CHandler(){
-        /**
-         * 初始化实现类的日志处理器
-         */
-        log = LoggerFactory.getLogger(this.getClass());
-    }
+    private static Logger log = LoggerFactory.getLogger(AbstractServerCensorC2CHandler.class);
 
     /**
      * 分发至相应的处理器进行处理

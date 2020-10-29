@@ -69,18 +69,16 @@ public class MouseActionEvent {
     public enum MouseActionEnum{
         /**鼠标单击*/
         CLICK(1001),
-        /**鼠标双击*/
-        DOUBLE_CLICK(1002),
         /**鼠标按下*/
-        PRESSED(1003),
+        PRESSED(1002),
         /**鼠标松开*/
-        RELEASED(1004),
+        RELEASED(1003),
         /**鼠标拖拽*/
-        DRAGGED(1005),
+        DRAGGED(1004),
         /**鼠标滚轮*/
-        WHEEL(1006),
+        WHEEL(1005),
         /**鼠标移动*/
-        MOVE(1007);
+        MOVE(1006);
         private int code;
         private MouseActionEnum(int code){ this.code = code; }
     }

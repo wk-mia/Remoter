@@ -3,7 +3,6 @@ package com.aoligei.remoter.service.driver;
 import com.aoligei.remoter.event.KeyBoardEvent;
 import com.aoligei.remoter.event.MouseActionEvent;
 import com.aoligei.remoter.event.MouseActionEvent.MouseActionEnum;
-import com.aoligei.remoter.event.MouseActionEvent.MouseButtonEnum;
 import com.aoligei.remoter.service.action.IReplay;
 import org.springframework.stereotype.Component;
 
@@ -46,8 +45,6 @@ public class EventReplay implements IReplay {
         MouseActionEvent.MouseActionEnum mouseAction = event.getMouseAction();
         if(mouseAction == MouseActionEnum.CLICK){
             this.mouseClick(event);
-        }else if(mouseAction == MouseActionEnum.DOUBLE_CLICK){
-            this.leftDoubleClick(event);
         }else if(mouseAction == MouseActionEnum.PRESSED){
             this.pressed(event);
         }else if(mouseAction == MouseActionEnum.RELEASED){
@@ -75,20 +72,6 @@ public class EventReplay implements IReplay {
         robot.mouseRelease(mouseButton);
     }
 
-    /**
-     * 双击事件回放
-     * @param event
-     */
-    private void leftDoubleClick(MouseActionEvent event){
-        int[] site = event.getSite();
-        robot.mouseMove(site[0],site[1]);
-
-        final int mouseButton = MouseButtonEnum.LEFT.getCode();
-        robot.mousePress(mouseButton);
-        robot.mouseRelease(mouseButton);
-        robot.mousePress(mouseButton);
-        robot.mouseRelease(mouseButton);
-    }
 
     /**
      * 鼠标按下回放
