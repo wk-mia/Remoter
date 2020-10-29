@@ -93,8 +93,10 @@ public class EventReplay implements IReplay {
      * @param event
      */
     private void dragged(MouseActionEvent event){
-        final int mouseButton = event.getMouseButton().getCode();
-        robot.mousePress(mouseButton);
+        if(event.getMouseButton() != null){
+            final int mouseButton = event.getMouseButton().getCode();
+            robot.mousePress(mouseButton);
+        }
         int[] site = event.getSite();
         robot.mouseMove(site[0],site[1]);
     }
