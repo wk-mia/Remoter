@@ -121,16 +121,16 @@ public class MouseActionListener extends MouseAdapter implements IMouse {
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-//        /**设置键、按下、位置*/
-//        final MouseActionEvent mouseAction = new MouseActionEvent();
-//        mouseAction.setMouseAction(MouseActionEnum.RELEASED);
-//        MouseButtonEnum buttonEnum = MouseActionEvent.convertButton(e.getButton());
-//        mouseAction.setMouseButton(buttonEnum);
-//        int[] site = new int[]{e.getX(),e.getY()};
-//        mouseAction.setSite(site);
-//        /**发送鼠标松开事件*/
-//        log.debug(MessageFormat.format("mouse released: {0}", mouseAction));
-//        this.sendMouseEvent(mouseAction);
+        /**设置键、按下、位置*/
+        final MouseActionEvent mouseAction = new MouseActionEvent();
+        mouseAction.setMouseAction(MouseActionEnum.RELEASED);
+        MouseButtonEnum buttonEnum = MouseActionEvent.convertButton(e.getButton());
+        mouseAction.setMouseButton(buttonEnum);
+        int[] site = new int[]{e.getX(),e.getY()};
+        mouseAction.setSite(site);
+        /**发送鼠标松开事件*/
+        log.debug(MessageFormat.format("mouse released: {0}", mouseAction));
+        this.sendMouseEvent(mouseAction);
     }
 
     /**

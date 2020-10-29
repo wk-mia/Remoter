@@ -117,7 +117,6 @@ public class EventReplay implements IReplay {
         robot.mousePress(mouseButton);
         int[] site = event.getSite();
         robot.mouseMove(site[0],site[1]);
-        robot.mouseRelease(mouseButton);
     }
 
     /**

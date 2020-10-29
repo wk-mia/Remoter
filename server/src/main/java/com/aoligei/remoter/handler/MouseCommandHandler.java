@@ -10,6 +10,7 @@ import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
+import java.text.MessageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,9 +42,14 @@ public class MouseCommandHandler extends AbstractServerCensorC2CHandler{
     @Override
     @RequestInspect(inspectItem = {InspectEnum.ORDINARY_PARAMS,InspectEnum.MASTER_TO_SLAVES,InspectEnum.MASTER_NOT_IN_GROUP})
     protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
+        String clientId = baseRequest.getClientId();
+        StringBuilder info = new StringBuilder().append("receive a mouse action from: ").append(clientId);
+        logInfo(info.toString());
         /**转发消息给受控客户端*/
         BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),
                 TerminalTypeEnum.SERVER, CommandEnum.MOUSE,baseRequest.getData(),null);
+        String connectionId = baseRequest.getConnectionId();
+        logInfo(MessageFormat.format("forward the mouse action to:{0}",connectionId));
         remotingRosterManage.notifySlave(baseRequest.getConnectionId(),baseResponse);
     }
 }

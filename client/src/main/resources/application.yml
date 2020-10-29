@@ -8,7 +8,7 @@ spring:
 logging:
   level:
     root: DEBUG
-    com.aoligei.remoter: INFO
+    com.aoligei.remoter: TRACE
     sun: ERROR
     javax: INFO
     java.awt: ERROR
