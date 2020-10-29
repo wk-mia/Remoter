@@ -4,18 +4,13 @@ import com.aoligei.remoter.event.MouseActionEvent;
 import com.aoligei.remoter.event.MouseActionEvent.MouseActionEnum;
 import com.aoligei.remoter.event.MouseActionEvent.MouseButtonEnum;
 import com.aoligei.remoter.manage.SingleTaskManage;
-import com.aoligei.remoter.manage.ThreadPoolManage;
 import com.aoligei.remoter.service.action.IMouse;
-import com.aoligei.remoter.util.AccessConfigUtil;
-import com.aoligei.remoter.util.AccessConfigUtil.Config;
 import com.aoligei.remoter.util.SpringBeanUtil;
 
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.text.MessageFormat;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

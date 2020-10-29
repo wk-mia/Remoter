@@ -45,8 +45,6 @@ public class EventReplay implements IReplay {
         MouseActionEvent.MouseActionEnum mouseAction = event.getMouseAction();
         if(mouseAction == MouseActionEnum.CLICK){
             this.mouseClick(event);
-        }else if(mouseAction == MouseActionEnum.PRESSED){
-            this.pressed(event);
         }else if(mouseAction == MouseActionEnum.RELEASED){
             this.released(event);
         }else if(mouseAction == MouseActionEnum.DRAGGED) {
@@ -67,16 +65,6 @@ public class EventReplay implements IReplay {
         final int mouseButton = event.getMouseButton().getCode();
         robot.mousePress(mouseButton);
         robot.mouseRelease(mouseButton);
-    }
-
-
-    /**
-     * 鼠标按下回放
-     * @param event
-     */
-    private void pressed(MouseActionEvent event){
-        final int mouseButton = event.getMouseButton().getCode();
-        robot.mousePress(mouseButton);
     }
 
     /**
