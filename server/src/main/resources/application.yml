@@ -11,7 +11,7 @@ spring:
 logging:
   level:
     root: DEBUG
-    com.aoligei.remoter: trace
+    com.aoligei.remoter: INFO
     sun: ERROR
     javax: INFO
     io.netty: DEBUG

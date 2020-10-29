@@ -52,11 +52,11 @@ public class MouseActionEvent {
      */
     public enum MouseButtonEnum{
         /**鼠标左键*/
-        LEFT(MouseEvent.BUTTON1),
+        LEFT(MouseEvent.BUTTON1_DOWN_MASK),
         /**鼠标中键*/
-        MIDDLE(MouseEvent.BUTTON2),
+        MIDDLE(MouseEvent.BUTTON2_DOWN_MASK),
         /**鼠标右键*/
-        RIGHT(MouseEvent.BUTTON3);
+        RIGHT(MouseEvent.BUTTON3_DOWN_MASK);
         private int code;
         private MouseButtonEnum(int code){ this.code = code; }
         /**获取值*/

@@ -19,8 +19,8 @@ public class RemoterClientApplication {
         IStart homePage = context.getBean(HomePageActionListener.class);
         homePage.start();
 
-        IInteract page = context.getBean(SlaverPageActionListener.class);
-        page.call("test");
+//        IInteract page = context.getBean(SlaverPageActionListener.class);
+//        page.call("test");
     }
 
 }
