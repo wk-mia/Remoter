@@ -10,6 +10,11 @@ import java.awt.event.MouseEvent;
 public class MouseActionEvent {
 
     /**
+     * 鼠标键
+     */
+    private MouseButtonEnum mouseButton;
+
+    /**
      * 鼠标动作
      */
     private MouseActionEnum mouseAction;
@@ -25,60 +30,67 @@ public class MouseActionEvent {
     private int wheelSize;
 
     /**
-     * 事件转换
-     * @param button 事件值
-     * @return MouseActionEnum类型
+     * 鼠标键值转换
+     * @param button 鼠标键值
+     * @return MouseButtonEnum类型
      */
-    public static MouseActionEnum convert(int button){
+    public static MouseButtonEnum convertButton(int button){
         switch (button){
             case MouseEvent.BUTTON1:
-                return MouseActionEnum.LEFT;
+                return MouseButtonEnum.LEFT;
             case MouseEvent.BUTTON2:
-                return MouseActionEnum.MIDDLE;
+                return MouseButtonEnum.MIDDLE;
             case MouseEvent.BUTTON3:
-                return MouseActionEnum.RIGHT;
-            case -1:
-                return MouseActionEnum.DOUBLE_CLICK;
-            case MouseEvent.MOUSE_DRAGGED:
-                return MouseActionEnum.DRAGGED;
-            case MouseEvent.MOUSE_MOVED:
-                return MouseActionEnum.MOVE;
-            case MouseEvent.MOUSE_WHEEL:
-                return MouseActionEnum.WHEEL;
+                return MouseButtonEnum.RIGHT;
             default:
-                throw new RuntimeException("not supported mouse action code");
+                throw new RuntimeException("not supported mouse button code");
         }
     }
 
     /**
-     * 值转换
-     * @param mouseAction MouseActionEnum
-     * @return 事件值
+     * 鼠标键值枚举
      */
-    public static int deConvert(MouseActionEnum mouseAction){
-        return mouseAction.code;
+    public enum MouseButtonEnum{
+        /**鼠标左键*/
+        LEFT(MouseEvent.BUTTON1),
+        /**鼠标中键*/
+        MIDDLE(MouseEvent.BUTTON2),
+        /**鼠标右键*/
+        RIGHT(MouseEvent.BUTTON3);
+        private int code;
+        private MouseButtonEnum(int code){ this.code = code; }
+        /**获取值*/
+        public int getCode(){return this.code;}
     }
 
     /**
      * 鼠标动作枚举
      */
     public enum MouseActionEnum{
-        /**鼠标拖拽*/
-        DRAGGED(MouseEvent.MOUSE_DRAGGED),
-        /**鼠标左键*/
-        LEFT(MouseEvent.BUTTON1),
-        /**鼠标中键*/
-        MIDDLE(MouseEvent.BUTTON2),
-        /**鼠标右键*/
-        RIGHT(MouseEvent.BUTTON3),
-        /**鼠标滚轮*/
-        WHEEL(MouseEvent.MOUSE_WHEEL),
+        /**鼠标单击*/
+        CLICK(1001),
         /**鼠标双击*/
-        DOUBLE_CLICK(-1),
+        DOUBLE_CLICK(1002),
+        /**鼠标按下*/
+        PRESSED(1003),
+        /**鼠标松开*/
+        RELEASED(1004),
+        /**鼠标拖拽*/
+        DRAGGED(1005),
+        /**鼠标滚轮*/
+        WHEEL(1006),
         /**鼠标移动*/
-        MOVE(MouseEvent.MOUSE_MOVED);
+        MOVE(1007);
         private int code;
         private MouseActionEnum(int code){ this.code = code; }
+    }
+
+    public MouseButtonEnum getMouseButton() {
+        return mouseButton;
+    }
+
+    public void setMouseButton(MouseButtonEnum mouseButton) {
+        this.mouseButton = mouseButton;
     }
 
     public MouseActionEnum getMouseAction() {
@@ -107,9 +119,10 @@ public class MouseActionEvent {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("MouseEvent{");
-        sb.append("mouseAction=").append(mouseAction);
-        sb.append(", location=");
+        final StringBuffer sb = new StringBuffer("MouseActionEvent{");
+        sb.append("mouseButton=").append(mouseButton);
+        sb.append(", mouseAction=").append(mouseAction);
+        sb.append(", site=");
         if (site == null) {
             sb.append("null");
         } else {

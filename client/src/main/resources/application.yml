@@ -13,5 +13,6 @@ logging:
     javax: INFO
     java.awt: ERROR
     io.netty: INFO
+    org.apache.catalina: INFO
   pattern:
     dateformat: yyyy-MM-dd HH:mm:ss

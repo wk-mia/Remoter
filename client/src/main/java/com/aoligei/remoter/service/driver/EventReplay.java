@@ -2,6 +2,8 @@ package com.aoligei.remoter.service.driver;
 
 import com.aoligei.remoter.event.KeyBoardEvent;
 import com.aoligei.remoter.event.MouseActionEvent;
+import com.aoligei.remoter.event.MouseActionEvent.MouseActionEnum;
+import com.aoligei.remoter.event.MouseActionEvent.MouseButtonEnum;
 import com.aoligei.remoter.service.action.IReplay;
 import org.springframework.stereotype.Component;
 
@@ -42,18 +44,21 @@ public class EventReplay implements IReplay {
     @Override
     public void replayMouseActionEvent(MouseActionEvent event) {
         MouseActionEvent.MouseActionEnum mouseAction = event.getMouseAction();
-        if(mouseAction == MouseActionEvent.MouseActionEnum.LEFT
-                || mouseAction == MouseActionEvent.MouseActionEnum.MIDDLE
-                ||mouseAction == MouseActionEvent.MouseActionEnum.RIGHT){
+        if(mouseAction == MouseActionEnum.CLICK){
             this.mouseClick(event);
-        }else if(mouseAction == MouseActionEvent.MouseActionEnum.DOUBLE_CLICK){
+        }else if(mouseAction == MouseActionEnum.DOUBLE_CLICK){
             this.leftDoubleClick(event);
-        }else if(mouseAction == MouseActionEvent.MouseActionEnum.DRAGGED){
+        }else if(mouseAction == MouseActionEnum.PRESSED){
+            this.pressed(event);
+        }else if(mouseAction == MouseActionEnum.RELEASED){
+            this.released(event);
+        }else if(mouseAction == MouseActionEnum.DRAGGED) {
             this.dragged(event);
-        }else if(mouseAction == MouseActionEvent.MouseActionEnum.WHEEL){
+        }else if(mouseAction == MouseActionEnum.WHEEL) {
             this.wheelMove(event);
+        }else if(mouseAction == MouseActionEnum.MOVE) {
+            this.move(event);
         }else {
-
         }
     }
 
@@ -65,7 +70,7 @@ public class EventReplay implements IReplay {
         int[] site = event.getSite();
         robot.mouseMove(site[0],site[1]);
 
-        final int mouseButton = MouseActionEvent.deConvert(event.getMouseAction());
+        final int mouseButton = event.getMouseButton().getCode();
         robot.mousePress(mouseButton);
         robot.mouseRelease(mouseButton);
     }
@@ -78,10 +83,28 @@ public class EventReplay implements IReplay {
         int[] site = event.getSite();
         robot.mouseMove(site[0],site[1]);
 
-        final int mouseButton = MouseActionEvent.deConvert(event.getMouseAction());
+        final int mouseButton = MouseButtonEnum.LEFT.getCode();
         robot.mousePress(mouseButton);
         robot.mouseRelease(mouseButton);
         robot.mousePress(mouseButton);
+        robot.mouseRelease(mouseButton);
+    }
+
+    /**
+     * 鼠标按下回放
+     * @param event
+     */
+    private void pressed(MouseActionEvent event){
+        final int mouseButton = event.getMouseButton().getCode();
+        robot.mousePress(mouseButton);
+    }
+
+    /**
+     * 鼠标松开回放
+     * @param event
+     */
+    private void released(MouseActionEvent event){
+        final int mouseButton = event.getMouseButton().getCode();
         robot.mouseRelease(mouseButton);
     }
 
@@ -90,10 +113,11 @@ public class EventReplay implements IReplay {
      * @param event
      */
     private void dragged(MouseActionEvent event){
-        final int mouseButton1 = MouseActionEvent.deConvert(event.getMouseAction());
-        robot.mousePress(mouseButton1);
+        final int mouseButton = event.getMouseButton().getCode();
+        robot.mousePress(mouseButton);
         int[] site = event.getSite();
         robot.mouseMove(site[0],site[1]);
+        robot.mouseRelease(mouseButton);
     }
 
     /**
@@ -102,5 +126,14 @@ public class EventReplay implements IReplay {
      */
     private void wheelMove(MouseActionEvent event){
         robot.mouseWheel(event.getWheelSize());
+    }
+
+    /**
+     * 鼠标移动回放
+     * @param event
+     */
+    private void move(MouseActionEvent event){
+        int[] site = event.getSite();
+        robot.mouseMove(site[0],site[1]);
     }
 }

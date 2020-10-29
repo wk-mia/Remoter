@@ -37,7 +37,7 @@ public class KeyBoardActionListener extends KeyAdapter implements IKeyBoard {
     @Override
     public void keyPressed(KeyEvent e) {
         String desc = KeyEvent.getKeyText(e.getKeyCode()).concat(" pressed");
-        log.debug(MessageFormat.format("debug: {0}", desc));
+        log.debug(MessageFormat.format("key pressed: {0}", desc));
         this.sendKeyEvent(e, true);
     }
 
@@ -48,7 +48,7 @@ public class KeyBoardActionListener extends KeyAdapter implements IKeyBoard {
     @Override
     public void keyReleased(KeyEvent e) {
         String desc = KeyEvent.getKeyText(e.getKeyCode()).concat(" released");
-        log.debug(MessageFormat.format("debug: {0}", desc));
+        log.debug(MessageFormat.format("key released: {0}", desc));
         this.sendKeyEvent(e, false);
     }
 

@@ -15,5 +15,6 @@ logging:
     sun: ERROR
     javax: INFO
     io.netty: DEBUG
+    org.apache.catalina: INFO
   pattern:
     dateformat: yyyy-MM-dd HH:mm:ss
