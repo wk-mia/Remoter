@@ -8,11 +8,15 @@ import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.event.ControlEvent;
 import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.manage.TerminalManage;
 import com.aoligei.remoter.service.action.IInteract;
+import com.aoligei.remoter.service.driver.RobotFactory;
 import com.aoligei.remoter.service.listener.SlaverPageActionListener;
 import io.netty.channel.ChannelHandlerContext;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -67,7 +71,15 @@ public class ControlCommandHandler extends AbstractClientHandler {
         if(! StringUtils.isEmpty(baseResponse.getConnectionId())){
             /**此处为客户端直接同意控制请求*/
             Boolean agree = Boolean.TRUE;
-            BaseRequest baseRequest = processor.buildAnswerControlRequest(baseResponse.getConnectionId(),agree);
+            ControlEvent event = new ControlEvent();
+            event.setAccepted(agree);
+            if(agree){
+                /**获取屏幕分辨率*/
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                event.setScreenWidth(screenSize.width);
+                event.setScreenHeight(screenSize.height);
+            }
+            BaseRequest baseRequest = processor.buildAnswerControlRequest(baseResponse.getConnectionId(),event);
             channelHandlerContext.writeAndFlush(baseRequest);
             /**更新客户端连接编码、当前受控状态*/
             terminalManage.createConnection(baseResponse.getConnectionId());
@@ -93,12 +105,13 @@ public class ControlCommandHandler extends AbstractClientHandler {
      */
     private void masterHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse){
         if(baseResponse.getStatus() == ResponseStatusEnum.OK){
+            ControlEvent event = (ControlEvent) baseResponse.getData();
             logInfo(baseResponse.getMessage());
             /**成功，设置连接编码。*/
             terminalManage.createConnection(baseResponse.getConnectionId());
-            /**启动远程窗口,窗口标题为连接编码*/
+            /**启动远程窗口,窗口标题为连接编码,面板大小为受控端的屏幕大小*/
             IInteract remotePage = remoteListener;
-            remotePage.call(baseResponse.getConnectionId());
+            remotePage.call(baseResponse.getConnectionId(), event.getScreenWidth(), event.getScreenHeight());
         }else {
             logError(baseResponse.getMessage());
         }

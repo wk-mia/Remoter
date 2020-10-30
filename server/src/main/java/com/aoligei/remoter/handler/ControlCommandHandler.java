@@ -11,6 +11,7 @@ import com.aoligei.remoter.constant.ServerExceptionConstants;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.event.ControlEvent;
 import com.aoligei.remoter.exception.IncompleteParamException;
 import com.aoligei.remoter.exception.ServerException;
 import com.aoligei.remoter.generate.IdentifyFactory;
@@ -110,7 +111,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
          * Slave同意远程请求并返回信息给服务器，在返回信息中带上连接编码。服务器缓存该连接组
          * 并通知Master远程控制达成的消息。
          */
-        Boolean canConnect = (Boolean) baseRequest.getData();
+        ControlEvent event = (ControlEvent) baseRequest.getData();
         /**
          * 根据连接编码获取到发起控制请求的Master
          */
@@ -122,7 +123,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
             throw new ServerException(ServerExceptionConstants.CONNECTION_NOT_FIND);
         }
 
-        if(canConnect == null || !canConnect){
+        if(event == null || !event.isAccepted()){
             /**
              * Slave拒绝Master发起的连接，将该连接组缓存移除，并通知Master该连接已被Slave拒绝。
              */
@@ -138,7 +139,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
              * 返回消息中带connectionId，用于标识这个连接组。
              */
             BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER_2_MASTER,
-                    baseRequest.getCommandEnum(),null,ResponseConstants.SLAVE_AGREE_CONNECTION);
+                    baseRequest.getCommandEnum(),baseRequest.getData(),ResponseConstants.SLAVE_AGREE_CONNECTION);
             remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
 
             remotingRosterManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),

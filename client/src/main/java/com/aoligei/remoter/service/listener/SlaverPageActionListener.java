@@ -47,8 +47,8 @@ public class SlaverPageActionListener implements WindowListener, IInteract {
      * @param pageTitle 窗口标题
      */
     @Override
-    public void call(String pageTitle) {
-        SlaverScreenPanel panel = new SlaverScreenPanel();
+    public void call(String pageTitle, int screenWidth, int screenHeight) {
+        SlaverScreenPanel panel = new SlaverScreenPanel(screenWidth,screenHeight);
         SlaverPage page = new SlaverPage(pageTitle,panel);
         this.addListener(pageTitle, page, panel);
 

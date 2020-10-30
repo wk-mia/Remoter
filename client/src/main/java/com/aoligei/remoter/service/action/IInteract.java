@@ -10,8 +10,10 @@ public interface IInteract {
     /**
      * 调出远程窗口
      * @param pageTitle 窗口标题
+     * @param screenWidth 屏幕截图宽度
+     * @param screenHeight 屏幕截图高度
      */
-    void call(String pageTitle);
+    void call(String pageTitle, int screenWidth, int screenHeight);
 
     /**
      * 发出键盘指令
