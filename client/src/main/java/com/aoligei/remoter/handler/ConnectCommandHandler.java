@@ -6,10 +6,8 @@ import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
-import com.aoligei.remoter.exception.ClientException;
-import com.aoligei.remoter.manage.TerminalManage;
+import com.aoligei.remoter.exception.RemoterException;
 import io.netty.channel.ChannelHandlerContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,10 +23,10 @@ public class ConnectCommandHandler extends AbstractClientHandler {
      * 特定的处理器-连接处理器
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse 原始消息
-     * @throws ClientException
+     * @throws RemoterException
      */
     @Override
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws RemoterException {
         try {
             ICommandSponsor cycleSponsor = CommandFactory.getCommandSponsor(CommandEnum.HEART_BEAT);
             /**记录通道：所有Sponsor记录下context*/

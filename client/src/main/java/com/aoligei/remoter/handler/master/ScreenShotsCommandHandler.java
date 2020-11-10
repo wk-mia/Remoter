@@ -1,7 +1,7 @@
 package com.aoligei.remoter.handler.master;
 
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.exception.ClientException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.handler.AbstractClientHandler;
 import com.aoligei.remoter.service.action.IInteract;
 import com.aoligei.remoter.service.listener.SlaverPageActionListener;
@@ -29,10 +29,10 @@ public class ScreenShotsCommandHandler extends AbstractClientHandler {
      * 特定的处理器-屏幕截图处理器，供MASTER使用。
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse 原始消息
-     * @throws ClientException
+     * @throws RemoterException
      */
     @Override
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws RemoterException {
         /**播放收到的屏幕截图*/
         if(baseResponse.getData() instanceof byte[]) {
             byte[] bytes = (byte[]) baseResponse.getData();

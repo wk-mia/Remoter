@@ -5,7 +5,7 @@ import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandSponsor;
 import com.aoligei.remoter.enums.CommandEnum;
-import com.aoligei.remoter.exception.ClientException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.manage.TerminalManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,10 @@ public class StopControlCommandHandler extends AbstractClientHandler {
      * 特定的处理器-停止控制处理器
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse 原始消息
-     * @throws ClientException
+     * @throws RemoterException
      */
     @Override
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws RemoterException {
         /**
          * 停止远程控制的业务处理：
          * 1. 移除该远程连接

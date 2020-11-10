@@ -3,13 +3,13 @@ package com.aoligei.remoter.handler;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.beans.BasicClientInfo;
-import com.aoligei.remoter.business.aop.RequestInspect;
+import com.aoligei.remoter.annotation.RequestInspect;
+import com.aoligei.remoter.business.ResponseProcessor;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.ServerException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.manage.impl.RosterManage;
-import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,17 +33,17 @@ public class RegisterCommandHandler extends AbstractServerCensorC2CHandler {
 
     /**
      * 特定的处理器：注册处理器
-     * 检查项 = {REGISTER_PARAMS}
+     * 检查项 = {InspectEnum.COMMAND_ENUM,InspectEnum.DATA}
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.REGISTER_PARAM})
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
+    @RequestInspect(inspectItem = {InspectEnum.COMMAND_ENUM,InspectEnum.DATA})
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws RemoterException {
         BasicClientInfo basicClientInfo = (BasicClientInfo) baseRequest.getData();
         rosterManage.register(basicClientInfo);
-        BaseResponse baseResponse = BuildUtil.buildResponseOK(null, TerminalTypeEnum.SERVER,
+        BaseResponse baseResponse = ResponseProcessor.buildResponseOK(null, TerminalTypeEnum.SERVER,
                 CommandEnum.REGISTER, basicClientInfo.getClientId(),"the server accepted the registration request");
         channelHandlerContext.writeAndFlush(baseResponse);
     }

@@ -2,11 +2,10 @@ package com.aoligei.remoter.constant;
 
 /**
  * @author wk-mia
- * 2020-9-8
- * 服务器处理异常常量配置类
- * 该类中定义了服务器处理客户端的请求异常的常量
+ * 2020-11-8
+ * 非法请求常量
  */
-public class ServerExceptionConstants {
+public final class IllegalRequestConstants {
     /**
      * 客户端已经注册过
      */
@@ -51,4 +50,8 @@ public class ServerExceptionConstants {
      * 为找到此客户端
      */
     public static final String CLIENT_NOT_FIND = "not find the client";
+    /**
+     * 终端类型错误
+     */
+    public static final String TERMINAL_TYPE_ERROR = "the terminal type can't be an unexpected value";
 }

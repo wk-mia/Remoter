@@ -1,17 +1,15 @@
 package com.aoligei.remoter.manage.impl;
 
 import com.aoligei.remoter.beans.OnlineElement;
-import com.aoligei.remoter.constant.IncompleteParamConstants;
-import com.aoligei.remoter.constant.ServerExceptionConstants;
+import com.aoligei.remoter.business.ResponseProcessor;
+import com.aoligei.remoter.constant.IllegalRequestConstants;
+import com.aoligei.remoter.constant.MissingParamConstants;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.IncompleteParamException;
-import com.aoligei.remoter.exception.ServerException;
+import com.aoligei.remoter.exception.IllegalRequestException;
+import com.aoligei.remoter.exception.MissingParamException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.manage.IOnlineRoster;
-import com.aoligei.remoter.netty.ServerChannelC2CHandler;
-import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.concurrent.ScheduledFuture;
 import java.text.MessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author wk-mia
@@ -50,36 +47,36 @@ public class OnlineRosterManage implements IOnlineRoster {
      * @param clientId 客户端身份识别码
      * @param channel 通道
      * @param terminalTypeEnum 终端类型
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    public void add(String clientId, Channel channel, TerminalTypeEnum terminalTypeEnum)throws ServerException {
+    public void add(String clientId, Channel channel, TerminalTypeEnum terminalTypeEnum)throws RemoterException {
         /**
          * 通道异常
          */
         if(channel == null || !channel.isOpen()){
-            throw new ServerException(ServerExceptionConstants.CLIENT_WORK_ERROR);
+            throw new RemoterException(IllegalRequestConstants.CLIENT_WORK_ERROR);
         }
         /**
          * 当客户端身份识别码能在基本信息的账册中找到，添加进在线连接集合中
          */
         if(rosterManage.getRoster().stream().filter(item -> clientId.equals(item.getClientId())).findAny().isPresent()){
-            OnlineElement onlineElement = BuildUtil.buildMetaCache(clientId, channel, terminalTypeEnum);
+            OnlineElement onlineElement = ResponseProcessor.buildMetaCache(clientId, channel, terminalTypeEnum);
             onlineRoster.add(onlineElement);
         }else {
-            throw new ServerException(ServerExceptionConstants.CLIENT_NOT_REGISTER);
+            throw new RemoterException(IllegalRequestConstants.CLIENT_NOT_REGISTER);
         }
     }
 
     /**
      * 从在线列表中销毁连接
      * @param clientId 客户端身份识别码
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    public void remove(String clientId)throws ServerException {
+    public void remove(String clientId)throws RemoterException {
         if(clientId == null || "".equals(clientId)){
-            throw new IncompleteParamException(IncompleteParamConstants.CLIENT_ID_NULL);
+            throw new MissingParamException(MissingParamConstants.CLIENT_ID_CANNOT_BE_EMPTY);
         }
         if (onlineRoster.stream().filter(item -> clientId.equals(item.getClientId())).findAny().isPresent()) {
             /**
@@ -94,7 +91,7 @@ public class OnlineRosterManage implements IOnlineRoster {
                 }
             }
         }else {
-            throw new ServerException(ServerExceptionConstants.CLIENT_NOT_FIND);
+            throw new IllegalRequestException(IllegalRequestConstants.CLIENT_NOT_FIND);
         }
 
     }
@@ -102,9 +99,8 @@ public class OnlineRosterManage implements IOnlineRoster {
     /**
      * 从在线列表中销毁连接
      * @param channel 通道
-     * @throws ServerException
      */
-    public void remove(Channel channel)throws ServerException{
+    public void remove(Channel channel){
         if(channel == null){
             return;
         }
@@ -135,16 +131,16 @@ public class OnlineRosterManage implements IOnlineRoster {
      * 通过受控端身份识别码获取在线连接
      * @param slaveClientId 受控端身份识别码
      * @return 受控端连接
-     * @throws ServerException 异常信息
+     * @throws RemoterException 异常信息
      */
-    public OnlineElement getSlaveInfoBySlaveClientId(String slaveClientId)throws ServerException {
+    public OnlineElement getSlaveInfoBySlaveClientId(String slaveClientId)throws RemoterException {
         if(slaveClientId == null || "".equals(slaveClientId)){
-            throw new IncompleteParamException(IncompleteParamConstants.NO_SLAVER_SPECIFIED);
+            throw new MissingParamException(MissingParamConstants.NO_SLAVER_SPECIFIED);
         }
 
         OnlineElement slaveMeta = onlineRoster.stream().filter(item -> slaveClientId.equals(item.getClientId())).findAny().get();
         if(slaveMeta == null){
-            throw new ServerException(ServerExceptionConstants.SLAVE_NOT_FIND);
+            throw new IllegalRequestException(IllegalRequestConstants.SLAVE_NOT_FIND);
         }
         return slaveMeta;
     }

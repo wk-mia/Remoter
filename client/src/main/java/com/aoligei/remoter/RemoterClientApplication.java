@@ -20,7 +20,7 @@ public class RemoterClientApplication {
         homePage.start();
 
 //        IInteract page = context.getBean(SlaverPageActionListener.class);
-//        page.call("test");
+//        page.call("test",1440,900);
     }
 
 }

@@ -1,18 +1,17 @@
-package com.aoligei.remoter.util;
+package com.aoligei.remoter.business;
 
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.beans.*;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.ScheduledFuture;
 
 /**
  * @author wk-mia
  * 2020-9-2
  * Netty消息体工具类
  */
-public class BuildUtil {
+public class ResponseProcessor {
 
     /**
      * 构建并返回一个处理成功的Response
@@ -25,7 +24,7 @@ public class BuildUtil {
      * @return BaseResponse对象
      */
     public static <T> BaseResponse buildResponseOK(String connectionId, Enum<TerminalTypeEnum> terminalTypeEnum, Enum<CommandEnum> commandEnum, T data,String message){
-        BaseResponse baseResponse = BuildUtil.buildResponse(connectionId,terminalTypeEnum,commandEnum,data, ResponseStatusEnum.OK,message);
+        BaseResponse baseResponse = ResponseProcessor.buildResponse(connectionId,terminalTypeEnum,commandEnum,data, ResponseStatusEnum.OK,message);
         return baseResponse;
     }
 
@@ -40,7 +39,7 @@ public class BuildUtil {
      * @return BaseResponse对象
      */
     public static <T> BaseResponse buildResponseFAIL(String connectionId, Enum<TerminalTypeEnum> terminalTypeEnum, Enum<CommandEnum> commandEnum, T data,String message){
-        BaseResponse baseResponse = BuildUtil.buildResponse(connectionId,terminalTypeEnum,commandEnum,data, ResponseStatusEnum.FAIL,message);
+        BaseResponse baseResponse = ResponseProcessor.buildResponse(connectionId,terminalTypeEnum,commandEnum,data, ResponseStatusEnum.FAIL,message);
         return baseResponse;
     }
 
@@ -55,7 +54,7 @@ public class BuildUtil {
      * @return BaseResponse对象
      */
     public static <T> BaseResponse buildResponseERROR(String connectionId, Enum<TerminalTypeEnum> terminalTypeEnum, Enum<CommandEnum> commandEnum, T data,String message){
-        BaseResponse baseResponse = BuildUtil.buildResponse(connectionId,terminalTypeEnum,commandEnum,data, ResponseStatusEnum.ERROR,message);
+        BaseResponse baseResponse = ResponseProcessor.buildResponse(connectionId,terminalTypeEnum,commandEnum,data, ResponseStatusEnum.ERROR,message);
         return baseResponse;
     }
 

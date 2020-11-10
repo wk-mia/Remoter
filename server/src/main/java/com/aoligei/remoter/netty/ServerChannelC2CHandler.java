@@ -2,17 +2,17 @@ package com.aoligei.remoter.netty;
 
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.beans.RemotingElement;
+import com.aoligei.remoter.business.ResponseProcessor;
 import com.aoligei.remoter.command.CommandFactory;
 import com.aoligei.remoter.command.ICommandHandler;
-import com.aoligei.remoter.constant.ExceptionStyleConstants;
-import com.aoligei.remoter.constant.ResponseConstants;
+import com.aoligei.remoter.constant.IllegalRequestConstants;
+import com.aoligei.remoter.constant.MessageConstants;
 import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
+import com.aoligei.remoter.exception.IllegalRequestException;
+import com.aoligei.remoter.exception.MissingParamException;
 import com.aoligei.remoter.manage.impl.OnlineRosterManage;
 import com.aoligei.remoter.manage.impl.RemotingRosterManage;
-import com.aoligei.remoter.util.BuildUtil;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author wk-mia
@@ -78,22 +76,23 @@ public class ServerChannelC2CHandler extends SimpleChannelInboundHandler<BaseReq
     @Override
     public void exceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) throws Exception {
         log.error(cause.getMessage(),cause);
-        if(cause.getClass().getSimpleName().equals(ExceptionStyleConstants.CONTROLLABLE)){
+        if(cause.getClass().getSimpleName().equals(MissingParamException.class.getSimpleName()) ||
+                cause.getClass().getSimpleName().equals(IllegalRequestException.class.getSimpleName())){
             /**可控制的异常类型,仅通知客户端异常信息*/
-            BaseResponse baseResponse = BuildUtil.buildResponseFAIL(null, TerminalTypeEnum.SERVER,
+            BaseResponse baseResponse = ResponseProcessor.buildResponseFAIL(null, TerminalTypeEnum.SERVER,
                     CommandEnum.EXCEPTION, null, cause.getMessage());
             if(channelHandlerContext != null){
                 channelHandlerContext.writeAndFlush(baseResponse);
             }
-        }else{
+        }else {
             /**需要断开连接的异常,通知客户端异常信息并断开连接*/
-            String message = cause.getMessage() + ", " + ResponseConstants.WILL_BE_DISCONNECTED;
-            BaseResponse baseResponse = BuildUtil.buildResponseERROR(null, TerminalTypeEnum.SERVER,
+            String message = cause.getMessage() + ", " + MessageConstants.WILL_BE_DISCONNECTED;
+            BaseResponse baseResponse = ResponseProcessor.buildResponseERROR(null, TerminalTypeEnum.SERVER,
                     CommandEnum.EXCEPTION, null, message);
             if(channelHandlerContext != null){
                 channelHandlerContext.writeAndFlush(baseResponse);
             }
-            log.info(ResponseConstants.WILL_BE_DISCONNECTED);
+            log.info(MessageConstants.WILL_BE_DISCONNECTED);
             channelHandlerContext.close();
         }
     }

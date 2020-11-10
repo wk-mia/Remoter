@@ -2,7 +2,7 @@ package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.command.ICommandHandler;
-import com.aoligei.remoter.exception.ClientException;
+import com.aoligei.remoter.exception.RemoterException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +20,16 @@ import java.text.MessageFormat;
 @Component(value = "AbstractClientHandler")
 public abstract class AbstractClientHandler implements ICommandHandler<BaseResponse> {
 
-    private static Logger log = LoggerFactory.getLogger(AbstractClientHandler.class);
+    private Logger log = LoggerFactory.getLogger(AbstractClientHandler.class);
 
     /**
      * 分发至相应的处理器进行处理
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse Channel输入对象
-     * @throws ClientException
+     * @throws RemoterException
      */
     @Override
-    public void handle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
+    public void handle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws RemoterException {
         log.debug(MessageFormat.format("response: {0}",baseResponse));
         particularHandle(channelHandlerContext,baseResponse);
     }
@@ -57,7 +57,7 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
      * @param error 异常信息
      */
     protected void logError(String error){
-        log.info(MessageFormat.format("error: {0}",error));
+        log.error(MessageFormat.format("error: {0}",error));
     }
 
 
@@ -65,7 +65,7 @@ public abstract class AbstractClientHandler implements ICommandHandler<BaseRespo
      * 审查完后具体的处理器
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse 原始消息
-     * @throws ClientException 异常信息
+     * @throws RemoterException 异常信息
      */
-    protected abstract void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException;
+    protected abstract void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws RemoterException;
 }

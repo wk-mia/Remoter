@@ -1,11 +1,9 @@
 package com.aoligei.remoter.sponsor;
 
 import com.aoligei.remoter.beans.BaseRequest;
-import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.command.ICommandHandler;
 import com.aoligei.remoter.command.ICommandSponsor;
+import com.aoligei.remoter.constant.MessageConstants;
 import com.aoligei.remoter.constant.SponsorConstants;
-import com.aoligei.remoter.exception.ClientException;
 import com.aoligei.remoter.exception.SponsorException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -13,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
-import java.util.Map;
 
 /**
  * @author wk-mia
@@ -71,11 +68,11 @@ public abstract class AbstractCommandSponsor implements ICommandSponsor<BaseRequ
      */
     protected void sendRequest(BaseRequest request) throws SponsorException {
         if (context != null && context.channel() != null && context.channel().isOpen()){
-            logInfo(SponsorConstants.PREPARE_SEND);
+            logInfo(MessageConstants.PREPARE_SEND);
             context.writeAndFlush(request);
         }else{
-            logError(SponsorConstants.LOST_CONNECTION);
-            throw new SponsorException(SponsorConstants.LOST_CONNECTION);
+            logError(MessageConstants.LOST_CONNECTION);
+            throw new SponsorException(MessageConstants.LOST_CONNECTION);
         }
     }
 

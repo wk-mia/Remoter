@@ -2,7 +2,7 @@ package com.aoligei.remoter.handler;
 
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
-import com.aoligei.remoter.exception.ClientException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.manage.TerminalManage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +28,13 @@ public class ExceptionHandler extends AbstractClientHandler  {
      * 特定的处理器-异常处理器
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse 原始消息
-     * @throws ClientException
+     * @throws RemoterException
      */
     @Override
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws RemoterException {
         /**通知用户*/
 
+        logError(baseResponse.getMessage());
         if(baseResponse.getStatus() == ResponseStatusEnum.ERROR){
             /**服务器处理请求时发生需关闭连接的异常，此处同步客户端的通道信息*/
             if(! StringUtils.isEmpty(baseResponse.getConnectionId())) {

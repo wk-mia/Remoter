@@ -1,9 +1,8 @@
 package com.aoligei.remoter.manage;
 
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.ServerException;
+import com.aoligei.remoter.exception.RemoterException;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.ScheduledFuture;
 
 /**
  * @author wk-mia
@@ -17,14 +16,14 @@ public interface IOnlineRoster {
      * @param clientId 客户端身份识别码
      * @param channel 通道
      * @param terminalTypeEnum 终端类型
-     * @throws ServerException
+     * @throws RemoterException
      */
-    void add(String clientId, Channel channel, TerminalTypeEnum terminalTypeEnum)throws ServerException;
+    void add(String clientId, Channel channel, TerminalTypeEnum terminalTypeEnum)throws RemoterException;
 
     /**
      * 从在线列表中销毁连接
      * @param clientId 客户端身份识别码
-     * @throws ServerException
+     * @throws RemoterException
      */
-    void remove(String clientId)throws ServerException;
+    void remove(String clientId)throws RemoterException;
 }

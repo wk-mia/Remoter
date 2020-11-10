@@ -1,4 +1,4 @@
-package com.aoligei.remoter.business.aop;
+package com.aoligei.remoter.annotation;
 
 import com.aoligei.remoter.enums.InspectEnum;
 import java.lang.annotation.*;

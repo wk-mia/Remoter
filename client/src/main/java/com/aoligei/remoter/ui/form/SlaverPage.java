@@ -2,6 +2,7 @@ package com.aoligei.remoter.ui.form;
 
 import com.aoligei.remoter.ui.panel.SlaverScreenPanel;
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author wk-mia
@@ -17,22 +18,30 @@ public class SlaverPage extends JFrame{
      * 窗体定义
      * @param title 窗体名称
      * @param panel 远程屏幕面板
+     * @param frameWidth 页面宽度
+     * @param frameHeight 页面高度
      */
-    public SlaverPage(String title, SlaverScreenPanel panel){
+    public SlaverPage(String title, SlaverScreenPanel panel, int frameWidth, int frameHeight){
         this.panel = panel;
-        initStyle(title);
+        /**预留出窗体标题栏、滚动条的空间，让远程截图铺满页面*/
+        initStyle(title,frameWidth + 40,frameHeight + 70);
         addComponent(panel);
     }
 
     /**
      * 初始化窗体样式
+     * @param title 窗体名称
+     * @param frameWidth 页面宽度
+     * @param frameHeight 页面高度
      */
-    private void initStyle(String title){
+    private void initStyle(String title, int frameWidth, int frameHeight){
         this.setTitle(title);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getOwner());
         this.setVisible(true);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        this.setPreferredSize(new Dimension(frameWidth,frameHeight));
+        this.pack();
     }
 
     /**

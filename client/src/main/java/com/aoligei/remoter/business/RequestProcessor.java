@@ -3,7 +3,6 @@ package com.aoligei.remoter.business;
 import com.aoligei.remoter.event.KeyBoardEvent;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BasicClientInfo;
-import com.aoligei.remoter.business.aop.SponsorRequestInspect;
 import com.aoligei.remoter.event.MouseActionEvent;
 import com.aoligei.remoter.service.driver.ScreenCatcher;
 import com.aoligei.remoter.enums.CommandEnum;
@@ -44,8 +43,7 @@ public class RequestProcessor {
      * @return 请求主体
      * @throws SponsorException
      */
-    @SponsorRequestInspect(inspectItem = {SponsorInspectEnum.CLIENT_ID})
-    public BaseRequest buildConnectRequest() throws SponsorException {
+    public BaseRequest buildConnectRequest(){
         /**
          * 向服务器发起连接时，只需指定身份识别码
          */
@@ -64,8 +62,7 @@ public class RequestProcessor {
      * @return 请求主体
      * @throws SponsorException
      */
-    @SponsorRequestInspect(inspectItem = {SponsorInspectEnum.CLIENT_NAME,SponsorInspectEnum.CLIENT_IP,SponsorInspectEnum.IS_REJECT_CONNECTION})
-    public BaseRequest buildRegisterRequest() throws SponsorException{
+    public BaseRequest buildRegisterRequest(){
         /**
          * 向服务器发起注册请求时，只需指定客户端的主要信息，放入Data域中。
          */
@@ -89,8 +86,7 @@ public class RequestProcessor {
      * @return 请求主体
      * @throws SponsorException
      */
-    @SponsorRequestInspect(inspectItem = {SponsorInspectEnum.CLIENT_ID})
-    public BaseRequest buildControlRequest(String slaveClientId)throws SponsorException{
+    public BaseRequest buildControlRequest(String slaveClientId){
         /**
          * 向服务器发起控制请求时，需指定主控端的身份识别码、受控端的身份识别码、终端
          * 类型。
@@ -130,7 +126,7 @@ public class RequestProcessor {
      * @return 请求主体
      * @throws SponsorException
      */
-    public BaseRequest buildStopControlRequest(String connectionId,TerminalTypeEnum typeEnum)throws SponsorException{
+    public BaseRequest buildStopControlRequest(String connectionId,TerminalTypeEnum typeEnum){
         /**向服务器发起断开控制请求时，需指定连接编码*/
         BaseRequest baseRequest = new BaseRequest(){{
             setConnectionId(connectionId);

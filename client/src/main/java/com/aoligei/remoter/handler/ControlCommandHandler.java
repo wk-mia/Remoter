@@ -9,10 +9,9 @@ import com.aoligei.remoter.enums.CommandEnum;
 import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.event.ControlEvent;
-import com.aoligei.remoter.exception.ClientException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.manage.TerminalManage;
 import com.aoligei.remoter.service.action.IInteract;
-import com.aoligei.remoter.service.driver.RobotFactory;
 import com.aoligei.remoter.service.listener.SlaverPageActionListener;
 import io.netty.channel.ChannelHandlerContext;
 import java.awt.Dimension;
@@ -47,10 +46,10 @@ public class ControlCommandHandler extends AbstractClientHandler {
      * 特定的处理器-控制处理器
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseResponse 原始消息
-     * @throws ClientException
+     * @throws RemoterException
      */
     @Override
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws ClientException {
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseResponse baseResponse) throws RemoterException {
         if(baseResponse.getTerminalTypeEnum() == TerminalTypeEnum.SERVER_2_SLAVE){
             /**受控端的业务逻辑*/
             this.slaverHandle(channelHandlerContext,baseResponse);

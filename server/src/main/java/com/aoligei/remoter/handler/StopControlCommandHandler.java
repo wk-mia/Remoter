@@ -1,16 +1,14 @@
 package com.aoligei.remoter.handler;
 
+import com.aoligei.remoter.annotation.RequestInspect;
 import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
-import com.aoligei.remoter.beans.RemotingElement;
-import com.aoligei.remoter.constant.IncompleteParamConstants;
+import com.aoligei.remoter.business.ResponseProcessor;
 import com.aoligei.remoter.enums.CommandEnum;
+import com.aoligei.remoter.enums.InspectEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
-import com.aoligei.remoter.exception.IncompleteParamException;
-import com.aoligei.remoter.exception.ServerException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.manage.impl.RemotingRosterManage;
-import com.aoligei.remoter.util.BuildUtil;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import java.text.MessageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +35,18 @@ public class StopControlCommandHandler extends AbstractServerCensorC2CHandler {
     /**
      *
      * @param channelHandlerContext 当前连接的处理器上下文
+     * 检查项 = {InspectEnum.CLIENT_ID,InspectEnum.CONNECTION_ID,InspectEnum.COMMAND_ENUM,
+     *                              InspectEnum.TERMINAL_TYPE_ENUM,InspectEnum.DATA}
      * @param baseRequest 原始消息
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
+    @RequestInspect(inspectItem = {InspectEnum.CLIENT_ID,InspectEnum.CONNECTION_ID,
+            InspectEnum.COMMAND_ENUM,InspectEnum.TERMINAL_TYPE_ENUM,InspectEnum.DATA})
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws RemoterException {
         /**通知各个终端停止远程控制*/
         String connectionId = baseRequest.getConnectionId();
-        BaseResponse response = BuildUtil
+        BaseResponse response = ResponseProcessor
                 .buildResponseOK(connectionId, TerminalTypeEnum.SERVER, CommandEnum.STOP_CONTROL, null, null);
         remotingRosterManage.notifyAllMaster(connectionId,response);
         remotingRosterManage.notifySlave(connectionId,response);

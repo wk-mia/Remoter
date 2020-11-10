@@ -1,12 +1,15 @@
 package com.aoligei.remoter.manage.impl;
 
 import com.aoligei.remoter.beans.BasicClientInfo;
-import com.aoligei.remoter.constant.ServerExceptionConstants;
-import com.aoligei.remoter.exception.ServerException;
+import com.aoligei.remoter.constant.IllegalRequestConstants;
+import com.aoligei.remoter.constant.MissingParamConstants;
+import com.aoligei.remoter.exception.IllegalRequestException;
+import com.aoligei.remoter.exception.MissingParamException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.generate.IdentifyFactory;
 import com.aoligei.remoter.manage.IRoster;
-import com.aoligei.remoter.util.InspectUtil;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -48,37 +51,44 @@ public class RosterManage implements IRoster {
     /**
      * 客户端注册
      * @param basicClientInfo 客户端信息
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    public void register(BasicClientInfo basicClientInfo) throws ServerException {
-        if(InspectUtil.isInfoComplete(basicClientInfo)){
-            /**
-             * 该客户端是否已经注册过
-             */
-            if(roster.stream().filter(item -> basicClientInfo.getClientIp().equals(item.getClientIp())).findAny().isPresent()){
-                throw new ServerException(ServerExceptionConstants.CLIENT_ALREADY_REGISTER);
-            }else {
-                /**
-                 * 生成客户端识别码并注册
-                 */
-                basicClientInfo.setClientId(IdentifyFactory.createClientId());
-                this.roster.add(basicClientInfo);
-            }
+    public void register(BasicClientInfo basicClientInfo) throws RemoterException {
+        /**客户端名称为空*/
+        if(StringUtils.isEmpty(basicClientInfo.getClientName())){
+            throw new MissingParamException(MissingParamConstants.CLIENT_NAME_NOT_INCLUDED);
+        }
+        /**IP为空*/
+        if(StringUtils.isEmpty(basicClientInfo.getClientIp())){
+            throw new MissingParamException(MissingParamConstants.CLIENT_IP_NOT_INCLUDED);
+        }
+        /**客户端是否已拒绝所有远程控制请求*/
+        if(basicClientInfo.getRejectConnection() == null){
+            throw new MissingParamException(MissingParamConstants.REJECT_CONNECTION_NOT_INCLUDED);
+        }
+
+        /*** 该客户端是否已经注册过*/
+        if(roster.stream().filter(item -> basicClientInfo.getClientIp().equals(item.getClientIp())).findAny().isPresent()){
+            throw new IllegalRequestException(IllegalRequestConstants.CLIENT_ALREADY_REGISTER);
+        }else {
+            /**生成客户端识别码并注册*/
+            basicClientInfo.setClientId(IdentifyFactory.createClientId());
+            this.roster.add(basicClientInfo);
         }
     }
 
     /**
      * 客户端注销
      * @param clientId 客户端身份识别码
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    public void unRegister(String clientId) throws ServerException {
+    public void unRegister(String clientId) throws RemoterException {
         BasicClientInfo basicClientInfo = roster.stream().filter(item ->
                 clientId.equals(item.getClientId())).findAny().get();
         if(basicClientInfo == null){
-            throw new ServerException(ServerExceptionConstants.CLIENT_NOT_FIND);
+            throw new IllegalRequestException(IllegalRequestConstants.CLIENT_NOT_FIND);
         }else {
             roster.remove(basicClientInfo);
         }
@@ -88,10 +98,10 @@ public class RosterManage implements IRoster {
      * 客户端刷新身份识别码
      * @param oldClientId 客户端原身份识别码
      * @return
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    public String refreshClientId(String oldClientId) throws ServerException {
+    public String refreshClientId(String oldClientId) throws RemoterException {
         // TODO: 2020/9/9 刷新身份识别码，需要考虑连接和通道组的同步问题 
         return null;
     }

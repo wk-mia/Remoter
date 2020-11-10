@@ -4,20 +4,20 @@ import com.aoligei.remoter.beans.BaseRequest;
 import com.aoligei.remoter.beans.BaseResponse;
 import com.aoligei.remoter.beans.RemotingElement;
 import com.aoligei.remoter.beans.OnlineElement;
-import com.aoligei.remoter.business.aop.RequestInspect;
-import com.aoligei.remoter.constant.IncompleteParamConstants;
-import com.aoligei.remoter.constant.ResponseConstants;
-import com.aoligei.remoter.constant.ServerExceptionConstants;
+import com.aoligei.remoter.annotation.RequestInspect;
+import com.aoligei.remoter.business.ResponseProcessor;
+import com.aoligei.remoter.constant.IllegalRequestConstants;
+import com.aoligei.remoter.constant.MessageConstants;
+import com.aoligei.remoter.constant.MissingParamConstants;
 import com.aoligei.remoter.enums.InspectEnum;
-import com.aoligei.remoter.enums.ResponseStatusEnum;
 import com.aoligei.remoter.enums.TerminalTypeEnum;
 import com.aoligei.remoter.event.ControlEvent;
-import com.aoligei.remoter.exception.IncompleteParamException;
-import com.aoligei.remoter.exception.ServerException;
+import com.aoligei.remoter.exception.IllegalRequestException;
+import com.aoligei.remoter.exception.MissingParamException;
+import com.aoligei.remoter.exception.RemoterException;
 import com.aoligei.remoter.generate.IdentifyFactory;
 import com.aoligei.remoter.manage.impl.RemotingRosterManage;
 import com.aoligei.remoter.manage.impl.OnlineRosterManage;
-import com.aoligei.remoter.util.BuildUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,13 +55,17 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
      * 3. Slaver选择是否建立连接，结果返回给Server，如同意连接，则准备开始屏幕截图任务；
      * 4. 如Slaver同意连接，则将Slaver加入到连接组中；如不同意，则清除该连接组；
      * 5  Server通知Master连接的结果；
+     *
+     * 检查项 = {InspectEnum.CLIENT_ID,InspectEnum.COMMAND_ENUM,
+     *                              InspectEnum.TERMINAL_TYPE_ENUM,InspectEnum.DATA}
      * @param channelHandlerContext 当前连接的处理器上下文
      * @param baseRequest 原始消息
-     * @throws ServerException
+     * @throws RemoterException
      */
     @Override
-    @RequestInspect(inspectItem = {InspectEnum.CONTROL_PARAMS})
-    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws ServerException {
+    @RequestInspect(inspectItem = {InspectEnum.CLIENT_ID,
+            InspectEnum.COMMAND_ENUM,InspectEnum.TERMINAL_TYPE_ENUM,InspectEnum.DATA})
+    protected void particularHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest) throws RemoterException {
         if(baseRequest.getTerminalTypeEnum() == TerminalTypeEnum.MASTER){
             /**主控端的业务逻辑*/
             this.masterHandle(channelHandlerContext,baseRequest);
@@ -70,7 +74,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
             this.slaverHandle(channelHandlerContext,baseRequest);
         }else {
             /**不允许的终端类型*/
-            throw new IncompleteParamException(IncompleteParamConstants.TERMINAL_TYPE_ERROR);
+            throw new IllegalRequestException(IllegalRequestConstants.TERMINAL_TYPE_ERROR);
         }
     }
 
@@ -78,16 +82,16 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
      * 主控端的控制请求处理
      * @param channelHandlerContext
      * @param baseRequest
-     * @throws ServerException
+     * @throws RemoterException
      */
-    private void masterHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest)throws ServerException{
+    private void masterHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest)throws RemoterException{
         /**检查所要控制的受控端是否能在当前连接到服务器的元数据列表中找到，以及该受控端目前是否已被控制。*/
         String slaveClientId = (String) baseRequest.getData();
         if(! onlineConnectionManage.isOnline(slaveClientId)){
-            throw new ServerException(ServerExceptionConstants.SLAVE_NOT_FIND);
+            throw new IllegalRequestException(IllegalRequestConstants.SLAVE_NOT_FIND);
         }
         if(remotingRosterManage.isSlaverWorking(slaveClientId)){
-            throw new ServerException(ServerExceptionConstants.SLAVE_BEING_CONTROLLED);
+            throw new IllegalRequestException(IllegalRequestConstants.SLAVE_BEING_CONTROLLED);
         }
         /**生成连接编码；并初始化该连接组，连接组中并没有Slaver。*/
         String connectionId = IdentifyFactory.createConnectionId();
@@ -95,7 +99,7 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
                 channelHandlerContext.channel());
         /**通知Slaver控制请求*/
         OnlineElement slaver = onlineConnectionManage.getSlaveInfoBySlaveClientId(slaveClientId);
-        BaseResponse baseResponse = BuildUtil.buildResponseOK(connectionId,TerminalTypeEnum.SERVER_2_SLAVE,
+        BaseResponse baseResponse = ResponseProcessor.buildResponseOK(connectionId,TerminalTypeEnum.SERVER_2_SLAVE,
                 baseRequest.getCommandEnum(),null,null);
         slaver.getChannel().writeAndFlush(baseResponse);
     }
@@ -104,9 +108,9 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
      * 受控端的控制请求处理
      * @param channelHandlerContext
      * @param baseRequest
-     * @throws ServerException
+     * @throws RemoterException
      */
-    private void slaverHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest)throws ServerException{
+    private void slaverHandle(ChannelHandlerContext channelHandlerContext, BaseRequest baseRequest)throws RemoterException{
         /**
          * Slave同意远程请求并返回信息给服务器，在返回信息中带上连接编码。服务器缓存该连接组
          * 并通知Master远程控制达成的消息。
@@ -116,19 +120,19 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
          * 根据连接编码获取到发起控制请求的Master
          */
         if(StringUtils.isEmpty(baseRequest.getConnectionId())){
-            throw new IncompleteParamException(IncompleteParamConstants.CONNECTION_ID_NULL);
+            throw new MissingParamException(MissingParamConstants.CONNECTION_ID_CANNOT_BE_EMPTY);
         }
         RemotingElement remotingElement = remotingRosterManage.getChannelCacheByConnectionId(baseRequest.getConnectionId());
         if(remotingElement == null){
-            throw new ServerException(ServerExceptionConstants.CONNECTION_NOT_FIND);
+            throw new IllegalRequestException(IllegalRequestConstants.CONNECTION_NOT_FIND);
         }
 
         if(event == null || !event.isAccepted()){
             /**
              * Slave拒绝Master发起的连接，将该连接组缓存移除，并通知Master该连接已被Slave拒绝。
              */
-            BaseResponse baseResponse = BuildUtil.buildResponseERROR(null,TerminalTypeEnum.SERVER_2_MASTER,
-                    baseRequest.getCommandEnum(), null, ResponseConstants.SLAVE_REFUSED_CONNECTION);
+            BaseResponse baseResponse = ResponseProcessor.buildResponseERROR(null,TerminalTypeEnum.SERVER_2_MASTER,
+                    baseRequest.getCommandEnum(), null, MessageConstants.SLAVE_REFUSED_CONNECTION);
             remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
 
             remotingRosterManage.remotingRoster.remove(remotingElement);
@@ -138,8 +142,8 @@ public class ControlCommandHandler extends AbstractServerCensorC2CHandler {
              * Slave同意Master发起的连接，将Slave的连接注册到连接组中，返回同意连接的消息给Master
              * 返回消息中带connectionId，用于标识这个连接组。
              */
-            BaseResponse baseResponse = BuildUtil.buildResponseOK(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER_2_MASTER,
-                    baseRequest.getCommandEnum(),baseRequest.getData(),ResponseConstants.SLAVE_AGREE_CONNECTION);
+            BaseResponse baseResponse = ResponseProcessor.buildResponseOK(baseRequest.getConnectionId(),TerminalTypeEnum.SERVER_2_MASTER,
+                    baseRequest.getCommandEnum(),baseRequest.getData(),MessageConstants.SLAVE_AGREE_CONNECTION);
             remotingElement.getMasterElement().getChannel().writeAndFlush(baseResponse);
 
             remotingRosterManage.registerSlave(baseRequest.getConnectionId(),baseRequest.getClientId(),
